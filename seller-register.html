@@ -1,0 +1,22 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1"><title>Seller Register</title><style>body{margin:0;font-family:sans-serif;background:#e8f5e9;padding:15px}.box{background:#fff;padding:20px;border-radius:12px;max-width:400px;margin:20px auto}input{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}button{background:#0b7a3e;color:#fff;border:0;padding:13px;width:100%;border-radius:25px;font-weight:bold;font-size:16px}</style></head><body>
+<div class=box>
+<h2>🛒 Become Seller - Kisakye Mart</h2>
+<p>Kikuubo / Nakasero / Kalerwe</p>
+<input id=name placeholder="Business Name e.g. Mama Shop">
+<input id=phone placeholder="Your MoMo Number 07...">
+<input id=loc placeholder="Location e.g. Kikuubo B12">
+<button onclick="reg()">Register - Earn 95% Per Sale</button>
+<p style="font-size:12px;color:#666">You get 95%, Kisakye Mart keeps 5% automatically on every transaction made on the app.</p>
+</div>
+<script>
+function reg(){
+let n=name.value, p=phone.value, l=loc.value;
+if(!n||!p){alert("Fill name & MoMo");return}
+let s=JSON.parse(localStorage.getItem('km_sellers')||"[]");
+s.push({id:Date.now(),name:n,phone:p,loc:l});
+localStorage.setItem('km_sellers',JSON.stringify(s));
+localStorage.setItem('km_current_seller',JSON.stringify({name:n,phone:p}));
+alert("Success "+n+"! 95% yours, 5% for app.");
+location.href="seller-dashboard.html";
+}
+</script></body></html>
