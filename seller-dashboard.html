@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1"><title>Seller Dashboard</title><style>body{margin:0;font-family:sans-serif;background:#f5f5f5;padding:10px}.box{background:#fff;padding:15px;border-radius:12px;margin:10px 0}input{width:100%;padding:10px;margin:5px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}button{background:#0b7a3e;color:#fff;border:0;padding:11px;width:100%;border-radius:20px;font-weight:bold}.prod{display:flex;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:8px 0}</style></head><body>
+<h3>📦 Seller Dashboard</h3>
+<div id=welcome></div>
+<div class=box>
+<input id=pname placeholder="Product e.g. Kakira Sugar 1kg">
+<input id=price type=number placeholder="Price e.g. 4000">
+<button onclick="addP()">Add Product to Marketplace</button>
+</div>
+<div class=box><b>Your Products (Live on App)</b><div id=list></div></div>
+<div class=box style="background:#fffbe6;border:2px solid #0b7a3e">
+<b>💰 Your Earnings - System deducts 5% automatically</b><br>
+Sold: UGX <span id=sold>0</span><br>
+App Fee (5%): UGX <span id=fee>0</span><br>
+<b>You Get (95%): UGX <span id=yours>0</span></b>
+</div>
+<script>
+let cur=JSON.parse(localStorage.getItem('km_current_seller')||"{}");
+document.getElementById('welcome').innerHTML="<div class=box>Welcome <b>"+(cur.name||"Seller")+"</b> - MoMo: "+(cur.phone||"")+"</div>";
+let prods=JSON.parse(localStorage.getItem('km_products')||"[]");
+function addP(){
+let n=pname.value, pr=parseInt(price.value);
+if(!n||!pr){alert("Fill");return}
+prods.push({name:n,price:pr,seller:cur.name||"Kisakye",phone:cur.phone||"0744590988",id:Date.now(),img:"https://cdn.pixabay.com/photo/2016/03/05/19/02/sugar-1238243_1280.jpg"});
+localStorage.setItem('km_products',JSON.stringify(prods));
+pname.value="";price.value="";render();
+}
+function render(){list.innerHTML=prods.filter(p=>p.seller==cur.name).map(p=>`<div class=prod>${p.name} - UGX ${p.price}</div>`).join('')||"No products yet";}
+render();
+</script></body></html>
