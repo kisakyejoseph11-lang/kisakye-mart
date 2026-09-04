@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kisakye Mart Fmcg</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:#f6f8f6;color:#111}
+header{background:#0a7a2e;color:white;padding:16px;text-align:center;font-weight:bold;font-size:20px;position:sticky;top:0}
+.container{padding:12px;max-width:500px;margin:auto}
+.card{background:white;border-radius:12px;padding:12px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.btn{background:#0a7a2e;color:white;border:none;padding:10px 14px;border-radius:8px;width:100%;font-weight:bold;margin-top:8px}
+input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin:6px 0}
+.prod{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
+.price{color:#0a7a2e;font-weight:bold}
+</style>
+</head>
+<body>
+<header>KISAKYE MART FMCG</header>
+<div class="container">
+<div class="card">
+<h3>Add Product</h3>
+<input id="pname" placeholder="Product Name e.g. Sugar">
+<input id="pprice" type="number" placeholder="Price UGX">
+<input id="pstock" type="number" placeholder="Stock qty">
+<button class="btn" onclick="addProd()">Add to Store</button>
+</div>
+<div class="card">
+<h3>Stock (<span id="count">0</span>)</h3>
+<div id="list"></div>
+</div>
+<div class="card">
+<h3>Today Sales: UGX <span id="sales">0</span></h3>
+<button class="btn" style="background:#222" onclick="clearAll()">Clear All Data</button>
+</div>
+</div>
+<script>
+let prods=JSON.parse(localStorage.getItem('kisakye')||'[]');
+let sales=parseInt(localStorage.getItem('sales')||'0');
+function render(){
+ let l=document.getElementById('list'); l.innerHTML='';
+ prods.forEach((p,i)=>{
+   l.innerHTML+=`<div class="prod"><div><b>${p.name}</b><br><small>${p.stock} pcs</small></div><div><span class="price">UGX ${p.price}</span><br><button onclick="sell(${i})" style="margin-top:4px;padding:4px 8px;border-radius:6px;border:1px solid #0a7a2e;color:#0a7a2e;background:white">Sell</button></div></div>`
+ });
+ document.getElementById('count').innerText=prods.length;
+ document.getElementById('sales').innerText=sales;
+ localStorage.setItem('kisakye',JSON.stringify(prods));
+ localStorage.setItem('sales',sales);
+}
+function addProd(){
+ let n=document.getElementById('pname').value;
+ let pr=document.getElementById('pprice').value;
+ let s=document.getElementById('pstock').value;
+ if(!n||!pr) return alert('Enter name and price');
+ prods.push({name:n,price:pr,stock:s||0});
+ document.getElementById('pname').value='';document.getElementById('pprice').value='';document.getElementById('pstock').value='';
+ render();
+}
+function sell(i){
+ if(prods[i].stock>0) prods[i].stock--;
+ sales+=parseInt(prods[i].price);
+ render();
+}
+function clearAll(){if(confirm('Clear all?')){prods=[];sales=0;render();}}
+render();
+</script>
+</body>
+</html>
