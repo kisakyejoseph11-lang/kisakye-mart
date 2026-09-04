@@ -1,3 +1,33 @@
-Copy from here... [Use the code I sent in previous message]
-
-If WhatsApp cuts it, tell me "PART 1" and "PART 2" and I will send in 2 small parts!
+<!doctype html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1"><title>Kisakye Mart</title><style>body{margin:0;font-family:sans-serif;background:#f5f5f5}.h{background:#0b7a3e;color:#fff;padding:14px;text-align:center;font-weight:bold;position:sticky;top:0;z-index:20}.pay{background:#fffbe6;border:2px solid #ffcc00;padding:10px;margin:8px;border-radius:10px;text-align:center;font-size:13px}.cat{display:flex;gap:6px;padding:8px;overflow:auto;position:sticky;top:58px;background:#f5f5f5;z-index:15}.cat button{border:1px solid #0b7a3e;background:#fff;padding:6px 12px;border-radius:20px;white-space:nowrap}.cat button.active{background:#0b7a3e;color:#fff}.g{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px}.c{background:#fff;border-radius:12px;padding:7px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.1)}.c img{width:100%;height:110px;object-fit:contain;border-radius:8px;background:#fff}.pname{font-size:12px;font-weight:600;margin:5px 0 2px;min-height:32px}.price{color:#0b7a3e;font-weight:bold;font-size:13px}.b{background:#0b7a3e;color:#fff;border:0;padding:7px;width:100%;border-radius:20px;font-weight:bold;margin-top:5px}.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;justify-content:space-between;align-items:center;border-top:2px solid #0b7a3e;z-index:30}</style></head><body>
+<div class=h>🛒 KISAKYE MART<br><span style="font-size:12px">Kikuubo • Nakasero • Kalerwe</span></div>
+<div class=pay><b>MoMo: 0744590988 / 0759123806 | WhatsApp: 07544590988</b><br>Pay on Delivery - Kampala</div>
+<div class=cat id=cat><button class=active onclick="filter('all',this)">All 60</button><button onclick="filter('food',this)">Food</button><button onclick="filter('drink',this)">Drinks</button><button onclick="filter('clean',this)">Cleaning</button><button onclick="filter('care',this)">Care</button></div>
+<div class=g id=g></div><div style=height:90px></div>
+<div class=bar><b id=ct>Cart 0</b><button onclick="wa()" style="background:#25D366;color:#fff;border:0;padding:11px 18px;border-radius:25px;font-weight:bold">WhatsApp Order</button></div>
+<script>
+let P=[
+["Kakira Sugar 1kg",4000,"https://cdn.pixabay.com/photo/2016/03/05/19/02/sugar-1238243_1280.jpg","food"],
+["Kakira Sugar 2kg",7800,"https://cdn.pixabay.com/photo/2016/03/05/19/02/sugar-1238243_1280.jpg","food"],
+["Super Rice 1kg",4700,"https://cdn.pixabay.com/photo/2016/03/05/19/02/rice-1238242_1280.jpg","food"],
+["Super Rice 5kg",23500,"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=300","food"],
+["Posho Maize Flour 1kg",3000,"https://cdn.pixabay.com/photo/2017/06/02/18/24/corn-2369936_1280.jpg","food"],
+["Wheat Flour 2kg",6400,"https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300","food"],
+["Mukwano Oil 1L",8200,"https://cdn.pixabay.com/photo/2017/05/07/19/32/oil-2293390_1280.jpg","food"],
+["Mukwano Oil 3L",25000,"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300","food"],
+["Fortune Sunflower 5L",48600,"https://images.unsplash.com/photo-1615174435732-5250e2da6a2e?w=300","food"],
+["Fresh Milk 500ml",2200,"https://cdn.pixabay.com/photo/2017/07/05/18/35/milk-2474993_1280.jpg","food"],
+["Jesa Milk 500ml",2400,"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300","food"],
+["Lato Milk Powder 500g",15000,"https://images.unsplash.com/photo-1628088062854-d1870b455d62?w=300","food"],
+["Blue Band 250g",5500,"https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300","food"],
+["Prestige 250g",3500,"https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300","food"],
+["Family Bread 400g",3500,"https://cdn.pixabay.com/photo/2016/03/27/19/bread-1264059_1280.jpg","food"],
+["Eggs Tray 30pcs",14500,"https://cdn.pixabay.com/photo/2015/05/07/14/02/eggs-756543_1280.jpg","food"],
+["Royco Mchuzi 100g",1500,"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=300","food"],
+["Royco Cubes 10pcs",1000,"https://images.unsplash.com/photo-1506368249639-73a05d4f6488?w=300","food"],
+["Kaysalt 500g",900,"https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=300","food"],
+["Beans 1kg",4000,"https://images.unsplash.com/photo-1586201375761-83865001e8ac?w=300","food"],
+["Ground Nuts 1kg",6000,"https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=300","food"],
+["Peanut Butter 250g",5000,"https://images.unsplash.com/photo-1587133599422-38a0c2a42c64?w=300","food"],
+["Indomie 70g",1200,"https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=300","food"],
+["Indomie 5-Pack",4000,"https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=300","food"],
+["Spaghetti 500
