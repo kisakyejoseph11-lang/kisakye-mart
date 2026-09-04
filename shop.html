@@ -5,25 +5,59 @@
 <meta name=viewport content="width=device-width,initial-scale=1">
 <title>Kisakye Mart</title>
 <style>
-body{margin:0;font-family:sans-serif;background:#f0f0f0}
-.h{background:#0b7a3e;color:#fff;padding:15px;text-align:center;font-weight:bold;font-size:20px}
+body{margin:0;font-family:sans-serif;background:#f5f5f5}
+.h{background:#0b7a3e;color:#fff;padding:15px;text-align:center;font-weight:bold;font-size:20px;position:sticky;top:0;z-index:10}
+.pay{background:#fffbe6;border:2px solid #ffcc00;padding:10px;margin:10px;border-radius:10px;text-align:center}
 .g{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
-.c{background:#fff;border-radius:10px;padding:10px;text-align:center}
-.b{background:#0b7a3e;color:#fff;border:0;padding:8px;width:100%;border-radius:6px;font-weight:bold;margin-top:5px}
-.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #ccc}
+.c{background:#fff;border-radius:12px;padding:8px;text-align:center;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+.c img{width:100%;height:110px;object-fit:cover;border-radius:8px}
+.pname{font-size:13px;font-weight:600;margin:5px 0 2px;min-height:32px}
+.price{color:#0b7a3e;font-weight:bold}
+.b{background:#0b7a3e;color:#fff;border:0;padding:8px;width:100%;border-radius:20px;font-weight:bold;margin-top:6px}
+.bar{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;justify-content:space-between;align-items:center;border-top:2px solid #0b7a3e;z-index:20}
 </style>
 </head>
 <body>
-<div class=h>🛒 KISAKYE MART<br><span style="font-size:14px">Fast Delivery</span></div>
+<div class=h>🛒 KISAKYE MART<br><span style="font-size:13px">Kampala - Fast Delivery</span></div>
+
+<div class=pay>
+<b>💰 PAYMENT - Mobile Money:</b><br>
+<span style="color:green;font-weight:bold">MTN/Airtel: 0744590988 / 0759123806</span><br>
+<span style="font-size:12px">Send money after confirming order on WhatsApp</span><br>
+<span style="font-size:12px">📞 Orders WhatsApp: 07544590988</span>
+</div>
+
 <div class=g id=g></div>
-<div style=height:70px></div>
-<div class=bar><b id=ct>Cart 0</b><button onclick="wa()" style="background:#25D366;color:#fff;border:0;padding:12px 20px;border-radius:20px;font-weight:bold">WhatsApp Order</button></div>
+<div style=height:90px></div>
+<div class=bar><b id=ct>Cart 0</b><button onclick="wa()" style="background:#25D366;color:#fff;border:0;padding:12px 20px;border-radius:25px;font-weight:bold">WhatsApp Order</button></div>
+
 <script>
-let P=[["Sugar 1kg",5000],["Oil 1L",8500],["Rice 1kg",4500],["Posho 1kg",3000],["Salt",1500],["Royco",2500],["Blue Band",5500],["Soda",1500],["Water",1000],["Milk 500ml",2500],["Tea 100g",3000],["Nescafe",8000],["Juice 1L",3500],["Soap",6000],["Omo 500g",4000],["Omo 1kg",7500],["Harpic",6000],["Colgate",4500],["Vaseline",5500],["Biscuits",1500],["Bread",4000],["Indomie",1200],["Spaghetti",3500]];
+let P=[
+["Kakira Sugar 2kg",6500,"https://images.unsplash.com/photo-1581268160803-5c0dc0b4c3ff?w=300"],
+["Mukwano Oil 1L",8200,"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300"],
+["Super Rice 2kg",7800,"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=300"],
+["Family Bread 400g",3500,"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300"],
+["Fresh Dairy Milk 500ml",2200,"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300"],
+["Rwenzori Water 500ml",1200,"https://images.unsplash.com/photo-1523369364227-24934cde5236?w=300"],
+["Coca-Cola 500ml",2000,"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=300"],
+["Blue Band 250g",5500,"https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300"],
+["Royco 75g",1500,"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=300"],
+["Kaysalt 500g",900,"https://images.unsplash.com/photo-1587049352851-8d4e89133924?w=300"],
+["Posho 1kg",3000,"https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300"],
+["Nescafe 100g",8000,"https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300"],
+["Juice 1L",3500,"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=300"],
+["Bar Soap",6000,"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=300"],
+["Omo 500g",4000,"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=300"],
+["Omo 1kg",7500,"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=300"],
+["Harpic",6000,"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=300"],
+["Colgate",4500,"https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=300"],
+["Vaseline",5500,"https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=300"],
+["Biscuits",1500,"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300"]
+];
 let C=[];
-function draw(){document.getElementById('g').innerHTML=P.map((x,i)=>`<div class=c><div style=font-size:40px>🛍️</div><div>${x[0]}</div><div style=color:green;font-weight:bold>UGX ${x[1]}</div><button class=b onclick="add(${i})">Add</button></div>`).join('')}
+function draw(){document.getElementById('g').innerHTML=P.map((x,i)=>`<div class=c><img src="${x[2]}"><div class=pname>${x[0]}</div><div class=price>UGX ${x[1]}</div><button class=b onclick="add(${i})">Add</button></div>`).join('')}
 function add(i){C.push(P[i]);document.getElementById('ct').innerText="Cart "+C.length+" | UGX "+C.reduce((a,b)=>a+b[1],0)}
-function wa(){if(C.length==0){alert("Add products first!");return}let t=C.reduce((a,b)=>a+b[1],0);let m="Hello Kisakye Mart! I want:%0A"+C.map(x=>"- "+x[0]+" UGX "+x[1]).join("%0A")+"%0ATotal UGX "+t;window.open("https://wa.me/256700000000?text="+m)}
+function wa(){if(C.length==0){alert("Add products first");return}let t=C.reduce((a,b)=>a+b[1],0);let m="Hello Kisakye Mart!%0A%0AI want:%0A"+C.map(x=>"- "+x[0]+" UGX "+x[1]).join("%0A")+"%0A%0ATotal: UGX "+t+"%0A%0APayment: I will send to 0744590988 / 0759123806%0A%0ADelivery address:";window.open("https://wa.me/2567544590988?text="+m)}
 draw();
 </script>
 </body>
