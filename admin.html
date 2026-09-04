@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1"><title>Admin - Kisakye Mart</title><style>body{margin:0;font-family:sans-serif;background:#111;color:#fff;padding:10px}.box{background:#222;padding:15px;border-radius:12px;margin:10px 0}.green{color:#0f0}.yellow{color:#ff0}</style></head><body>
+<h2>👑 Kisakye Mart Admin - Your 5% Earnings</h2>
+<div class=box>
+<h3>💰 Total Platform Profit (5% of all transactions)</h3>
+<div style="font-size:32px" class=green id=totalProfit>UGX 0</div>
+<p>From all sellers - Kikuubo, Nakasero, Kalerwe</p>
+</div>
+<div class=box>
+<b>All Sellers on Your App:</b>
+<div id=sellers></div>
+</div>
+<div class=box>
+<b>All Products Live:</b>
+<div id=products></div>
+</div>
+<div class=box style="background:#0b7a3e">
+<b>How you earn:</b><br>
+Every buyer pays on YOUR App<br>
+Buyer pays 10,000 → App keeps 500 (5%) → Seller gets 9,500<br>
+If 100 sales per day × 500 = <b class=yellow>UGX 50,000 per day just from app fee!</b>
+</div>
+<script>
+let sellers=JSON.parse(localStorage.getItem('km_sellers')||"[]");
+let products=JSON.parse(localStorage.getItem('km_products')||"[]");
+document.getElementById('sellers').innerHTML=sellers.map(s=>`🏪 ${s.name} - ${s.phone} - ${s.loc}`).join('<br>')||"No sellers yet - share seller-register.html";
+document.getElementById('products').innerHTML=products.map(p=>`${p.name} - UGX ${p.price} - Seller: ${p.seller} - App Keeps: UGX ${Math.round(p.price*0.05)}`).join('<br>')||"No products";
+let mockTotal=products.reduce((a,b)=>a+b.price,0);
+let mockFee=Math.round(mockTotal*0.05);
+document.getElementById('totalProfit').innerText="UGX "+mockFee+" (from listed products value)";
+</script></body></html>
