@@ -1,104 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kisakye Mart</title> 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#f5f5f5;padding-bottom:80px}
-.header{background:#008000;color:white;padding:15px;text-align:center;position:sticky;top:0;z-index:10}
-.tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:white;border-top:2px solid #008000;z-index:20}
-.tabs button{flex:1;padding:14px 2px;border:none;background:white;font-weight:bold;font-size:12px}
-.tabs button.active{background:#008000;color:white}
-.page{display:none;padding:12px}
-.page.active{display:block}
-.prod{background:white;border-radius:12px;padding:10px;margin-bottom:12px;display:flex;gap:10px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-.prod img{width:85px;height:85px;border-radius:10px;object-fit:cover}
-.btn{background:#008000;color:white;border:none;padding:7px 12px;border-radius:8px;font-weight:bold;margin-top:5px}
-input{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8px}
-.cart-box{background:white;padding:12px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-</style>
-</head>
-<body>
-<div class="header"><h1>🛒 KISAKYE MART</h1><p>Shop • Earn 5% • Uganda</p></div>
-
-<div id="shop" class="page active"><h3>Products <span id="count">0</span></h3><div id="list"></div></div>
-
-<div id="seller" class="page"><div class="cart-box"><h3>Seller Dashboard</h3><p>Total Sales: UGX <span id="sales">0</span></p><p>Your 5% Profit: UGX <span id="profit">0</span></p></div></div>
-
-<div id="add" class="page"><div class="cart-box"><h3>Add New Product</h3><input id="pname" placeholder="Product Name e.g Sugar"><input id="pprice" type="number" placeholder="Price e.g 5500"><input id="pimg" placeholder="Image link optional"><button class="btn" onclick="addProd()">Add Product</button></div></div>
-
-<div id="my" class="page"><div class="cart-box"><h3>🛒 My Cart</h3><div id="cartList">Cart empty</div><p><b>Total: UGX <span id="cartTotal">0</span></b></p><p style="color:green"><b>Your 5% = UGX <span id="cartProfit">0</span></b></p><button class="btn" style="background:#ff6a00;width:100%;padding:12px" onclick="checkout()">Checkout via WhatsApp</button></div></div>
-
-<div class="tabs">
-<button id="t-shop" class="active" onclick="showPage('shop')">SHOP</button>
-<button id="t-seller" onclick="showPage('seller')">SELLER</button>
-<button id="t-add" onclick="showPage('add')">ADD</button>
-<button id="t-my" onclick="showPage('my')">MY 5% (<span id="cartCount">0</span>)</button>
-</div>
-
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kisakye Mart - 30 Products</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}body{background:#f5f5f5;padding-bottom:80px}.header{background:#008000;color:#fff;padding:15px;text-align:center;position:sticky;top:0;z-index:10}.tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #008000}.tabs button{flex:1;padding:14px;border:none;background:#fff;font-weight:bold}.tabs button.active{background:#008000;color:#fff}.page{display:none;padding:12px}.page.active{display:block}.prod{background:#fff;border-radius:12px;padding:10px;margin-bottom:10px;display:flex;gap:10px;box-shadow:0 2px 5px rgba(0,0,0,.1)}.prod img{width:75px;height:75px;border-radius:8px;object-fit:cover}.btn{background:#008000;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:bold}.box{background:#fff;padding:12px;border-radius:10px;margin-bottom:10px}input{width:100%;padding:11px;margin:5px 0;border:1px solid #ccc;border-radius:7px}</style></head><body>
+<div class="header"><h1>🛒 KISAKYE MART</h1><p>30 Products Loaded - No Zero Bug!</p></div>
+<div id="shop" class="page active"><h3>Products <span id="count">30</span></h3><div id="list"></div></div>
+<div id="seller" class="page"><div class="box"><h3>Seller Dashboard</h3>Sales: <span id="sales">0</span> | 5%: <span id="profit">0</span></div></div>
+<div id="add" class="page"><div class="box"><h3>Add Product</h3><input id="pname" placeholder="Name"><input id="pprice" type="number" placeholder="Price"><input id="pimg" placeholder="Image link (optional)"><button class="btn" onclick="addProd()">Add</button></div></div>
+<div id="my" class="page"><div class="box"><h3>My Cart</h3><div id="cartList">Empty</div><b>Total: <span id="cartTotal">0</span></b><br><button class="btn" style="background:#ff6a00;width:100%;margin-top:8px;padding:10px" onclick="checkout()">Checkout WhatsApp</button></div></div>
+<div class="tabs"><button id="t-shop" class="active" onclick="showPage('shop')">SHOP</button><button id="t-seller" onclick="showPage('seller')">SELLER</button><button id="t-add" onclick="showPage('add')">ADD</button><button id="t-my" onclick="showPage('my')">MY (<span id="cartCount">0</span>)</button></div>
 <script>
-let defaultProds=[
-{name:"Sugar 1kg",price:5500,img:"https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=200"},
-{name:"Posho 1kg",price:3200,img:"https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200"},
-{name:"Rice 1kg",price:4500,img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=200"},
-{name:"Cooking Oil 1L",price:7500,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200"},
-{name:"Beans 1kg",price:4000,img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200"}
-];
-let prods=JSON.parse(localStorage.getItem('kisakye')||'null')||defaultProds;
-let cart=JSON.parse(localStorage.getItem('kisakye_cart')||'[]');
-let sales=parseInt(localStorage.getItem('sales')||'0');
-
-function showPage(p){
-document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
-document.querySelectorAll('.tabs button').forEach(e=>e.classList.remove('active'));
-document.getElementById(p).classList.add('active');
-document.getElementById('t-'+p).classList.add('active');
+let prods=[{name:"Sugar 1kg",price:5500,img:"https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=200"},{name:"Posho 1kg",price:3200,img:"https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200"},{name:"Rice 1kg",price:4500,img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=200"},{name:"Cooking Oil 1L",price:7500,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200"},{name:"Beans 1kg",price:4000,img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200"},{name:"Bread",price:5000,img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200"},{name:"Milk 500ml",price:2500,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200"},{name:"Eggs tray",price:15000,img:"https://images.unsplash.com/photo-1488679831987-9564a7c76c7b?w=200"},{name:"Soda 500ml",price:1500,img:"https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=200"},{name:"Salt 1kg",price:1500,img:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200"},{name:"Tea Leaves 250g",price:3500,img:"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=200"},{name:"Blue Band 250g",price:6500,img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=200"},{name:"Royco 100g",price:2000,img:"https://images.unsplash.com/photo-1506368249639-73a05d4f6488?w=200"},{name:"Bar Soap",price:3500,img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=200"},{name:"Omo 500g",price:4000,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=200"},{name:"Jik 500ml",price:3500,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=200"},{name:"Toothpaste",price:3000,img:"https://images.unsplash.com/photo-1559671088-5ef93d3b0e5e?w=200"},{name:"Vaseline",price:2500,img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=200"},{name:"Pampers",price:25000,img:"https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=200"},{name:"Biscuits",price:2000,img:"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200"},{name:"Juice 1L",price:3500,img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=200"},{name:"Water 1L",price:1000,img:"https://images.unsplash.com/photo-1559839914-17aae19cec71?w=200"},{name:"Tomatoes 1kg",price:3000,img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200"},{name:"Onions 1kg",price:3500,img:"https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?w=200"},{name:"Irish 1kg",price:2500,img:"https://images.unsplash.com/photo-1518977676608-bd36c2ca4f0d?w=200"},{name:"Matooke bunch",price:20000,img:"https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=200"},{name:"Chicken 1kg",price:15000,img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=200"},{name:"Beef 1kg",price:16000,img:"https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=200"},{name:"Fish 1kg",price:14000,img:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=200"},{name:"Charcoal sack",price:35000,img:"https://images.unsplash.com/photo-1507576162314-0d9b247b1dbf?w=200"}];
+let cart=JSON.parse(localStorage.getItem('cart_final30')||'[]');let sales=+localStorage.getItem('sales_final30')||0;
+function showPage(p){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.tabs button').forEach(e=>e.classList.remove('active'));document.getElementById(p).classList.add('active');document.getElementById('t-'+p).classList.add('active');render();}
+function render(){let l=document.getElementById('list');l.innerHTML='';prods.forEach((p,i)=>{l.innerHTML+=`<div class="prod"><img src="${p.img}"><div><b>${p.name}</b><br>UGX ${p.price}<br><button class="btn" onclick="addToCart(${i})">Add to Cart</button></div></div>`});document.getElementById('count').innerText=prods.length;document.getElementById('sales').innerText=sales;document.getElementById('profit').innerText=Math.round(sales*0.05);renderCart();}
+function renderCart(){let cl=document.getElementById('cartList');cl.innerHTML='';let total=0;if(!cart.length)cl.innerHTML='Empty';cart.forEach((c,i)=>{total+=c.price;cl.innerHTML+=`${c.name} ${c.price} <button onclick="remCart(${i})">x</button><br>`});document.getElementById('cartTotal').innerText=total;document.getElementById('cartCount').innerText=cart.length;localStorage.setItem('cart_final30',JSON.stringify(cart));localStorage.setItem('sales_final30',sales);}
+function addToCart(i){cart.push(prods[i]);renderCart();showPage('my');}function remCart(i){cart.splice(i,1);renderCart();}
+function addProd(){let n=pname.value,pr=+pprice.value,im=pimg.value||'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200';if(!n||!pr)return alert('Enter name price');prods.unshift({name:n,price:pr,img:im});document.getElementById('count').innerText=prods.length;pname.value='';pprice.value='';pimg.value='';render();showPage('shop');}
+function checkout(){if(!cart.length)return alert('Empty');let t=cart.reduce((a,b)=>a+b.price,0);sales+=t;render();let msg=`Hello Kisakye Mart Order:%0A`+cart.map(c=>`- ${c.name} ${c.price}`).join('%0A')+`%0ATotal ${t}`;window.open(`https://wa.me/256000000000?text=${msg}`,'_blank');cart=[];renderCart();}
 render();
-}
-function render(){
-let l=document.getElementById('list');l.innerHTML='';
-prods.forEach((p,i)=>{
-l.innerHTML+=`<div class="prod"><img src="${p.img}"><div><b>${p.name}</b><br>UGX ${p.price}<br><button class="btn" onclick="addToCart(${i})">Add +5%</button> <button onclick="delProd(${i})" style="border:none;background:red;color:#fff;border-radius:5px;padding:3px 6px">X</button></div></div>`;
-});
-document.getElementById('count').innerText=prods.length;
-document.getElementById('sales').innerText=sales;
-document.getElementById('profit').innerText=Math.round(sales*0.05);
-localStorage.setItem('kisakye',JSON.stringify(prods));
-localStorage.setItem('sales',sales);
-renderCart();
-}
-function renderCart(){
-let cl=document.getElementById('cartList');cl.innerHTML='';let total=0;
-if(cart.length==0)cl.innerHTML='Cart empty';
-cart.forEach((c,i)=>{total+=c.price;cl.innerHTML+=`${c.name} - ${c.price} <button onclick="remCart(${i})">x</button><br>`});
-document.getElementById('cartTotal').innerText=total;
-document.getElementById('cartProfit').innerText=Math.round(total*0.05);
-document.getElementById('cartCount').innerText=cart.length;
-localStorage.setItem('kisakye_cart',JSON.stringify(cart));
-}
-function addToCart(i){cart.push(prods[i]);renderCart();showPage('my');}
-function remCart(i){cart.splice(i,1);renderCart();}
-function addProd(){
-let n=document.getElementById('pname').value;
-let pr=document.getElementById('pprice').value;
-let im=document.getElementById('pimg').value||'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200';
-if(!n||!pr)return alert('Enter name and price');
-prods.push({name:n,price:parseInt(pr),img:im});
-document.getElementById('pname').value='';document.getElementById('pprice').value='';document.getElementById('pimg').value='';
-render();showPage('shop');alert('Added!');
-}
-function delProd(i){if(confirm('Delete?')){prods.splice(i,1);render();}}
-function checkout(){
-if(cart.length==0)return alert('Cart empty');
-let total=cart.reduce((a,b)=>a+b.price,0);
-let msg=`Hello Kisakye Mart, I want to order:%0A`+cart.map(c=>`- ${c.name} ${c.price}`).join('%0A')+`%0ATotal: ${total}`;
-sales+=total;render();
-window.open(`https://wa.me/256000000000?text=${msg}`,'_blank');
-cart=[];renderCart();alert('Order sent!');
-}
-render();
-</script>
-</body>
-</html>
+</script></body></html>
