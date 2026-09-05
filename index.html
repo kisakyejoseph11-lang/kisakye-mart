@@ -1,7 +1,42 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kisakye Mart Final</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}body{background:#f5f5f5;padding-bottom:85px}.header{background:#008000;color:#fff;padding:14px;text-align:center;position:sticky;top:0;z-index:10}.tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #008000}.tabs button{flex:1;padding:14px;border:none;background:#fff;font-weight:bold}.tabs button.active{background:#008000;color:#fff}.page{display:none;padding:10px}.page.active{display:block}.prod{background:#fff;border-radius:12px;padding:10px;margin-bottom:10px;display:flex;gap:10px;align-items:center;box-shadow:0 2px 4px rgba(0,0,0,.1)}.prod img{width:85px;height:85px;border-radius:8px;object-fit:cover;border:1px solid #eee}.btn{background:#008000;color:#fff;border:none;padding:8px 14px;border-radius:6px;font-weight:bold}.box{background:#fff;padding:12px;border-radius:10px;margin-bottom:10px}input{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8px}#preview{width:100px;height:100px;border:2px dashed #008000;border-radius:8px;display:none;object-fit:cover}.owner-item{background:#fff;padding:10px;margin:6px 0;border-radius:8px;display:flex;gap:8px;align-items:center;border-left:4px solid #008000}</style></head><body>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kisakye Mart - Green</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}body{background:#f5f5f5;padding-bottom:0}.header{background:#008000;color:#fff;padding:14px;text-align:center;position:sticky;top:0;z-index:10}.tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #008000;z-index:20}.tabs button{flex:1;padding:14px;border:none;background:#fff;font-weight:bold}.tabs button.active{background:#008000;color:#fff}.page{display:none;padding:10px;padding-bottom:90px}.page.active{display:block}.prod{background:#fff;border-radius:12px;padding:10px;margin-bottom:10px;display:flex;gap:10px;align-items:center;box-shadow:0 2px 4px rgba(0,0,0,.1)}.prod img{width:85px;height:85px;border-radius:8px;object-fit:cover;border:1px solid #eee}.btn{background:#008000;color:#fff;border:none;padding:8px 14px;border-radius:6px;font-weight:bold}.box{background:#fff;padding:12px;border-radius:10px;margin-bottom:10px}input{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8px}#preview{width:100px;height:100px;border:2px dashed #008000;border-radius:8px;display:none;object-fit:cover}.owner-item{background:#fff;padding:10px;margin:6px 0;border-radius:8px;display:flex;gap:8px;align-items:center;border-left:4px solid #008000}
+/* FOOTER LIKE KIKUUBO BUT GREEN */
+.footer{background:#fff;padding:20px 15px 90px 15px;margin-top:20px;border-top:3px solid #008000}
+.footer-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.footer-col{flex:1;min-width:140px}
+.footer-col h3{font-size:16px;margin-bottom:12px;color:#222}
+.footer-col p,.footer-col a{display:block;color:#555;text-decoration:none;font-size:14px;margin:8px 0}
+.footer-social{display:flex;gap:10px;margin:15px 0}
+.footer-social a{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px}
+.fb{background:#1877f2}.tw{background:#1da1f2}.ig{background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5)}.yt{background:#ff0000}
+.store-btn{border:1.5px solid #008000;border-radius:8px;padding:10px;text-align:center;display:flex;align-items:center;gap:10px;margin:10px 0;color:#000;text-decoration:none}
+.store-btn i{font-size:28px}
+.pay-icons{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.pay-icons img{height:28px}
+</style></head><body>
 <div class="header"><h1>🛒 KISAKYE MART</h1><p>Owner +256744590988 • Green Matooke • Real Stock</p></div>
-<div id="shop" class="page active"><h3>Products <span id="count">0</span> - Fresh</h3><div id="list"></div></div>
-<div id="seller" class="page"><div class="box"><h3>🔐 Owner Dashboard</h3><div id="ownerLogin"><p style="font-size:13px">Enter PIN to manage products (Delete/Change Photo)</p><input id="ownerPin" type="password" placeholder="PIN = 7445"><button class="btn" onclick="unlockOwner()">Unlock Owner Controls</button></div><div id="ownerControls" style="display:none"><p>Sales UGX <b id="sales">0</b> | Profit <b id="profit">0</b> | Orders <b id="orderCount">0</b></p><h4>Manage Products</h4><div id="manageList"></div><div id="orders"></div><br><button class="btn" style="background:red" onclick="resetShop()">Reset to 30 Default</button> <button class="btn" style="background:#333" onclick="lockOwner()">Lock</button></div></div></div>
+<div id="shop" class="page active"><h3>Products <span id="count">0</span> - Fresh</h3><div id="list"></div>
+<!-- FOOTER -->
+<div class="footer">
+<div class="footer-social">
+<a class="fb" href="#"><i class="fab fa-facebook-f"></i></a>
+<a class="tw" href="#"><i class="fab fa-twitter"></i></a>
+<a class="ig" href="#"><i class="fab fa-instagram"></i></a>
+<a class="yt" href="#"><i class="fab fa-youtube"></i></a>
+</div>
+<div class="footer-top">
+<div class="footer-col"><h3>About</h3><a href="#">About us</a><a href="#">Delivery Information</a><a href="#">Privacy Policy</a><a href="#">Terms & conditions</a><a href="https://wa.me/256744590988">Contact us</a></div>
+<div class="footer-col"><h3>My Account</h3><a href="#" onclick="showPage('my')">Account</a><a href="#">Sign In</a><a href="#" onclick="showPage('my')">View Cart</a><a href="#">My Wishlist</a><a href="https://wa.me/256744590988">Track My order</a><a href="https://wa.me/256744590988">Help</a></div>
+</div>
+<div style="margin-top:20px"><h3>Install App</h3><p style="color:#555;font-size:14px;margin:8px 0">From App Store or Google Play</p>
+<a class="store-btn" href="#"><i class="fab fa-apple"></i><div><small>Download on the</small><br><b>App Store</b></div></a>
+<a class="store-btn" href="#"><i class="fab fa-google-play" style="color:#008000"></i><div><small>GET IT ON</small><br><b>Google Play</b></div></a>
+<p style="margin-top:15px;color:#555;font-size:14px">Secure Payment Gateways</p>
+<div class="pay-icons"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_s2016-logo.png" style="display:none"><span style="background:#006fcf;color:#fff;padding:4px 8px;border-radius:4px;font-weight:bold;font-size:12px">Maestro</span><span style="background:#ff5f00;color:#fff;padding:4px 8px;border-radius:4px;font-weight:bold;font-size:12px">Airtel Money</span><span style="background:#ffcc00;color:#000;padding:4px 8px;border-radius:4px;font-weight:bold;font-size:12px">MTN MoMo</span></div>
+<p style="text-align:center;color:#888;font-size:12px;margin-top:20px">© 2026 Kisakye Mart • +256744590988 • All Rights Reserved</p>
+</div>
+</div>
+</div>
+<div id="seller" class="page"><div class="box"><h3>🔐 Owner Dashboard</h3><div id="ownerLogin"><input id="ownerPin" type="password" placeholder="PIN = 7445"><button class="btn" onclick="unlockOwner()">Unlock</button></div><div id="ownerControls" style="display:none"><p>Sales UGX <b id="sales">0</b> | Profit <b id="profit">0</b> | Orders <b id="orderCount">0</b></p><div id="manageList"></div><div id="orders"></div><br><button class="btn" style="background:red" onclick="resetShop()">Reset to 30 Default</button> <button class="btn" style="background:#333" onclick="lockOwner()">Lock</button></div></div></div>
 <div id="add" class="page"><div class="box"><h3>➕ Add Product with Camera 📸</h3><input id="pname" placeholder="Product Name"><input id="pprice" type="number" placeholder="Price UGX"><input type="file" id="pfile" accept="image/*" capture="environment"><img id="preview"><input id="pimg" placeholder="OR paste image link"><button class="btn" style="width:100%;padding:12px;margin-top:8px" onclick="addProd()">Add Product</button></div></div>
 <div id="my" class="page"><div class="box"><h3>My Cart</h3><input id="custName" placeholder="Your Name"><input id="custPhone" placeholder="Phone 07..."><div id="cartList">Empty</div><b>Total UGX <span id="cartTotal">0</span></b><br><button class="btn" style="background:#ff6a00;width:100%;margin-top:10px;padding:12px" onclick="checkout()">Order via WhatsApp 0744590988</button></div></div>
 <div class="tabs"><button id="t-shop" class="active" onclick="showPage('shop')">SHOP</button><button id="t-seller" onclick="showPage('seller')">SELLER</button><button id="t-add" onclick="showPage('add')">ADD</button><button id="t-my" onclick="showPage('my')">MY (<span id="cartCount">0</span>)</button></div>
