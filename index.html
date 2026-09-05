@@ -1,68 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kisakye Mart Fmcg</title>
+<title>Kisakye Mart</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#f6f8f6;color:#111}
-header{background:#0a7a2e;color:white;padding:16px;text-align:center;font-weight:bold;font-size:20px;position:sticky;top:0}
-.container{padding:12px;max-width:500px;margin:auto}
-.card{background:white;border-radius:12px;padding:12px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.btn{background:#0a7a2e;color:white;border:none;padding:10px 14px;border-radius:8px;width:100%;font-weight:bold;margin-top:8px}
-input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin:6px 0}
-.prod{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
-.price{color:#0a7a2e;font-weight:bold}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#f5f5f5;padding-bottom:80px}
+.header{background:#008000;color:white;padding:15px;text-align:center;position:sticky;top:0;z-index:10}
+.tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:white;border-top:2px solid #008000;z-index:20}
+.tabs button{flex:1;padding:14px 2px;border:none;background:white;font-weight:bold;font-size:12px}
+.tabs button.active{background:#008000;color:white}
+.page{display:none;padding:12px}
+.page.active{display:block}
+.prod{background:white;border-radius:12px;padding:10px;margin-bottom:12px;display:flex;gap:10px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.prod img{width:85px;height:85px;border-radius:10px;object-fit:cover}
+.btn{background:#008000;color:white;border:none;padding:7px 12px;border-radius:8px;font-weight:bold;margin-top:5px}
+input{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:8px}
+.cart-box{background:white;padding:12px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 </style>
 </head>
 <body>
-<header>KISAKYE MART FMCG</header>
-<div class="container">
-<div class="card">
-<h3>Add Product</h3>
-<input id="pname" placeholder="Product Name e.g. Sugar">
-<input id="pprice" type="number" placeholder="Price UGX">
-<input id="pstock" type="number" placeholder="Stock qty">
-<button class="btn" onclick="addProd()">Add to Store</button>
+<div class="header"><h1>🛒 KISAKYE MART</h1><p>Shop • Earn 5% • Uganda</p></div>
+
+<div id="shop" class="page active"><h3>Products <span id="count">0</span></h3><div id="list"></div></div>
+
+<div id="seller" class="page"><div class="cart-box"><h3>Seller Dashboard</h3><p>Total Sales: UGX <span id="sales">0</span></p><p>Your 5% Profit: UGX <span id="profit">0</span></p></div></div>
+
+<div id="add" class="page"><div class="cart-box"><h3>Add New Product</h3><input id="pname" placeholder="Product Name e.g Sugar"><input id="pprice" type="number" placeholder="Price e.g 5500"><input id="pimg" placeholder="Image link optional"><button class="btn" onclick="addProd()">Add Product</button></div></div>
+
+<div id="my" class="page"><div class="cart-box"><h3>🛒 My Cart</h3><div id="cartList">Cart empty</div><p><b>Total: UGX <span id="cartTotal">0</span></b></p><p style="color:green"><b>Your 5% = UGX <span id="cartProfit">0</span></b></p><button class="btn" style="background:#ff6a00;width:100%;padding:12px" onclick="checkout()">Checkout via WhatsApp</button></div></div>
+
+<div class="tabs">
+<button id="t-shop" class="active" onclick="showPage('shop')">SHOP</button>
+<button id="t-seller" onclick="showPage('seller')">SELLER</button>
+<button id="t-add" onclick="showPage('add')">ADD</button>
+<button id="t-my" onclick="showPage('my')">MY 5% (<span id="cartCount">0</span>)</button>
 </div>
-<div class="card">
-<h3>Stock (<span id="count">0</span>)</h3>
-<div id="list"></div>
-</div>
-<div class="card">
-<h3>Today Sales: UGX <span id="sales">0</span></h3>
-<button class="btn" style="background:#222" onclick="clearAll()">Clear All Data</button>
-</div>
-</div>
+
 <script>
-let prods=JSON.parse(localStorage.getItem('kisakye')||'[]');
+let defaultProds=[
+{name:"Sugar 1kg",price:5500,img:"https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=200"},
+{name:"Posho 1kg",price:3200,img:"https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200"},
+{name:"Rice 1kg",price:4500,img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=200"},
+{name:"Cooking Oil 1L",price:7500,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200"},
+{name:"Beans 1kg",price:4000,img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200"}
+];
+let prods=JSON.parse(localStorage.getItem('kisakye')||'null')||defaultProds;
+let cart=JSON.parse(localStorage.getItem('kisakye_cart')||'[]');
 let sales=parseInt(localStorage.getItem('sales')||'0');
+
+function showPage(p){
+document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+document.querySelectorAll('.tabs button').forEach(e=>e.classList.remove('active'));
+document.getElementById(p).classList.add('active');
+document.getElementById('t-'+p).classList.add('active');
+render();
+}
 function render(){
- let l=document.getElementById('list'); l.innerHTML='';
- prods.forEach((p,i)=>{
-   l.innerHTML+=`<div class="prod"><div><b>${p.name}</b><br><small>${p.stock} pcs</small></div><div><span class="price">UGX ${p.price}</span><br><button onclick="sell(${i})" style="margin-top:4px;padding:4px 8px;border-radius:6px;border:1px solid #0a7a2e;color:#0a7a2e;background:white">Sell</button></div></div>`
- });
- document.getElementById('count').innerText=prods.length;
- document.getElementById('sales').innerText=sales;
- localStorage.setItem('kisakye',JSON.stringify(prods));
- localStorage.setItem('sales',sales);
+let l=document.getElementById('list');l.innerHTML='';
+prods.forEach((p,i)=>{
+l.innerHTML+=`<div class="prod"><img src="${p.img}"><div><b>${p.name}</b><br>UGX ${p.price}<br><button class="btn" onclick="addToCart(${i})">Add +5%</button> <button onclick="delProd(${i})" style="border:none;background:red;color:#fff;border-radius:5px;padding:3px 6px">X</button></div></div>`;
+});
+document.getElementById('count').innerText=prods.length;
+document.getElementById('sales').innerText=sales;
+document.getElementById('profit').innerText=Math.round(sales*0.05);
+localStorage.setItem('kisakye',JSON.stringify(prods));
+localStorage.setItem('sales',sales);
+renderCart();
 }
+function renderCart(){
+let cl=document.getElementById('cartList');cl.innerHTML='';let total=0;
+if(cart.length==0)cl.innerHTML='Cart empty';
+cart.forEach((c,i)=>{total+=c.price;cl.innerHTML+=`${c.name} - ${c.price} <button onclick="remCart(${i})">x</button><br>`});
+document.getElementById('cartTotal').innerText=total;
+document.getElementById('cartProfit').innerText=Math.round(total*0.05);
+document.getElementById('cartCount').innerText=cart.length;
+localStorage.setItem('kisakye_cart',JSON.stringify(cart));
+}
+function addToCart(i){cart.push(prods[i]);renderCart();showPage('my');}
+function remCart(i){cart.splice(i,1);renderCart();}
 function addProd(){
- let n=document.getElementById('pname').value;
- let pr=document.getElementById('pprice').value;
- let s=document.getElementById('pstock').value;
- if(!n||!pr) return alert('Enter name and price');
- prods.push({name:n,price:pr,stock:s||0});
- document.getElementById('pname').value='';document.getElementById('pprice').value='';document.getElementById('pstock').value='';
- render();
+let n=document.getElementById('pname').value;
+let pr=document.getElementById('pprice').value;
+let im=document.getElementById('pimg').value||'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200';
+if(!n||!pr)return alert('Enter name and price');
+prods.push({name:n,price:parseInt(pr),img:im});
+document.getElementById('pname').value='';document.getElementById('pprice').value='';document.getElementById('pimg').value='';
+render();showPage('shop');alert('Added!');
 }
-function sell(i){
- if(prods[i].stock>0) prods[i].stock--;
- sales+=parseInt(prods[i].price);
- render();
+function delProd(i){if(confirm('Delete?')){prods.splice(i,1);render();}}
+function checkout(){
+if(cart.length==0)return alert('Cart empty');
+let total=cart.reduce((a,b)=>a+b.price,0);
+let msg=`Hello Kisakye Mart, I want to order:%0A`+cart.map(c=>`- ${c.name} ${c.price}`).join('%0A')+`%0ATotal: ${total}`;
+sales+=total;render();
+window.open(`https://wa.me/256000000000?text=${msg}`,'_blank');
+cart=[];renderCart();alert('Order sent!');
 }
-function clearAll(){if(confirm('Clear all?')){prods=[];sales=0;render();}}
 render();
 </script>
 </body>
