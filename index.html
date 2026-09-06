@@ -1,1644 +1,352 @@
-/*
-===========================================================
-KISAKYE MART FMCG - STAGE 2
-ALL-IN-ONE BACKEND
-===========================================================
+<!DOCTYPE html>
+<html lang="en">
 
-Technology:
-- Node.js
-- Express
-- PostgreSQL
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-Features:
-- Buyers
-- Sellers
-- Products
-- Orders
-- Payments
-- 5% Kisakye Mart commission
-- Seller settlements
-- Delivery records
-- Audit logs
-- Payment webhook protection
-- Admin financial dashboard
+<title>Kisakye Mart FMCG</title>
 
-IMPORTANT:
-This is the secure backend foundation.
-MTN/Airtel production credentials are NOT included.
-Never store customer Mobile Money PINs.
-===========================================================
-*/
+<style>
 
-require("dotenv").config();
+* {
+    box-sizing: border-box;
+}
 
-const express = require("express");
-const cors = require("cors");
-const { Pool } = require("pg");
-const crypto = require("crypto");
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f6f8;
+}
 
-const app = express();
+header {
+    background: #075e54;
+    color: white;
+    padding: 18px;
+    text-align: center;
+}
 
-app.use(cors());
-app.use(express.json());
+header h1 {
+    margin: 0;
+}
 
-/* =========================================================
-DATABASE CONNECTION
-========================================================= */
+.search {
+    padding: 15px;
+    background: white;
+}
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+.search input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
 
-    ssl:
-        process.env.NODE_ENV === "production"
-            ? { rejectUnauthorized: false }
-            : false
-});
+.categories {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    overflow-x: auto;
+    background: white;
+}
 
-/* =========================================================
-CONSTANTS
-========================================================= */
+.categories button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px;
+    background: #eee;
+    white-space: nowrap;
+}
 
-const COMMISSION_RATE = 0.05;
-const PORT = process.env.PORT || 5000;
+.products {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill, minmax(170px, 1fr));
+    gap: 15px;
+    padding: 15px;
+}
 
-/* =========================================================
-DATABASE SETUP
-========================================================= */
+.product {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
 
-async function setupDatabase() {
+.product img {
+    width: 100%;
+    height: 170px;
+    object-fit: contain;
+    background: white;
+}
 
-    const client = await pool.connect();
+.product-info {
+    padding: 12px;
+}
+
+.product h3 {
+    margin: 0 0 7px;
+    font-size: 16px;
+}
+
+.brand {
+    color: #777;
+    font-size: 13px;
+}
+
+.price {
+    color: #075e54;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.stock {
+    font-size: 12px;
+    color: #666;
+}
+
+button.buy {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 7px;
+    background: #075e54;
+    color: white;
+    cursor: pointer;
+}
+
+.cart {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    background: #075e54;
+    color: white;
+    border-radius: 50px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.25);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>KISAKYE MART FMCG</h1>
+    <p>Shop FMCG products across Uganda</p>
+</header>
+
+<div class="search">
+    <input
+        type="text"
+        id="search"
+        placeholder="Search Coca-Cola, soap, milk, noodles..."
+    >
+</div>
+
+<div class="categories">
+    <button onclick="filterCategory('All')">
+        All
+    </button>
+
+    <button onclick="filterCategory('Food')">
+        Food
+    </button>
+
+    <button onclick="filterCategory('Drinks')">
+        Drinks
+    </button>
+
+    <button onclick="filterCategory('Beverages')">
+        Beverages
+    </button>
+
+    <button onclick="filterCategory('Home Care')">
+        Home Care
+    </button>
+
+    <button onclick="filterCategory('Personal Care')">
+        Personal Care
+    </button>
+</div>
+
+<div id="products"
+     class="products">
+</div>
+
+<div class="cart">
+    🛒 Cart:
+    <span id="cartCount">0</span>
+</div>
+
+<script>
+
+let allProducts = [];
+let cart = [];
+
+async function loadProducts() {
 
     try {
 
-        await client.query(`
+        const response =
+            await fetch("/api/products");
 
-        CREATE EXTENSION IF NOT EXISTS pgcrypto;
+        allProducts =
+            await response.json();
 
-        CREATE TABLE IF NOT EXISTS users (
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        displayProducts(allProducts);
 
-            full_name VARCHAR(150) NOT NULL,
+    } catch (error) {
 
-            phone VARCHAR(30) NOT NULL UNIQUE,
+        document.getElementById("products")
+            .innerHTML =
+            "<p>Unable to load products.</p>";
 
-            email VARCHAR(255) UNIQUE,
-
-            role VARCHAR(20) NOT NULL
-                CHECK(role IN ('BUYER','SELLER','ADMIN')),
-
-            password_hash TEXT,
-
-            is_active BOOLEAN NOT NULL DEFAULT TRUE,
-
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-
-            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-        );
-
-        CREATE TABLE IF NOT EXISTS seller_profiles (
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-            user_id UUID NOT NULL UNIQUE
-                REFERENCES users(id),
-
-            shop_name VARCHAR(200) NOT NULL,
-
-            district VARCHAR(100),
-
-            address TEXT,
-
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-        );
-
-        CREATE TABLE IF NOT EXISTS products (
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-            seller_id UUID NOT NULL
-                REFERENCES users(id),
-
-            name VARCHAR(255) NOT NULL,
-
-            description TEXT,
-
-            category VARCHAR(100) NOT NULL,
-
-            price_ugx NUMERIC(14,2) NOT NULL
-                CHECK(price_ugx >= 0),
-
-            stock_quantity INTEGER NOT NULL DEFAULT 0
-                CHECK(stock_quantity >= 0),
-
-            image_url TEXT,
-
-            is_active BOOLEAN NOT NULL DEFAULT TRUE,
-
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-
-            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-        );
-
-        CREATE TABLE IF NOT EXISTS orders (
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-            order_number VARCHAR(50) NOT NULL UNIQUE,
-
-            buyer_id UUID NOT NULL
-                REFERENCES users(id),
-
-            subtotal_ugx NUMERIC(14,2) NOT NULL,
-
-            delivery_fee_ugx NUMERIC(14,2) NOT NULL DEFAULT 0,
-
-            total_ugx NUMERIC(14,2) NOT NULL,
-
-            status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
-
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-
-            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-        );
-
-        CREATE TABLE IF NOT EXISTS order_items (
-
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-            order_id UUID NOT NULL
-                REFERENCES orders(id),
-
-            product_id UUID NOT NULL
-                REFERENCES products(id),
-
-            seller_id UUID NOT NULL
-                REFERENCES users(id),
-
-            product_name_snapshot VARCHAR(255) NOT NULL,
-
-            unit_price_ugx NUMERIC(14,2) NOT NULL,
-
-            quantity INTEGER NOT NULL
-                CHECK(quantity > 0),
-
-            line_total_ugx NUMERIC(14,2) NOT NULL,
-
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-        );
-
-        CREATE TABLE IF NOT EXISTS payments (
-
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-            order_id UUID NOT NULL
-                REFERENCES orders(id),
-
-            provider VARCHAR(20) NOT NULL
-                CHECK(provider IN ('MTN','AIRTEL')),
-
-            provider_transaction_id VARCHAR(255),
-
-            payer_phone VARCHAR(30) NOT NULL,
-
-            amount_ugx NUMERIC(14,2) NOT NULL,
-
-            status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
-
-            provider_response JSONB,
-
-            paid_at TIMESTAMPTZ,
-
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-
-            UNIQUE(provider, provider_transaction_id)
-        );
-
-        CREATE TABLE IF NOT EXISTS commission_ledger (
-
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-            payment_id UUID NOT NULL UNIQUE
-                REFERENCES payments(id),
-
-            order_id UUID NOT NULL
-                REFERENCES orders(id),
-
-            gross_order_value_ugx NUMERIC(14,2) NOT NULL,
-
-            commission_rate NUMERIC(5,4) NOT NULL
-                DEFAULT 0.0500,
-
-            commission_amount_ugx NUMERIC(14,2) NOT NULL,
-
-            currency VARCHAR(3) NOT NULL DEFAULT 'UGX',
-
-            status VARCHAR(20) NOT NULL DEFAULT 'EARNED',
-
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-        );
-
-        CREATE TABLE IF NOT EXISTS seller_settlements (
-
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-            seller_id UUID NOT NULL
-                REFERENCES users(id),
-
-            order_id UUID NOT NULL
-                REFERENCES orders(id),
-
-            payment_id UUID NOT NULL
-                REFERENCES payments(id),
-
-            gross_amount_ugx NUMERIC(14,2) NOT NULL,
-
-            commission_amount_ugx NUMERIC(14,2) NOT NULL,
-
-            seller_amount_ugx NUMERIC(14,2) NOT NULL,
-
-            status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
-
-            provider_transaction_id VARCHAR(255),
-
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-
-            settled_at TIMESTAMPTZ
-        );
-
-        CREATE TABLE IF NOT EXISTS delivery_orders (
-
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-            order_id UUID NOT NULL UNIQUE
-                REFERENCES orders(id),
-
-            delivery_partner VARCHAR(100),
-
-            customer_phone VARCHAR(30),
-
-            delivery_address TEXT,
-
-            delivery_fee_ugx NUMERIC(14,2) NOT NULL DEFAULT 0,
-
-            status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
-
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-
-            delivered_at TIMESTAMPTZ
-        );
-
-        CREATE TABLE IF NOT EXISTS audit_logs (
-
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-            actor_user_id UUID,
-
-            event_type VARCHAR(100) NOT NULL,
-
-            entity_type VARCHAR(100),
-
-            entity_id UUID,
-
-            event_data JSONB,
-
-            ip_address INET,
-
-            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-        );
-
-        CREATE TABLE IF NOT EXISTS payment_webhook_events (
-
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-            provider VARCHAR(20) NOT NULL,
-
-            provider_event_id VARCHAR(255) NOT NULL,
-
-            payload JSONB NOT NULL,
-
-            processed BOOLEAN DEFAULT FALSE,
-
-            received_at TIMESTAMPTZ DEFAULT NOW(),
-
-            processed_at TIMESTAMPTZ,
-
-            UNIQUE(provider, provider_event_id)
-        );
-
-        CREATE TABLE IF NOT EXISTS commission_config (
-
-            id INTEGER PRIMARY KEY DEFAULT 1,
-
-            commission_rate NUMERIC(5,4) NOT NULL
-                DEFAULT 0.0500,
-
-            currency VARCHAR(3) NOT NULL DEFAULT 'UGX',
-
-            updated_at TIMESTAMPTZ DEFAULT NOW()
-        );
-
-        INSERT INTO commission_config
-        (id, commission_rate, currency)
-
-        VALUES
-        (1, 0.0500, 'UGX')
-
-        ON CONFLICT(id) DO NOTHING;
-
-        `);
-
-        console.log("Kisakye Mart database ready.");
-
-    } finally {
-
-        client.release();
-
+        console.error(error);
     }
 }
 
-/* =========================================================
-HEALTH CHECK
-========================================================= */
+function displayProducts(products) {
 
-app.get("/api/health", async (req, res) => {
+    const container =
+        document.getElementById("products");
 
-    try {
+    container.innerHTML = "";
 
-        await pool.query("SELECT 1");
+    if (!products.length) {
 
-        res.json({
+        container.innerHTML =
+            "<p>No products found.</p>";
 
-            success: true,
-
-            application: "Kisakye Mart FMCG",
-
-            database: "connected",
-
-            commission: "5%"
-
-        });
-
-    } catch (error) {
-
-        res.status(500).json({
-
-            success: false,
-
-            database: "disconnected"
-
-        });
-
+        return;
     }
 
-});
+    products.forEach(product => {
 
-/* =========================================================
-ADD USER
-========================================================= */
+        const card =
+            document.createElement("div");
 
-app.post("/api/users", async (req, res) => {
+        card.className = "product";
 
-    try {
+        card.innerHTML = `
 
-        const {
-            full_name,
-            phone,
-            email,
-            role
-        } = req.body;
+            <img
+                src="${product.image_url}"
+                alt="${product.name}"
+                onerror="this.src='https://via.placeholder.com/300?text=Product'"
+            >
 
-        if (!full_name || !phone || !role) {
+            <div class="product-info">
 
-            return res.status(400).json({
+                <h3>
+                    ${product.name}
+                </h3>
 
-                error: "Full name, phone and role are required."
+                <div class="brand">
+                    ${product.brand || ""}
+                </div>
 
-            });
+                <div class="price">
+                    UGX
+                    ${Number(product.price_ugx)
+                        .toLocaleString()}
+                </div>
 
-        }
+                <div class="stock">
+                    Stock:
+                    ${product.stock}
+                </div>
 
-        const result = await pool.query(`
+                <br>
 
-            INSERT INTO users
-            (full_name, phone, email, role)
+                <button
+                    class="buy"
+                    onclick="addToCart(${product.id})">
 
-            VALUES ($1,$2,$3,$4)
+                    Add to Cart
 
-            RETURNING id, full_name, phone, email, role
+                </button>
 
-        `, [
-            full_name,
-            phone,
-            email || null,
-            role
-        ]);
+            </div>
+        `;
 
-        res.status(201).json({
-
-            success: true,
-
-            user: result.rows[0]
-
-        });
-
-    } catch (error) {
-
-        res.status(500).json({
-
-            error: error.message
-
-        });
-
-    }
-
-});
-
-/* =========================================================
-ADD PRODUCT
-========================================================= */
-
-app.post("/api/products", async (req, res) => {
-
-    try {
-
-        const {
-            seller_id,
-            name,
-            description,
-            category,
-            price_ugx,
-            stock_quantity,
-            image_url
-        } = req.body;
-
-        if (
-            !seller_id ||
-            !name ||
-            !category ||
-            price_ugx === undefined
-        ) {
-
-            return res.status(400).json({
-
-                error: "Required product information missing."
-
-            });
-
-        }
-
-        const result = await pool.query(`
-
-            INSERT INTO products
-            (
-                seller_id,
-                name,
-                description,
-                category,
-                price_ugx,
-                stock_quantity,
-                image_url
-            )
-
-            VALUES
-            ($1,$2,$3,$4,$5,$6,$7)
-
-            RETURNING *
-
-        `, [
-
-            seller_id,
-            name,
-            description || null,
-            category,
-            price_ugx,
-            stock_quantity || 0,
-            image_url || null
-
-        ]);
-
-        res.status(201).json({
-
-            success: true,
-
-            product: result.rows[0]
-
-        });
-
-    } catch (error) {
-
-        res.status(500).json({
-
-            error: error.message
-
-        });
-
-    }
-
-});
-
-/* =========================================================
-LIST PRODUCTS
-========================================================= */
-
-app.get("/api/products", async (req, res) => {
-
-    try {
-
-        const result = await pool.query(`
-
-            SELECT
-                p.*,
-                s.shop_name
-
-            FROM products p
-
-            LEFT JOIN seller_profiles s
-                ON s.user_id = p.seller_id
-
-            WHERE p.is_active = TRUE
-
-            ORDER BY p.created_at DESC
-
-        `);
-
-        res.json({
-
-            success: true,
-
-            count: result.rows.length,
-
-            products: result.rows
-
-        });
-
-    } catch (error) {
-
-        res.status(500).json({
-
-            error: error.message
-
-        });
-
-    }
-
-});
-
-/* =========================================================
-CREATE ORDER
-========================================================= */
-
-app.post("/api/orders", async (req, res) => {
-
-    const client = await pool.connect();
-
-    try {
-
-        const {
-            buyer_id,
-            items,
-            delivery_fee_ugx
-        } = req.body;
-
-        if (
-            !buyer_id ||
-            !Array.isArray(items) ||
-            items.length === 0
-        ) {
-
-            return res.status(400).json({
-
-                error: "Buyer and order items are required."
-
-            });
-
-        }
-
-        await client.query("BEGIN");
-
-        let subtotal = 0;
-
-        const orderItems = [];
-
-        for (const item of items) {
-
-            const productResult =
-                await client.query(`
-
-                SELECT *
-
-                FROM products
-
-                WHERE id = $1
-
-                AND is_active = TRUE
-
-                FOR UPDATE
-
-            `, [item.product_id]);
-
-            if (productResult.rows.length === 0) {
-
-                throw new Error(
-                    "Product not found."
-                );
-
-            }
-
-            const product = productResult.rows[0];
-
-            const quantity =
-                Number(item.quantity);
-
-            if (
-                !Number.isInteger(quantity) ||
-                quantity <= 0
-            ) {
-
-                throw new Error(
-                    "Invalid quantity."
-                );
-
-            }
-
-            if (
-                product.stock_quantity < quantity
-            ) {
-
-                throw new Error(
-                    `Insufficient stock for ${product.name}`
-                );
-
-            }
-
-            const lineTotal =
-                Number(product.price_ugx) *
-                quantity;
-
-            subtotal += lineTotal;
-
-            orderItems.push({
-
-                product,
-                quantity,
-                lineTotal
-
-            });
-
-            await client.query(`
-
-                UPDATE products
-
-                SET stock_quantity =
-                    stock_quantity - $1,
-
-                    updated_at = NOW()
-
-                WHERE id = $2
-
-            `, [
-                quantity,
-                product.id
-            ]);
-
-        }
-
-        const delivery =
-            Number(delivery_fee_ugx || 0);
-
-        const total =
-            subtotal + delivery;
-
-        const orderNumber =
-            "KM-" +
-            Date.now() +
-            "-" +
-            crypto.randomBytes(3)
-                .toString("hex")
-                .toUpperCase();
-
-        const orderResult =
-            await client.query(`
-
-            INSERT INTO orders
-            (
-                order_number,
-                buyer_id,
-                subtotal_ugx,
-                delivery_fee_ugx,
-                total_ugx,
-                status
-            )
-
-            VALUES
-            ($1,$2,$3,$4,$5,'PAYMENT_PENDING')
-
-            RETURNING *
-
-        `, [
-
-            orderNumber,
-            buyer_id,
-            subtotal,
-            delivery,
-            total
-
-        ]);
-
-        const order =
-            orderResult.rows[0];
-
-        for (const item of orderItems) {
-
-            await client.query(`
-
-                INSERT INTO order_items
-                (
-                    order_id,
-                    product_id,
-                    seller_id,
-                    product_name_snapshot,
-                    unit_price_ugx,
-                    quantity,
-                    line_total_ugx
-                )
-
-                VALUES
-                ($1,$2,$3,$4,$5,$6,$7)
-
-            `, [
-
-                order.id,
-
-                item.product.id,
-
-                item.product.seller_id,
-
-                item.product.name,
-
-                item.product.price_ugx,
-
-                item.quantity,
-
-                item.lineTotal
-
-            ]);
-
-        }
-
-        await client.query(`
-
-            INSERT INTO audit_logs
-            (
-                event_type,
-                entity_type,
-                entity_id,
-                event_data
-            )
-
-            VALUES
-            (
-                'ORDER_CREATED',
-                'ORDER',
-                $1,
-                $2
-            )
-
-        `, [
-
-            order.id,
-
-            JSON.stringify({
-
-                order_number:
-                    order.order_number,
-
-                total_ugx:
-                    total
-
-            })
-
-        ]);
-
-        await client.query("COMMIT");
-
-        res.status(201).json({
-
-            success: true,
-
-            order
-
-        });
-
-    } catch (error) {
-
-        await client.query("ROLLBACK");
-
-        res.status(500).json({
-
-            error: error.message
-
-        });
-
-    } finally {
-
-        client.release();
-
-    }
-
-});
-
-/* =========================================================
-CREATE PAYMENT REQUEST
-=========================================================
-
-This creates a pending payment record.
-
-It does NOT process the real MTN/Airtel payment yet.
-========================================================= */
-
-app.post("/api/payments/request", async (req, res) => {
-
-    try {
-
-        const {
-            order_id,
-            provider,
-            payer_phone
-        } = req.body;
-
-        if (
-            !order_id ||
-            !provider ||
-            !payer_phone
-        ) {
-
-            return res.status(400).json({
-
-                error:
-                    "Order, provider and phone are required."
-
-            });
-
-        }
-
-        if (
-            !["MTN", "AIRTEL"]
-                .includes(provider)
-        ) {
-
-            return res.status(400).json({
-
-                error:
-                    "Provider must be MTN or AIRTEL."
-
-            });
-
-        }
-
-        const orderResult =
-            await pool.query(`
-
-            SELECT *
-
-            FROM orders
-
-            WHERE id = $1
-
-        `, [order_id]);
-
-        if (orderResult.rows.length === 0) {
-
-            return res.status(404).json({
-
-                error: "Order not found."
-
-            });
-
-        }
-
-        const order = orderResult.rows[0];
-
-        const result =
-            await pool.query(`
-
-            INSERT INTO payments
-            (
-                order_id,
-                provider,
-                payer_phone,
-                amount_ugx,
-                status
-            )
-
-            VALUES
-            ($1,$2,$3,$4,'PENDING')
-
-            RETURNING id, order_id,
-                      provider,
-                      amount_ugx,
-                      status,
-                      created_at
-
-        `, [
-
-            order_id,
-            provider,
-            payer_phone,
-            order.total_ugx
-
-        ]);
-
-        res.status(201).json({
-
-            success: true,
-
-            payment:
-                result.rows[0],
-
-            message:
-                "Payment request created. Provider integration required."
-
-        });
-
-    } catch (error) {
-
-        res.status(500).json({
-
-            error: error.message
-
-        });
-
-    }
-
-});
-
-/* =========================================================
-PAYMENT CONFIRMATION
-=========================================================
-
-This endpoint represents the provider callback.
-
-In production, it must verify the provider signature/
-credentials before accepting the notification.
-========================================================= */
-
-app.post("/api/payments/webhook", async (req, res) => {
-
-    const client = await pool.connect();
-
-    try {
-
-        const {
-
-            provider,
-            provider_event_id,
-            provider_transaction_id,
-            payment_id,
-            status
-
-        } = req.body;
-
-        if (
-            !provider ||
-            !provider_event_id ||
-            !payment_id ||
-            !status
-        ) {
-
-            return res.status(400).json({
-
-                error: "Invalid webhook."
-
-            });
-
-        }
-
-        await client.query("BEGIN");
-
-        const existing =
-            await client.query(`
-
-            SELECT id
-
-            FROM payment_webhook_events
-
-            WHERE provider = $1
-
-            AND provider_event_id = $2
-
-            FOR UPDATE
-
-        `, [
-
-            provider,
-            provider_event_id
-
-        ]);
-
-        if (existing.rows.length > 0) {
-
-            await client.query("COMMIT");
-
-            return res.json({
-
-                success: true,
-
-                message:
-                    "Webhook already processed."
-
-            });
-
-        }
-
-        await client.query(`
-
-            INSERT INTO payment_webhook_events
-            (
-                provider,
-                provider_event_id,
-                payload
-            )
-
-            VALUES
-            ($1,$2,$3)
-
-        `, [
-
-            provider,
-            provider_event_id,
-            JSON.stringify(req.body)
-
-        ]);
-
-        const paymentResult =
-            await client.query(`
-
-            SELECT *
-
-            FROM payments
-
-            WHERE id = $1
-
-            FOR UPDATE
-
-        `, [payment_id]);
-
-        if (paymentResult.rows.length === 0) {
-
-            throw new Error(
-                "Payment not found."
-            );
-
-        }
-
-        const payment =
-            paymentResult.rows[0];
-
-        /*
-        In production:
-        verify the provider response first.
-        */
-
-        if (status !== "SUCCESSFUL") {
-
-            await client.query(`
-
-                UPDATE payments
-
-                SET status = 'FAILED'
-
-                WHERE id = $1
-
-            `, [payment_id]);
-
-            await client.query("COMMIT");
-
-            return res.json({
-
-                success: true,
-
-                payment_status: "FAILED"
-
-            });
-
-        }
-
-        /*
-        Prevent processing a successful
-        payment twice.
-        */
-
-        if (payment.status === "SUCCESSFUL") {
-
-            await client.query("COMMIT");
-
-            return res.json({
-
-                success: true,
-
-                message:
-                    "Payment already successful."
-
-            });
-
-        }
-
-        /*
-        Mark payment successful.
-        */
-
-        await client.query(`
-
-            UPDATE payments
-
-            SET
-                status = 'SUCCESSFUL',
-
-                provider_transaction_id = $1,
-
-                paid_at = NOW()
-
-            WHERE id = $2
-
-        `, [
-
-            provider_transaction_id || null,
-
-            payment_id
-
-        ]);
-
-        /*
-        IMPORTANT:
-
-        Commission is based on the verified
-        product/order value, not the delivery fee.
-        */
-
-        const orderResult =
-            await client.query(`
-
-            SELECT *
-
-            FROM orders
-
-            WHERE id = $1
-
-            FOR UPDATE
-
-        `, [payment.order_id]);
-
-        const order =
-            orderResult.rows[0];
-
-        const grossAmount =
-            Number(order.subtotal_ugx);
-
-        const commission =
-            Math.round(
-                grossAmount * COMMISSION_RATE
-            );
-
-        const sellerAmount =
-            grossAmount - commission;
-
-        /*
-        Create commission record.
-        */
-
-        await client.query(`
-
-            INSERT INTO commission_ledger
-            (
-                payment_id,
-                order_id,
-                gross_order_value_ugx,
-                commission_rate,
-                commission_amount_ugx,
-                status
-            )
-
-            VALUES
-            ($1,$2,$3,$4,$5,'EARNED')
-
-            ON CONFLICT(payment_id)
-            DO NOTHING
-
-        `, [
-
-            payment_id,
-
-            order.id,
-
-            grossAmount,
-
-            COMMISSION_RATE,
-
-            commission
-
-        ]);
-
-        /*
-        Update order.
-        */
-
-        await client.query(`
-
-            UPDATE orders
-
-            SET
-                status = 'PAID',
-
-                updated_at = NOW()
-
-            WHERE id = $1
-
-        `, [order.id]);
-
-        /*
-        Create seller settlement records.
-        */
-
-        const sellers =
-            await client.query(`
-
-            SELECT
-                seller_id,
-                SUM(line_total_ugx) AS seller_gross
-
-            FROM order_items
-
-            WHERE order_id = $1
-
-            GROUP BY seller_id
-
-        `, [order.id]);
-
-        for (const seller of sellers.rows) {
-
-            const sellerGross =
-                Number(seller.seller_gross);
-
-            /*
-            Allocate the 5% commission
-            proportionally across sellers.
-            */
-
-            const sellerCommission =
-                Math.round(
-                    sellerGross *
-                    COMMISSION_RATE
-                );
-
-            const sellerNet =
-                sellerGross -
-                sellerCommission;
-
-            await client.query(`
-
-                INSERT INTO seller_settlements
-                (
-                    seller_id,
-                    order_id,
-                    payment_id,
-                    gross_amount_ugx,
-                    commission_amount_ugx,
-                    seller_amount_ugx,
-                    status
-                )
-
-                VALUES
-                ($1,$2,$3,$4,$5,$6,'PENDING')
-
-            `, [
-
-                seller.seller_id,
-
-                order.id,
-
-                payment_id,
-
-                sellerGross,
-
-                sellerCommission,
-
-                sellerNet
-
-            ]);
-
-        }
-
-        /*
-        Audit record.
-        */
-
-        await client.query(`
-
-            INSERT INTO audit_logs
-            (
-                event_type,
-                entity_type,
-                entity_id,
-                event_data
-            )
-
-            VALUES
-            (
-                'PAYMENT_SUCCESSFUL',
-                'PAYMENT',
-                $1,
-                $2
-            )
-
-        `, [
-
-            payment_id,
-
-            JSON.stringify({
-
-                order_id:
-                    order.id,
-
-                gross_order_value:
-                    grossAmount,
-
-                commission:
-                    commission,
-
-                seller_amount:
-                    sellerAmount
-
-            })
-
-        ]);
-
-        await client.query(`
-
-            UPDATE payment_webhook_events
-
-            SET
-                processed = TRUE,
-
-                processed_at = NOW()
-
-            WHERE provider = $1
-
-            AND provider_event_id = $2
-
-        `, [
-
-            provider,
-
-            provider_event_id
-
-        ]);
-
-        await client.query("COMMIT");
-
-        res.json({
-
-            success: true,
-
-            message:
-                "Payment processed successfully.",
-
-            transaction: {
-
-                order_id:
-                    order.id,
-
-                gross_order_value_ugx:
-                    grossAmount,
-
-                kisakye_commission_ugx:
-                    commission,
-
-                seller_amount_ugx:
-                    sellerAmount
-
-            }
-
-        });
-
-    } catch (error) {
-
-        await client.query("ROLLBACK");
-
-        res.status(500).json({
-
-            error: error.message
-
-        });
-
-    } finally {
-
-        client.release();
-
-    }
-
-});
-
-/* =========================================================
-ADMIN FINANCIAL DASHBOARD
-========================================================= */
-
-app.get("/api/admin/financial-summary", async (req, res) => {
-
-    try {
-
-        const result =
-            await pool.query(`
-
-            SELECT
-
-                COUNT(*) AS transactions,
-
-                COALESCE(
-                    SUM(gross_order_value_ugx),
-                    0
-                ) AS total_sales,
-
-                COALESCE(
-                    SUM(commission_amount_ugx),
-                    0
-                ) AS kisakye_commission
-
-            FROM commission_ledger
-
-            WHERE status IN
-            ('EARNED','SETTLED')
-
-        `);
-
-        const sellers =
-            await pool.query(`
-
-            SELECT
-
-                COALESCE(
-                    SUM(seller_amount_ugx),
-                    0
-                ) AS seller_settlements
-
-            FROM seller_settlements
-
-            WHERE status IN
-            ('PENDING','PROCESSING','PAID')
-
-        `);
-
-        res.json({
-
-            success: true,
-
-            financial_summary: {
-
-                transactions:
-                    Number(
-                        result.rows[0].transactions
-                    ),
-
-                total_sales_ugx:
-                    Number(
-                        result.rows[0].total_sales
-                    ),
-
-                kisakye_commission_ugx:
-                    Number(
-                        result.rows[0].kisakye_commission
-                    ),
-
-                seller_settlements_ugx:
-                    Number(
-                        sellers.rows[0]
-                            .seller_settlements
-                    )
-
-            }
-
-        });
-
-    } catch (error) {
-
-        res.status(500).json({
-
-            error: error.message
-
-        });
-
-    }
-
-});
-
-/* =========================================================
-TRANSACTION HISTORY
-========================================================= */
-
-app.get("/api/admin/transactions", async (req, res) => {
-
-    try {
-
-        const result =
-            await pool.query(`
-
-            SELECT
-
-                p.id AS payment_id,
-
-                p.provider,
-
-                p.provider_transaction_id,
-
-                p.amount_ugx,
-
-                p.status AS payment_status,
-
-                p.paid_at,
-
-                o.order_number,
-
-                c.commission_amount_ugx
-
-            FROM payments p
-
-            JOIN orders o
-                ON o.id = p.order_id
-
-            LEFT JOIN commission_ledger c
-                ON c.payment_id = p.id
-
-            ORDER BY p.created_at DESC
-
-            `);
-
-        res.json({
-
-            success: true,
-
-            transactions:
-                result.rows
-
-        });
-
-    } catch (error) {
-
-        res.status(500).json({
-
-            error: error.message
-
-        });
-
-    }
-
-});
-
-/* =========================================================
-START SERVER
-========================================================= */
-
-async function startServer() {
-
-    try {
-
-        await setupDatabase();
-
-        app.listen(PORT, () => {
-
-            console.log(
-                "===================================="
-            );
-
-            console.log(
-                "KISAKYE MART FMCG BACKEND"
-            );
-
-            console.log(
-                `Server: http://localhost:${PORT}`
-            );
-
-            console.log(
-                "Commission: 5%"
-            );
-
-            console.log(
-                "Currency: UGX"
-            );
-
-            console.log(
-                "===================================="
-            );
-
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Database startup failed:",
-            error
-        );
-
-        process.exit(1);
-
-    }
-
+        container.appendChild(card);
+    });
 }
 
-startServer();
+function addToCart(id) {
+
+    const product =
+        allProducts.find(p => p.id === id);
+
+    if (!product) return;
+
+    if (product.stock <= 0) {
+
+        alert("This product is out of stock.");
+
+        return;
+    }
+
+    cart.push(product);
+
+    document.getElementById("cartCount")
+        .textContent = cart.length;
+
+    alert(product.name + " added to cart.");
+}
+
+function filterCategory(category) {
+
+    if (category === "All") {
+
+        displayProducts(allProducts);
+
+        return;
+    }
+
+    const filtered =
+        allProducts.filter(
+            p => p.category === category
+        );
+
+    displayProducts(filtered);
+}
+
+document.getElementById("search")
+    .addEventListener("input", function() {
+
+        const value =
+            this.value.toLowerCase();
+
+        const filtered =
+            allProducts.filter(product =>
+
+                product.name
+                    .toLowerCase()
+                    .includes(value)
+
+                ||
+
+                (product.brand || "")
+                    .toLowerCase()
+                    .includes(value)
+
+                ||
+
+                product.category
+                    .toLowerCase()
+                    .includes(value)
+            );
+
+        displayProducts(filtered);
+    });
+
+loadProducts();
+
+</script>
+
+</body>
+</html>
