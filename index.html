@@ -1,86 +1,1070 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kisakye Mart FMCG - 50 Products - Both Numbers</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><style>:root{--green:#0B8A3E;--orange:#F59E0B;--light:#F3F4F6}*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}body{background:var(--light)}.screen{display:none;min-height:100vh;background:var(--light);padding-bottom:80px}.screen.active{display:flex;flex-direction:column}.btn-green{background:var(--green);color:#fff;border:none;padding:14px;border-radius:12px;font-weight:600;width:100%}.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-around;padding:8px 0 12px;z-index:99}.bottom-nav button{border:none;background:none;color:#9ca3af;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px}.bottom-nav button.active{color:var(--green)}.bottom-nav i{font-size:20px}.header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #f0f0f0}.banner{background:linear-gradient(135deg,#0B8A3E 0%,#16a34a 100%);margin:12px;border-radius:18px;padding:16px;color:#fff;display:flex;justify-content:space-between;align-items:center}.search{background:#fff;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin:0 16px;box-shadow:0 1px 3px rgba(0,0,0,.1)}.search input{border:none;background:none;flex:1;outline:none;font-size:14px}.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:16px}.cat-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:22px}.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px}.prod-card{background:#fff;border-radius:16px;padding:10px;border:1px solid #f0f0f0}.prod-card img{width:100%;height:110px;object-fit:cover;border-radius:12px}.add-btn{background:#f0fdf4;border:1px solid var(--green);color:var(--green);padding:6px;border-radius:8px;width:100%;margin-top:6px;font-weight:600;font-size:12px}.input{width:100%;padding:13px;border:1.5px solid #e5e7eb;border-radius:12px;margin:8px 0;outline:none;background:#fff}.card{background:#fff;border-radius:16px;padding:16px;margin:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}.money-box{background:linear-gradient(135deg,#0B8A3E,#22C55E);color:#fff;border-radius:16px;padding:16px;margin:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center}.money-box b{font-size:18px;display:block}.owner-item{background:#fff;padding:10px;margin:6px 0;border-radius:10px;display:flex;gap:8px;align-items:center;border-left:4px solid var(--green)}.splash{background:var(--green);justify-content:center;align-items:center;color:#fff;text-align:center;min-height:100vh}</style></head><body>
-<div id="splash" class="screen active splash"><div><div style="font-size:70px;font-weight:800">K<span style="color:var(--orange)">J</span> 🛒</div><h2>KISAKYE MART<br><span style="font-size:12px;letter-spacing:3px">BOTH NUMBERS - 50 PRODUCTS</span></h2><p style="margin-top:20px"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</p></div></div>
-<div id="home" class="screen"><div class="header"><div><p style="font-size:11px;color:#6b7280"><i class="fa-solid fa-location-dot"></i> Deliver to</p><b style="font-size:13px">Kampala, Uganda</b></div><div onclick="showScreen('cart')" style="position:relative"><i class="fa-solid fa-cart-shopping"></i><span id="cartBadge" style="background:var(--orange);color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;position:absolute;top:-8px;right:-10px">0</span></div></div><div class="search"><i class="fa-solid fa-magnifying-glass" style="color:#9ca3af"></i><input id="searchBox" placeholder="Search 50 products..." oninput="render()"></div><div class="banner"><div><h3 style="font-size:16px">50 Products<br>Both Numbers Active</h3><p style="font-size:11px">0744590988 • 0774360584</p></div><div style="font-size:40px">💰</div></div><div class="cat-grid"><div class="cat-item" onclick="filterCat('all')"><div class="cat-icon" style="background:#dcfce7;color:var(--green)"><i class="fa-solid fa-border-all"></i></div>All 50</div><div class="cat-item" onclick="filterCat('Beverages')"><div class="cat-icon" style="background:#fef3c7">🥤</div>Beverages</div><div class="cat-item" onclick="filterCat('Grocery')"><div class="cat-icon" style="background:#fee2e2">🛒</div>Grocery</div><div class="cat-item" onclick="filterCat('Personal')"><div class="cat-icon" style="background:#fce7f3">🧴</div>Personal</div><div class="cat-item" onclick="filterCat('Home')"><div class="cat-icon" style="background:#dbeafe">🧹</div>Home</div></div><div style="display:flex;justify-content:space-between;padding:0 16px;margin:8px 0"><b>Products - <span id="prodCount">50</span></b><span style="color:var(--green);font-size:12px" onclick="showScreen('add')">+ Add</span></div><div id="prodSection" class="prod-grid"></div><div class="bottom-nav"><button class="active"><i class="fa-solid fa-house"></i>Home</button><button onclick="showScreen('seller')"><i class="fa-solid fa-chart-line"></i>Seller</button><button onclick="showScreen('add')"><i class="fa-solid fa-plus"></i>Add</button><button onclick="showScreen('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button onclick="showScreen('account')"><i class="fa-regular fa-user"></i>Money</button></div></div>
-<div id="seller" class="screen"><div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')"></i><b>🔐 Seller Dashboard</b><span></span></div><div class="card" id="ownerLogin"><h3>Enter Owner PIN</h3><p style="font-size:12px;color:#6b7280">PIN = 7445</p><input id="ownerPin" class="input" type="password" placeholder="Enter PIN 7445"><button class="btn-green" onclick="unlockOwner()">Unlock Dashboard</button></div><div id="ownerControls" style="display:none"><div class="money-box"><div><small>Sales</small><b id="sales">UGX 0</b></div><div><small>Profit 5%</small><b id="profit">UGX 0</b></div><div><small>Orders</small><b id="orderCount">0</b></div></div><div class="card"><h3>📦 Manage Products - Both Numbers</h3><div id="manageList"></div><button class="btn-green" style="background:#dc2626;margin-top:10px" onclick="resetShop()">Reset to 50 Default</button> <button class="btn-green" style="background:#333;margin-top:6px" onclick="lockOwner()">Lock</button></div><div class="card"><h3>🧾 Orders - Money In</h3><div id="orders">No orders yet</div></div></div></div>
-<div id="add" class="screen"><div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')"></i><b>📸 Add Product</b><span></span></div><div class="card"><h3>Upload New Item - Camera</h3><input id="pname" class="input" placeholder="Product Name"><input id="pprice" type="number" class="input" placeholder="Price UGX"><select id="pcat" class="input"><option value="Grocery">Grocery</option><option value="Beverages">Beverages</option><option value="Personal">Personal</option><option value="Home">Home Care</option></select><p style="font-size:12px;margin-top:8px">📷 Photo:</p><input type="file" id="pfile" accept="image/*" capture="environment" class="input"><img id="preview" style="width:100px;height:100px;border-radius:12px;display:none;object-fit:cover;border:2px dashed var(--green)"><p style="font-size:12px">OR Image Link:</p><input id="pimg" class="input" placeholder="https://..."><button class="btn-green" style="margin-top:12px" onclick="addProd()">➕ Add Product</button></div><div class="bottom-nav"><button onclick="showScreen('home')"><i class="fa-solid fa-house"></i>Home</button><button onclick="showScreen('seller')"><i class="fa-solid fa-chart-line"></i>Seller</button><button class="active"><i class="fa-solid fa-plus"></i>Add</button><button onclick="showScreen('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button onclick="showScreen('account')"><i class="fa-regular fa-user"></i>Money</button></div></div>
-<div id="cart" class="screen"><div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')"></i><b>Cart (<span id="cartCount2">0</span>)</b><span></span></div><div id="cartList" style="padding:16px"></div><div class="card"><div style="display:flex;justify-content:space-between;font-size:13px;margin:6px 0"><span>Subtotal</span><b id="subtotal">UGX 0</b></div><div style="display:flex;justify-content:space-between;font-size:13px;margin:6px 0"><span>Delivery</span><span>UGX 3,000</span></div><div style="display:flex;justify-content:space-between;font-size:13px;margin:6px 0"><span>Service 5%</span><span id="serviceFee">UGX 0</span></div><hr style="margin:10px 0"><div style="display:flex;justify-content:space-between;font-weight:700"><span>Total Real Money</span><span id="totalPrice">UGX 0</span></div><input id="custName" class="input" placeholder="Your Name"><input id="custPhone" class="input" placeholder="Phone 07..."><button class="btn-green" style="margin-top:10px" onclick="placeOrder()">Place Order - Send to BOTH Numbers</button><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><button style="background:#25D366;color:#fff;border:none;padding:12px;border-radius:10px;font-weight:700;font-size:12px" onclick="window.open(`https://wa.me/${WA}?text=${lastMsg||'Hello Kisakye Mart - Order'}`, '_blank')"><i class="fa-brands fa-whatsapp"></i> 0744590988</button><button style="background:#075E54;color:#fff;border:none;padding:12px;border-radius:10px;font-weight:700;font-size:12px" onclick="window.open(`https://wa.me/${WA2}?text=${lastMsg||'Hello Kisakye Mart - Order'}`, '_blank')"><i class="fa-brands fa-whatsapp"></i> 0774360584</button></div><p style="text-align:center;font-size:11px;color:#6b7280;margin-top:8px">Both numbers will receive the same order</p></div></div>
-<div id="account" class="screen"><div class="header"><b>💰 Money Monitor - Both Numbers</b></div><div class="money-box"><div><small>Total Sales</small><b id="sales2">UGX 0</b></div><div><small>Your Profit</small><b id="profit2">UGX 0</b></div><div><small>Orders</small><b id="orderCount2">0</b></div></div><div class="card"><h3>Both WhatsApp Numbers Active:</h3><p style="font-size:14px;margin:10px 0"><i class="fa-brands fa-whatsapp" style="color:#25D366"></i> <b>0744590988</b> - Primary<br><i class="fa-brands fa-whatsapp" style="color:#075E54"></i> <b>0774360584</b> - Secondary<br><br>Every order sends to BOTH numbers automatically!<br><br>✅ Sales = Total money from orders<br>✅ Profit = 5% of Sales<br>✅ Orders = Count</p><button class="btn-green" onclick="showScreen('seller')">Go to Seller Dashboard</button></div><div class="bottom-nav"><button onclick="showScreen('home')"><i class="fa-solid fa-house"></i>Home</button><button onclick="showScreen('seller')"><i class="fa-solid fa-chart-line"></i>Seller</button><button onclick="showScreen('add')"><i class="fa-solid fa-plus"></i>Add</button><button onclick="showScreen('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button class="active"><i class="fa-regular fa-user"></i>Money</button></div></div>
-<div id="success" class="screen" style="justify-content:center;align-items:center;text-align:center;background:#fff"><div style="width:80px;height:80px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;color:#fff;font-size:40px">✓</div><h2 style="margin-top:20px">Order Placed!</h2><p style="color:#6b7280;font-size:13px;margin:12px 0">Money added to dashboard</p><div style="background:var(--light);padding:12px 20px;border-radius:12px;margin:20px 0"><p style="font-size:12px">Order ID</p><b id="orderId">KM123456</b></div><button class="btn-green" onclick="trackBoth()">📱 Send to BOTH WhatsApp Numbers</button><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;width:100%;max-width:300px"><button style="background:#25D366;color:#fff;border:none;padding:12px;border-radius:10px;font-weight:700" onclick="trackWhatsApp()">0744590988</button><button style="background:#075E54;color:#fff;border:none;padding:12px;border-radius:10px;font-weight:700" onclick="trackWhatsApp2()">0774360584</button></div><button class="btn-green" style="background:#fff;color:var(--green);border:1.5px solid var(--green);margin-top:10px" onclick="showScreen('home')">Continue Shopping</button></div>
+Yes. Here is the complete Stage 1 HTML code for the Kisakye Mart FMCG marketplace, with an expanded FMCG catalogue and the ability to add unlimited products.
+Replace your current HTML with this:
+Writing
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kisakye Mart FMCG</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f5f6f8;
+    color: #222;
+}
+
+header {
+    background: #087f23;
+    color: white;
+    padding: 18px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header h1 {
+    font-size: 25px;
+}
+
+header p {
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.search-box {
+    margin: 15px 0;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.categories {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.categories button {
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background: white;
+    color: #087f23;
+    border: 1px solid #087f23;
+    white-space: nowrap;
+}
+
+.categories button:hover {
+    background: #087f23;
+    color: white;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.product {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding-bottom: 12px;
+}
+
+.product-image {
+    height: 130px;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 45px;
+}
+
+.product-info {
+    padding: 10px;
+}
+
+.product h3 {
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.product p {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #087f23;
+}
+
+.product button,
+.main-button {
+    width: 100%;
+    border: none;
+    background: #087f23;
+    color: white;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.product button:hover,
+.main-button:hover {
+    background: #055c18;
+}
+
+.section {
+    background: white;
+    margin: 20px 0;
+    padding: 18px;
+    border-radius: 10px;
+}
+
+.section h2 {
+    color: #087f23;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.cart {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    background: #087f23;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    z-index: 200;
+}
+
+.cart-count {
+    background: red;
+    padding: 3px 7px;
+    border-radius: 50%;
+    font-size: 12px;
+}
+
+.empty {
+    text-align: center;
+    padding: 30px;
+    color: #777;
+}
+
+footer {
+    background: #222;
+    color: white;
+    padding: 25px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 500;
+    overflow-y: auto;
+}
+
+.modal-content {
+    background: white;
+    width: 92%;
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.close {
+    float: right;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.delete-btn {
+    background: #d00000;
+    color: white;
+    border: none;
+    padding: 5px 8px;
+    border-radius: 4px;
+}
+
+.total {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #087f23;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🛒 Kisakye Mart FMCG</h1>
+    <p>Your trusted FMCG marketplace — Kampala, Wakiso & Entebbe</p>
+</header>
+
+<div class="container">
+
+    <div class="search-box">
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search products..."
+            onkeyup="searchProducts()">
+    </div>
+
+    <div class="categories">
+        <button onclick="filterProducts('All')">All</button>
+        <button onclick="filterProducts('Food')">Food</button>
+        <button onclick="filterProducts('Drinks')">Drinks</button>
+        <button onclick="filterProducts('Household')">Household</button>
+        <button onclick="filterProducts('Personal Care')">Personal Care</button>
+        <button onclick="filterProducts('Baby')">Baby</button>
+        <button onclick="filterProducts('Snacks')">Snacks</button>
+        <button onclick="filterProducts('Dairy')">Dairy</button>
+        <button onclick="filterProducts('Meat')">Meat</button>
+    </div>
+
+    <div class="section">
+        <h2>Available Products</h2>
+        <div id="products" class="products"></div>
+    </div>
+
+    <div class="section">
+        <h2>➕ Seller — Add Product</h2>
+
+        <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" id="productName" placeholder="e.g. Sugar 1kg">
+        </div>
+
+        <div class="form-group">
+            <label>Price (UGX)</label>
+            <input type="number" id="productPrice" placeholder="e.g. 5000">
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            <select id="productCategory">
+                <option>Food</option>
+                <option>Drinks</option>
+                <option>Household</option>
+                <option>Personal Care</option>
+                <option>Baby</option>
+                <option>Snacks</option>
+                <option>Dairy</option>
+                <option>Meat</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Seller / Shop Name</label>
+            <input type="text" id="sellerName" placeholder="Your shop name">
+        </div>
+
+        <div class="form-group">
+            <label>Product Image URL</label>
+            <input type="text" id="productImage"
+                   placeholder="Optional image URL">
+        </div>
+
+        <button class="main-button" onclick="addProduct()">
+            Add Product
+        </button>
+    </div>
+
+</div>
+
+<div class="cart" onclick="openCart()">
+    🛒 Cart
+    <span class="cart-count" id="cartCount">0</span>
+</div>
+
+<div class="modal" id="cartModal">
+    <div class="modal-content">
+
+        <span class="close" onclick="closeCart()">&times;</span>
+
+        <h2>🛒 Your Cart</h2>
+
+        <div id="cartItems"></div>
+
+        <div class="total">
+            Total: UGX <span id="cartTotal">0</span>
+        </div>
+
+        <button class="main-button" onclick="checkout()">
+            Proceed to Checkout
+        </button>
+
+    </div>
+</div>
+
+<footer>
+    <p><strong>Kisakye Mart FMCG</strong></p>
+    <p>Connecting buyers and sellers across Uganda.</p>
+    <p>© 2026 Kisakye Mart FMCG</p>
+</footer>
+
 <script>
-let WA="256744590988";let WA2="256774360584";let OWNER_PIN="7445";
-let defaultProds=[
-{name:"Posho Maize Meal 2kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
-{name:"Coca Cola 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
-{name:"Royal Cooking Oil 2L",price:13000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
-{name:"Sugar 1kg",price:5500,cat:"Grocery",img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
-{name:"Rice 1kg",price:4500,cat:"Grocery",img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=400"},
-{name:"Matooke Bunch",price:20000,cat:"Grocery",img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
-{name:"Tomatoes 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
-{name:"Bread Loaf",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"},
-{name:"Milk 500ml",price:2500,cat:"Beverages",img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
-{name:"Eggs Tray",price:15000,cat:"Grocery",img:"https://images.unsplash.com/photo-1488679831987-9564a7c76c7b?w=400"},
-{name:"Jik Bleach 1L",price:3500,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
-{name:"Kakira Sugar 50kg",price:160000,cat:"Grocery",img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
-{name:"Nescafe 100g",price:15000,cat:"Beverages",img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400"},
-{name:"Sunseed Oil 1L",price:11000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
-{name:"BBQ Sauce",price:15000,cat:"Grocery",img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
-{name:"Avocado 1pc",price:500,cat:"Grocery",img:"https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?w=400"},
-{name:"Mangoes 1kg",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1553279768-865429fa0078?w=400"},
-{name:"Omo 500g",price:4000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
-{name:"Toothpaste",price:3000,cat:"Personal",img:"https://images.unsplash.com/photo-1559671088-5ef93d3b0e5e?w=400"},
-{name:"Soda Fanta 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
-{name:"Cooking Oil 1L",price:7500,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
-{name:"Cassava Flour 1kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
-{name:"Sweet Potatoes 1kg",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1518977676608-bd36c2ca4f0d?w=400"},
-{name:"Watermelon 1pc",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?w=400"},
-{name:"Pineapple 1pc",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1550254478-ead40cc54513?w=400"},
-{name:"Oranges 1kg",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=400"},
-{name:"Green Pepper 1kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=400"},
-{name:"Cabbage 1pc",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=400"},
-{name:"Carrots 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1447175008436-054170c2e979?w=400"},
-{name:"Sukuma Wiki",price:1000,cat:"Grocery",img:"https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400"},
-{name:"Nakati",price:1000,cat:"Grocery",img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400"},
-{name:"Passion Fruits 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=400"},
-{name:"Pawpaw 1pc",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1617112848923-cc2234396a8d?w=400"},
-{name:"Garlic 1kg",price:8000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
-{name:"Ginger 1kg",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
-{name:"Peas 1kg",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"},
-{name:"Ground Nuts 1kg",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=400"},
-{name:"Honey 500ml",price:12000,cat:"Grocery",img:"https://images.unsplash.com/photo-1558642084-fd43571d5462?w=400"},
-{name:"Millet Flour 1kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
-{name:"Salt 1kg",price:1500,cat:"Grocery",img:"https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=400"},
-{name:"Tea Leaves 250g",price:3500,cat:"Beverages",img:"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400"},
-{name:"Blue Band 250g",price:6500,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
-{name:"Royco 100g",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
-{name:"Bar Soap",price:3500,cat:"Home",img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
-{name:"Vaseline",price:2500,cat:"Personal",img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=400"},
-{name:"Pampers",price:25000,cat:"Personal",img:"https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400"},
-{name:"Biscuits",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400"},
-{name:"Juice 1L",price:3500,cat:"Beverages",img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400"},
-{name:"Water 1L",price:1000,cat:"Beverages",img:"https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400"},
-{name:"Charcoal Sack",price:35000,cat:"Home",img:"https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400"},
-{name:"Onions 1kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?w=400"}
+
+let products = [
+
+    /* FOOD */
+
+    {
+        id: 1,
+        name: "Sugar 1kg",
+        price: 4500,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🍚"
+    },
+
+    {
+        id: 2,
+        name: "Sugar 2kg",
+        price: 8500,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🍚"
+    },
+
+    {
+        id: 3,
+        name: "Rice 1kg",
+        price: 4000,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🍚"
+    },
+
+    {
+        id: 4,
+        name: "Rice 5kg",
+        price: 18000,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🍚"
+    },
+
+    {
+        id: 5,
+        name: "Maize Flour 1kg",
+        price: 3000,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🌽"
+    },
+
+    {
+        id: 6,
+        name: "Wheat Flour 1kg",
+        price: 4500,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🌾"
+    },
+
+    {
+        id: 7,
+        name: "Cooking Oil 1L",
+        price: 7500,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🫗"
+    },
+
+    {
+        id: 8,
+        name: "Cooking Oil 2L",
+        price: 14000,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🫗"
+    },
+
+    {
+        id: 9,
+        name: "Salt 500g",
+        price: 1500,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🧂"
+    },
+
+    {
+        id: 10,
+        name: "Beans 1kg",
+        price: 5000,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🫘"
+    },
+
+    {
+        id: 11,
+        name: "Posho 5kg",
+        price: 12000,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🌽"
+    },
+
+    {
+        id: 12,
+        name: "Spaghetti 500g",
+        price: 4000,
+        category: "Food",
+        seller: "Kisakye Mart",
+        image: "🍝"
+    },
+
+    /* DRINKS */
+
+    {
+        id: 13,
+        name: "Mineral Water 500ml",
+        price: 1000,
+        category: "Drinks",
+        seller: "Kisakye Mart",
+        image: "💧"
+    },
+
+    {
+        id: 14,
+        name: "Mineral Water 1.5L",
+        price: 2500,
+        category: "Drinks",
+        seller: "Kisakye Mart",
+        image: "💧"
+    },
+
+    {
+        id: 15,
+        name: "Soda 500ml",
+        price: 2000,
+        category: "Drinks",
+        seller: "Kisakye Mart",
+        image: "🥤"
+    },
+
+    {
+        id: 16,
+        name: "Juice 1L",
+        price: 6000,
+        category: "Drinks",
+        seller: "Kisakye Mart",
+        image: "🧃"
+    },
+
+    {
+        id: 17,
+        name: "Milk 500ml",
+        price: 2500,
+        category: "Drinks",
+        seller: "Kisakye Mart",
+        image: "🥛"
+    },
+
+    /* DAIRY */
+
+    {
+        id: 18,
+        name: "Fresh Milk 1L",
+        price: 4500,
+        category: "Dairy",
+        seller: "Kisakye Mart",
+        image: "🥛"
+    },
+
+    {
+        id: 19,
+        name: "Yoghurt 500ml",
+        price: 4000,
+        category: "Dairy",
+        seller: "Kisakye Mart",
+        image: "🥛"
+    },
+
+    {
+        id: 20,
+        name: "Margarine 500g",
+        price: 7000,
+        category: "Dairy",
+        seller: "Kisakye Mart",
+        image: "🧈"
+    },
+
+    {
+        id: 21,
+        name: "Cheese 250g",
+        price: 10000,
+        category: "Dairy",
+        seller: "Kisakye Mart",
+        image: "🧀"
+    },
+
+    /* SNACKS */
+
+    {
+        id: 22,
+        name: "Biscuits",
+        price: 3000,
+        category: "Snacks",
+        seller: "Kisakye Mart",
+        image: "🍪"
+    },
+
+    {
+        id: 23,
+        name: "Potato Crisps",
+        price: 2500,
+        category: "Snacks",
+        seller: "Kisakye Mart",
+        image: "🥔"
+    },
+
+    {
+        id: 24,
+        name: "Chocolate",
+        price: 5000,
+        category: "Snacks",
+        seller: "Kisakye Mart",
+        image: "🍫"
+    },
+
+    {
+        id: 25,
+        name: "Bread",
+        price: 5000,
+        category: "Snacks",
+        seller: "Kisakye Mart",
+        image: "🍞"
+    },
+
+    /* HOUSEHOLD */
+
+    {
+        id: 26,
+        name: "Laundry Soap",
+        price: 3000,
+        category: "Household",
+        seller: "Kisakye Mart",
+        image: "🧼"
+    },
+
+    {
+        id: 27,
+        name: "Washing Powder 1kg",
+        price: 7500,
+        category: "Household",
+        seller: "Kisakye Mart",
+        image: "🧺"
+    },
+
+    {
+        id: 28,
+        name: "Dishwashing Liquid",
+        price: 5000,
+        category: "Household",
+        seller: "Kisakye Mart",
+        image: "🧴"
+    },
+
+    {
+        id: 29,
+        name: "Toilet Cleaner",
+        price: 6000,
+        category: "Household",
+        seller: "Kisakye Mart",
+        image: "🧴"
+    },
+
+    {
+        id: 30,
+        name: "Tissue 10 Pack",
+        price: 12000,
+        category: "Household",
+        seller: "Kisakye Mart",
+        image: "🧻"
+    },
+
+    {
+        id: 31,
+        name: "Garbage Bags",
+        price: 5000,
+        category: "Household",
+        seller: "Kisakye Mart",
+        image: "🗑️"
+    },
+
+    /* PERSONAL CARE */
+
+    {
+        id: 32,
+        name: "Bathing Soap",
+        price: 2500,
+        category: "Personal Care",
+        seller: "Kisakye Mart",
+        image: "🧼"
+    },
+
+    {
+        id: 33,
+        name: "Toothpaste",
+        price: 5000,
+        category: "Personal Care",
+        seller: "Kisakye Mart",
+        image: "🪥"
+    },
+
+    {
+        id: 34,
+        name: "Toothbrush",
+        price: 2500,
+        category: "Personal Care",
+        seller: "Kisakye Mart",
+        image: "🪥"
+    },
+
+    {
+        id: 35,
+        name: "Body Lotion",
+        price: 9000,
+        category: "Personal Care",
+        seller: "Kisakye Mart",
+        image: "🧴"
+    },
+
+    {
+        id: 36,
+        name: "Shampoo",
+        price: 10000,
+        category: "Personal Care",
+        seller: "Kisakye Mart",
+        image: "🧴"
+    },
+
+    /* BABY */
+
+    {
+        id: 37,
+        name: "Baby Diapers",
+        price: 25000,
+        category: "Baby",
+        seller: "Kisakye Mart",
+        image: "👶"
+    },
+
+    {
+        id: 38,
+        name: "Baby Wipes",
+        price: 7000,
+        category: "Baby",
+        seller: "Kisakye Mart",
+        image: "🧻"
+    },
+
+    {
+        id: 39,
+        name: "Baby Powder",
+        price: 7000,
+        category: "Baby",
+        seller: "Kisakye Mart",
+        image: "👶"
+    },
+
+    {
+        id: 40,
+        name: "Baby Soap",
+        price: 5000,
+        category: "Baby",
+        seller: "Kisakye Mart",
+        image: "🧼"
+    },
+
+    /* MEAT */
+
+    {
+        id: 41,
+        name: "Fresh Chicken",
+        price: 18000,
+        category: "Meat",
+        seller: "Kisakye Mart",
+        image: "🍗"
+    },
+
+    {
+        id: 42,
+        name: "Sausages",
+        price: 12000,
+        category: "Meat",
+        seller: "Kisakye Mart",
+        image: "🌭"
+    },
+
+    {
+        id: 43,
+        name: "Beef 1kg",
+        price: 18000,
+        category: "Meat",
+        seller: "Kisakye Mart",
+        image: "🥩"
+    },
+
+    {
+        id: 44,
+        name: "Fresh Fish",
+        price: 15000,
+        category: "Meat",
+        seller: "Kisakye Mart",
+        image: "🐟"
+    }
+
 ];
-let prods=JSON.parse(localStorage.getItem('kisakye_both_final')||'null')||defaultProds;
-let cart=JSON.parse(localStorage.getItem('cart_both_final')||'[]');let sales=+localStorage.getItem('sales_both_final')||0;let allOrders=JSON.parse(localStorage.getItem('orders_both_final')||'[]');let selectedImage="";let ownerUnlocked=localStorage.getItem('ownerUnlocked_both')==='yes';let currentCat='all';let lastMsg="";
-document.getElementById('pfile')?.addEventListener('change',function(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=function(ev){selectedImage=ev.target.result;let pv=document.getElementById('preview');pv.src=selectedImage;pv.style.display='block'};r.readAsDataURL(f)});
-function saveProds(){localStorage.setItem('kisakye_both_final',JSON.stringify(prods))}function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='seller'&&ownerUnlocked){document.getElementById('ownerLogin').style.display='none';document.getElementById('ownerControls').style.display='block'}render()}
-setTimeout(()=>showScreen('home'),1200);
-function unlockOwner(){if(document.getElementById('ownerPin').value===OWNER_PIN){ownerUnlocked=true;localStorage.setItem('ownerUnlocked_both','yes');document.getElementById('ownerLogin').style.display='none';document.getElementById('ownerControls').style.display='block';render()}else alert('Wrong PIN! 7445')}
-function lockOwner(){ownerUnlocked=false;localStorage.removeItem('ownerUnlocked_both');document.getElementById('ownerLogin').style.display='block';document.getElementById('ownerControls').style.display='none'}
-function render(){let grid=document.getElementById('prodSection');if(!grid)return;grid.innerHTML='';let q=(document.getElementById('searchBox')?.value||'').toLowerCase();let list=prods.filter(p=>{let okCat=currentCat==='all'||p.cat===currentCat;let okQ=!q||p.name.toLowerCase().includes(q);return okCat&&okQ});document.getElementById('prodCount').innerText=list.length;list.forEach(p=>{let realIdx=prods.indexOf(p);grid.innerHTML+=`<div class="prod-card"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/200'"><h4>${p.name}</h4><div style="display:flex;justify-content:space-between"><span style="color:var(--green);font-weight:700;font-size:12px">UGX ${p.price.toLocaleString()}</span><span style="font-size:9px;background:#dcfce7;color:var(--green);padding:2px 6px;border-radius:10px">${p.cat}</span></div><button class="add-btn" onclick="addToCart(${realIdx})">Add to Cart</button></div>`});let ml=document.getElementById('manageList');if(ownerUnlocked&&ml){ml.innerHTML='';prods.forEach((p,i)=>{ml.innerHTML+=`<div class="owner-item"><img src="${p.img}" style="width:50px;height:50px;border-radius:8px;object-fit:cover"><div style="flex:1"><b style="font-size:12px">${p.name}</b><br><small>UGX ${p.price}</small></div><div><input type="file" id="ch-${i}" accept="image/*" style="display:none" onchange="changePhoto(${i},this)"><button style="background:#0066ff;color:#fff;border:none;padding:5px 8px;border-radius:6px;font-size:11px" onclick="document.getElementById('ch-${i}').click()">📸</button> <button style="background:red;color:#fff;border:none;padding:5px 8px;border-radius:6px;font-size:11px" onclick="deleteProd(${i})">X</button></div></div>`})}let od=document.getElementById('orders');if(od){od.innerHTML=allOrders.length?'':'No orders yet';allOrders.slice().reverse().slice(0,20).forEach(o=>{od.innerHTML+=`<div style="background:#f0fdf4;border-left:4px solid var(--green);padding:8px;margin:6px 0;border-radius:8px;font-size:12px"><b>${o.name}</b> ${o.phone}<br>${o.items.join(', ')}<br><b>UGX ${o.total.toLocaleString()}</b> - ${o.time}<br><small>Sent to both: ${o.wa1} & ${o.wa2}</small></div>`})}document.getElementById('sales').innerText='UGX '+sales.toLocaleString();document.getElementById('profit').innerText='UGX '+Math.round(sales*0.05).toLocaleString();document.getElementById('orderCount').innerText=allOrders.length;document.getElementById('sales2').innerText='UGX '+sales.toLocaleString();document.getElementById('profit2').innerText='UGX '+Math.round(sales*0.05).toLocaleString();document.getElementById('orderCount2').innerText=allOrders.length;renderCart()}
-function filterCat(c){currentCat=c;render()}
-function renderCart(){let list=document.getElementById('cartList');if(!list)return;list.innerHTML=cart.length?'':'<p style="text-align:center;color:#888">Cart empty</p>';let sub=0;cart.forEach((c,idx)=>{sub+=c.price;list.innerHTML+=`<div style="background:#fff;border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;margin-bottom:10px"><img src="${c.img}" style="width:60px;height:60px;border-radius:10px;object-fit:cover"><div style="flex:1"><b style="font-size:13px">${c.name}</b><br><span style="color:var(--green);font-weight:600;font-size:13px">UGX ${c.price.toLocaleString()}</span></div><i class="fa-solid fa-xmark" onclick="cart.splice(${idx},1);saveCart();render()"></i></div>`});let fee=Math.round(sub*0.05);let total=sub+3000+fee;let el1=document.getElementById('subtotal');if(el1)el1.innerText='UGX '+sub.toLocaleString();let el2=document.getElementById('serviceFee');if(el2)el2.innerText='UGX '+fee.toLocaleString();let el3=document.getElementById('totalPrice');if(el3)el3.innerText='UGX '+total.toLocaleString();document.getElementById('cartBadge').innerText=cart.length;document.getElementById('cartCount2').innerText=cart.length;window._total=total;saveCart()}
-function saveCart(){localStorage.setItem('cart_both_final',JSON.stringify(cart));localStorage.setItem('sales_both_final',sales);localStorage.setItem('orders_both_final',JSON.stringify(allOrders))}
-function addToCart(i){cart.push(prods[i]);saveCart();render();showScreen('cart')}
-function addProd(){let n=document.getElementById('pname').value.trim();let pr=+document.getElementById('pprice').value;let cat=document.getElementById('pcat').value;let link=document.getElementById('pimg').value.trim();let img=selectedImage||link||"https://via.placeholder.com/300";if(!n||!pr)return alert('Enter name and price');prods.unshift({name:n,price:pr,cat:cat,img:img});saveProds();document.getElementById('pname').value='';document.getElementById('pprice').value='';document.getElementById('pimg').value='';document.getElementById('pfile').value='';document.getElementById('preview').style.display='none';selectedImage='';render();showScreen('home');alert(n+' added! Now '+prods.length+' products')}
-function deleteProd(i){if(confirm('Delete '+prods[i].name+'?')){prods.splice(i,1);saveProds();render()}}
-function changePhoto(i,input){let file=input.files[0];if(!file)return;let r=new FileReader();r.onload=function(ev){prods[i].img=ev.target.result;saveProds();render();alert('Photo updated!')};r.readAsDataURL(file)}
-function resetShop(){if(confirm('Reset to 50 default?')){prods=[...defaultProds];saveProds();render()}}
-function placeOrder(){if(!cart.length)return alert('Cart empty');let name=document.getElementById('custName').value||'Customer';let phone=document.getElementById('custPhone').value||'No phone';let total=window._total;let order={name:name,phone:phone,items:cart.map(c=>c.name),total:total,time:new Date().toLocaleString(),wa1:'0744590988',wa2:'0774360584'};allOrders.push(order);sales+=total;saveCart();let id='KM'+Date.now().toString().slice(-8);document.getElementById('orderId').innerText=id;let msg=`*NEW ORDER KISAKYE MART 50 PRODUCTS*%0AOrder ID: ${id}%0AName: ${name}%0APhone: ${phone}%0AItems:%0A`+cart.map(c=>`- ${c.name} UGX ${c.price}`).join('%0A')+`%0ATotal UGX ${total}%0AProfit 5%: UGX ${Math.round(total*0.05)}%0ATotal Sales: UGX ${sales}%0ASent to BOTH: 0744590988 & 0774360584`;lastMsg=msg;cart=[];saveCart();render();showScreen('success')}
-function trackWhatsApp(){window.open(`https://wa.me/${WA}?text=${lastMsg}`,'_blank')}
-function trackWhatsApp2(){window.open(`https://wa.me/${WA2}?text=${lastMsg}`,'_blank')}
-function trackBoth(){trackWhatsApp();setTimeout(trackWhatsApp2,800)}
-if(ownerUnlocked){document.getElementById('ownerLogin').style.display='none';document.getElementById('ownerControls').style.display='block'}
-render();
-</script></body></html>
+
+let cart = [];
+let currentCategory = "All";
+
+
+function displayProducts(list = products) {
+
+    const container = document.getElementById("products");
+
+    if (list.length === 0) {
+        container.innerHTML =
+            '<div class="empty">No products found.</div>';
+        return;
+    }
+
+    container.innerHTML = list.map(product => `
+
+        <div class="product">
+
+            <div class="product-image">
+                ${
+                    product.image &&
+                    product.image.startsWith("http")
+                    ? `<img src="${product.image}"
+                       style="width:100%;height:100%;object-fit:cover;">`
+                    : product.image
+                }
+            </div>
+
+            <div class="product-info">
+
+                <h3>${product.name}</h3>
+
+                <p>Seller: ${product.seller}</p>
+
+                <p>${product.category}</p>
+
+                <div class="price">
+                    UGX ${Number(product.price).toLocaleString()}
+                </div>
+
+                <button onclick="addToCart(${product.id})">
+                    Add to Cart
+                </button>
+
+            </div>
+
+        </div>
+
+    `).join("");
+}
+
+
+function addToCart(id) {
+
+    const product = products.find(p => p.id === id);
+
+    if (!product) return;
+
+    cart.push(product);
+
+    updateCart();
+
+    alert(product.name + " added to cart.");
+}
+
+
+function updateCart() {
+
+    document.getElementById("cartCount").textContent =
+        cart.length;
+
+    const cartItems =
+        document.getElementById("cartItems");
+
+    if (cart.length === 0) {
+
+        cartItems.innerHTML =
+            '<div class="empty">Your cart is empty.</div>';
+
+        document.getElementById("cartTotal").textContent = "0";
+
+        return;
+    }
+
+    cartItems.innerHTML = cart.map((item, index) => `
+
+        <div class="cart-item">
+
+            <div>
+                <strong>${item.name}</strong>
+                <br>
+                UGX ${Number(item.price).toLocaleString()}
+            </div>
+
+            <button
+                class="delete-btn"
+                onclick="removeFromCart(${index})">
+                Remove
+            </button>
+
+        </div>
+
+    `).join("");
+
+    const total =
+        cart.reduce((sum, item) =>
+            sum + Number(item.price), 0);
+
+    document.getElementById("cartTotal").textContent =
+        total.toLocaleString();
+}
+
+
+function removeFromCart(index) {
+
+    cart.splice(index, 1);
+
+    updateCart();
+}
+
+
+function openCart() {
+
+    document.getElementById("cartModal").style.display =
+        "block";
+
+    updateCart();
+}
+
+
+function closeCart() {
+
+    document.getElementById("cartModal").style.display =
+        "none";
+}
+
+
+function checkout() {
+
+    if (cart.length === 0) {
+
+        alert("Your cart is empty.");
+
+        return;
+    }
+
+    const total =
+        cart.reduce((sum, item) =>
+            sum + Number(item.price), 0);
+
+    alert(
+        "Checkout demonstration\n\n" +
+        "Order Total: UGX " +
+        total.toLocaleString() +
+        "\n\nStage 2 will connect this checkout to a real database and payment system."
+    );
+}
+
+
+function searchProducts() {
+
+    const search =
+        document.getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+    const filtered =
+        products.filter(product => {
+
+            const matchesSearch =
+                product.name.toLowerCase()
+                .includes(search) ||
+                product.category.toLowerCase()
+                .includes(search) ||
+                product.seller.toLowerCase()
+                .includes(search);
+
+            const matchesCategory =
+                currentCategory === "All" ||
+                product.category === currentCategory;
+
+            return matchesSearch && matchesCategory;
+        });
+
+    displayProducts(filtered);
+}
+
+
+function filterProducts(category) {
+
+    currentCategory = category;
+
+    searchProducts();
+}
+
+
+function addProduct() {
+
+    const name =
+        document.getElementById("productName").value.trim();
+
+    const price =
+        document.getElementById("productPrice").value;
+
+    const category =
+        document.getElementById("productCategory").value;
+
+    const seller =
+        document.getElementById("sellerName").value.trim();
+
+    const image =
+        document.getElementById("productImage").value.trim();
+
+    if (!name || !price || !seller) {
+
+        alert(
+            "Please enter product name, price and seller name."
+        );
+
+        return;
+    }
+
+    const newProduct = {
+
+        id: Date.now(),
+
+        name: name,
+
+        price: Number(price),
+
+        category: category,
+
+        seller: seller,
+
+        image: image || "🛒"
+    };
+
+    products.push(newProduct);
+
+    displayProducts();
+
+    document.getElementById("productName").value = "";
+    document.getElementById("productPrice").value = "";
+    document.getElementById("sellerName").value = "";
+    document.getElementById("productImage").value = "";
+
+    alert(
+        "Product added successfully to Kisakye Mart."
+    );
+}
+
+
+window.onclick = function(event) {
+
+    const modal =
+        document.getElementById("cartModal");
+
+    if (event.target === modal) {
+
+        modal.style.display = "none";
+    }
+};
+
+
+displayProducts();
+updateCart();
+
+</script>
+
+</body>
+</html>
+What this Stage 1 version does:
+44+ starting FMCG products.
+Food, drinks, dairy, snacks, household, personal care, baby and meat categories.
+Product search.
+Category filtering.
+Shopping cart.
+Add/remove products from cart.
+Seller product-upload section.
+Sellers can keep adding products without a fixed catalogue limit.
+Seller/shop name and price fields.
+Optional product image URL.
+Checkout demonstration.
+Important: this is still the Stage 1 frontend/demo. The products and cart are currently held in the browser; it is not yet a real database or real-money payment system.
+Next we can move to Stage 2: real database + buyer/seller accounts + orders, and then connect the payment system securely.
