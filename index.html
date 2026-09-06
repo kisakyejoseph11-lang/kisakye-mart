@@ -1,194 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kisakye Mart FMCG - Your Everyday Market</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-:root{--green:#0B8A3E;--green2:#22C55E;--orange:#F59E0B;--dark:#1F2937;--light:#F3F4F6;--white:#fff}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{background:var(--light);color:var(--dark)}
-.screen{display:none;min-height:100vh;background:#fff}.screen.active{display:flex;flex-direction:column}
-.btn-green{background:var(--green);color:#fff;border:none;padding:14px;border-radius:12px;font-weight:600;width:100%;font-size:15px}
-.btn-outline{border:1.5px solid var(--green);background:#fff;color:var(--green);padding:14px;border-radius:12px;font-weight:600;width:100%;margin-top:10px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-around;padding:8px 0 12px 0;z-index:99}
-.bottom-nav button{border:none;background:none;color:#9ca3af;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}
-.bottom-nav button.active{color:var(--green)}
-.bottom-nav i{font-size:20px}
-.header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #f0f0f0}
-.logo{font-weight:700;color:var(--green);font-size:18px;display:flex;align-items:center;gap:6px}
-.logo span{color:var(--orange)}
-.banner{background:linear-gradient(135deg,#0B8A3E 0%,#16a34a 100%);margin:12px;border-radius:18px;padding:16px;color:#fff;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden}
-.search{background:var(--light);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin:0 16px}
-.search input{border:none;background:none;flex:1;outline:none;font-size:14px}
-.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:16px}
-.cat-item{text-align:center;font-size:11px}
-.cat-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:22px}
-.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px}
-.prod-card{background:#fff;border-radius:16px;padding:10px;border:1px solid #f0f0f0}
-.prod-card img{width:100%;height:110px;object-fit:cover;border-radius:12px}
-.prod-card h4{font-size:13px;margin:8px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prod-card.price{color:var(--green);font-weight:700;font-size:13px}
-.add-btn{background:var(--light);border:1px solid var(--green);color:var(--green);padding:6px;border-radius:8px;width:100%;margin-top:6px;font-weight:600;font-size:12px}
-.input{width:100%;padding:13px;border:1.5px solid #e5e7eb;border-radius:12px;margin:8px 0;outline:none}
-.input:focus{border-color:var(--green)}
-/* Splash */
-.splash{background:var(--green);justify-content:center;align-items:center;color:#fff;text-align:center}
-.splash.big-logo{font-size:80px;font-weight:800;line-height:1}
-.splash.big-logo i{color:var(--orange)}
-</style>
-</head>
-<body>
-
-<!-- SPLASH -->
-<div id="splash" class="screen active splash">
-<div>
-<div style="font-size:80px;font-weight:800"><span style="color:#fff">K</span><span style="color:var(--orange);position:relative">J<i class="fa-solid fa-cart-shopping" style="font-size:22px;position:absolute;bottom:20px;left:-4px"></i></span></div>
-<h2 style="letter-spacing:2px">KISAKYE MART<br><span style="font-size:16px;letter-spacing:4px">FMCG</span></h2>
-<p style="margin-top:10px;opacity:.9">Your Everyday Market</p>
-<div style="margin-top:60px"><i class="fa-solid fa-spinner fa-spin"></i><p style="font-size:12px;margin-top:8px">Loading...</p></div>
-</div>
-</div>
-
-<!-- WELCOME -->
-<div id="welcome" class="screen" style="background:#fff">
-<div style="flex:1;background:linear-gradient(to bottom,#0B8A3E 60%,#fff 60%);padding:20px">
-<div style="text-align:center;color:#fff;padding-top:10px"><div style="font-size:40px;font-weight:800">K<span style="color:var(--orange)">J</span></div><p style="font-weight:700">KISAKYE MART FMCG</p><p style="font-size:11px">Your Everyday Market</p></div>
-<div style="background:#fff;border-radius:24px;margin-top:20px;padding:20px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.1)">
-<div style="font-size:80px">🛵</div>
-<h2 style="margin-top:10px">Welcome to<br>Kisakye Mart <span style="color:var(--orange)">FMCG</span></h2>
-<p style="color:#6b7280;font-size:13px;margin:12px 0">Shop quality products, enjoy best prices and fast delivery at your doorstep.</p>
-<button class="btn-green" onclick="showScreen('login')">Get Started</button>
-<button class="btn-outline" onclick="showScreen('login')">I already have an account</button>
-</div>
-</div>
-</div>
-
-<!-- LOGIN -->
-<div id="login" class="screen" style="padding:20px">
-<div style="display:flex;justify-content:space-between"><i class="fa-solid fa-arrow-left" onclick="showScreen('welcome')"></i></div>
-<div style="text-align:center;margin-top:20px"><div style="font-size:40px;color:var(--green);font-weight:800">K<span style="color:var(--orange)">J</span></div><b>KISAKYE MART FMCG</b></div>
-<h2 style="margin-top:30px">Welcome Back!</h2><p style="color:#6b7280;font-size:13px">Sign in to continue</p>
-<label style="font-size:12px;margin-top:20px;display:block">Phone Number</label><input class="input" id="loginPhone" value="+256 744590988" placeholder="Phone">
-<label style="font-size:12px">Password</label><input class="input" type="password" placeholder="••••••••">
-<p style="text-align:right;font-size:12px;color:var(--green);margin:6px 0">Forget Password?</p>
-<button class="btn-green" onclick="showScreen('home')">Sign In</button>
-<p style="text-align:center;font-size:12px;margin-top:14px">Don't have an account? <span style="color:var(--green);font-weight:600" onclick="showScreen('home')">Sign Up</span></p>
-<div style="text-align:center;margin-top:20px"><p style="font-size:12px;color:#9ca3af">Or continue with</p><div style="display:flex;justify-content:center;gap:16px;margin-top:12px"><i class="fab fa-google" style="border:1px solid #ddd;padding:12px;border-radius:50%"></i><i class="fab fa-facebook-f" style="border:1px solid #ddd;padding:12px 14px;border-radius:50%;color:#1877f2"></i><i class="fab fa-apple" style="border:1px solid #ddd;padding:12px;border-radius:50%"></i></div></div>
-</div>
-
-<!-- HOME -->
-<div id="home" class="screen" style="background:var(--light);padding-bottom:80px">
-<div class="header"><div><p style="font-size:11px;color:#6b7280"><i class="fa-solid fa-location-dot"></i> Deliver to</p><b style="font-size:13px">Kampala, Uganda <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></b></div><div style="display:flex;gap:12px"><i class="fa-regular fa-bell"></i><i class="fa-solid fa-cart-shopping" onclick="showScreen('cart')"></i><span id="cartBadge" style="background:var(--orange);color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;margin-left:-10px;margin-top:-8px;height:fit-content">0</span></div></div>
-<div class="search"><i class="fa-solid fa-magnifying-glass" style="color:#9ca3af"></i><input id="searchBox" placeholder="Search for products..." oninput="filterProds()"></div>
-<div class="banner"><div><h3 style="font-size:16px">Daily Essentials<br>Delivered Fast</h3><p style="font-size:11px;opacity:.9;margin:6px 0">Best Quality, Best Prices</p><button style="background:#fff;color:var(--green);border:none;padding:6px 14px;border-radius:20px;font-weight:700;font-size:12px;margin-top:6px" onclick="document.getElementById('prodSection').scrollIntoView()">Shop Now</button></div><div style="font-size:50px">🛒</div></div>
-<div class="cat-grid">
-<div class="cat-item" onclick="filterCat('all')"><div class="cat-icon" style="background:#dcfce7;color:var(--green)"><i class="fa-solid fa-border-all"></i></div>All Categories</div>
-<div class="cat-item" onclick="filterCat('Beverages')"><div class="cat-icon" style="background:#fef3c7"><i class="fa-solid fa-bottle-water" style="color:var(--orange)"></i></div>Beverages</div>
-<div class="cat-item" onclick="filterCat('Snacks')"><div class="cat-icon" style="background:#fee2e2"><i class="fa-solid fa-cookie" style="color:#ef4444"></i></div>Snacks</div>
-<div class="cat-item" onclick="filterCat('Personal')"><div class="cat-icon" style="background:#fce7f3"><i class="fa-solid fa-pump-soap" style="color:#ec4899"></i></div>Personal Care</div>
-<div class="cat-item" onclick="filterCat('Home')"><div class="cat-icon" style="background:#dbeafe"><i class="fa-solid fa-spray-can-sparkles" style="color:#3b82f6"></i></div>Home Care</div>
-</div>
-<div style="display:flex;justify-content:space-between;padding:0 16px;margin:8px 0"><b>Popular Products</b><span style="color:var(--green);font-size:12px">See all</span></div>
-<div id="prodSection" class="prod-grid"></div>
-<div style="padding:16px"><div style="background:#fff;border-radius:12px;padding:12px;display:flex;gap:8px;flex-wrap:wrap"><span style="background:#1a1f71;color:#fff;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700">VISA</span><span style="background:#eb001b;color:#fff;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700">MasterCard</span><span style="background:#ff5f00;color:#fff;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700">Airtel Money</span><span style="background:#ffcc00;color:#000;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700">MTN MoMo</span></div></div>
-<div class="bottom-nav"><button class="active"><i class="fa-solid fa-house"></i>Home</button><button onclick="showScreen('categories')"><i class="fa-solid fa-border-all"></i>Categories</button><button onclick="showScreen('orders')"><i class="fa-solid fa-receipt"></i>Orders</button><button onclick="showScreen('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button onclick="showScreen('account')"><i class="fa-regular fa-user"></i>Account</button></div>
-</div>
-
-<!-- PRODUCT DETAIL -->
-<div id="product" class="screen" style="background:#fff;padding-bottom:80px">
-<div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')"></i><i class="fa-regular fa-heart"></i></div>
-<div id="productDetail" style="padding:16px"></div>
-</div>
-
-<!-- CART -->
-<div id="cart" class="screen" style="background:var(--light);padding-bottom:80px">
-<div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')"></i><b>My Cart (<span id="cartCount2">0</span>)</b><span></span></div>
-<div id="cartList" style="padding:16px"></div>
-<div style="background:#fff;margin:16px;border-radius:16px;padding:16px"><div style="display:flex;justify-content:space-between;font-size:13px;margin:6px 0"><span>Subtotal</span><b id="subtotal">UGX 0</b></div><div style="display:flex;justify-content:space-between;font-size:13px;margin:6px 0"><span>Delivery Fee</span><span>UGX 3,000</span></div><div style="display:flex;justify-content:space-between;font-size:13px;margin:6px 0"><span>Service Fee (5%)</span><span id="serviceFee">UGX 0</span></div><hr style="margin:10px 0;border:none;border-top:1px solid #eee"><div style="display:flex;justify-content:space-between;font-weight:700"><span>Total</span><span id="totalPrice">UGX 0</span></div><button class="btn-green" style="margin-top:14px" onclick="showScreen('checkout')">Proceed to Checkout</button></div>
-<div class="bottom-nav"><button onclick="showScreen('home')"><i class="fa-solid fa-house"></i>Home</button><button><i class="fa-solid fa-border-all"></i>Categories</button><button><i class="fa-solid fa-receipt"></i>Orders</button><button class="active"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button><i class="fa-regular fa-user"></i>Account</button></div>
-</div>
-
-<!-- CHECKOUT -->
-<div id="checkout" class="screen" style="background:var(--light);padding-bottom:20px">
-<div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('cart')"></i><b>Checkout</b><span></span></div>
-<div style="background:#fff;margin:12px;border-radius:16px;padding:16px"><p style="font-weight:600;font-size:14px">Delivery Address</p><p style="font-size:12px;color:#6b7280;margin-top:6px">Kampala, Uganda<br>Near Old Taxi Park - Call +256 744590988</p><p style="text-align:right;color:var(--green);font-size:12px;font-weight:600">Change</p></div>
-<div style="background:#fff;margin:12px;border-radius:16px;padding:16px"><p style="font-weight:600;font-size:14px">Payment Method</p><div style="display:flex;gap:10px;margin-top:12px"><div style="border:1.5px solid var(--green);border-radius:10px;padding:10px;flex:1;text-align:center"><i class="fa-solid fa-mobile-screen"></i><p style="font-size:11px;margin-top:4px">Mobile Money</p></div><div style="border:1px solid #e5e7eb;border-radius:10px;padding:10px;flex:1;text-align:center;opacity:.6"><i class="fa-solid fa-money-bill"></i><p style="font-size:11px;margin-top:4px">Cash on Delivery</p></div></div><input class="input" placeholder="Mobile Money Number - e.g 0744590988" id="momoNumber" style="margin-top:12px"></div>
-<div style="background:#fff;margin:12px;border-radius:16px;padding:16px"><p style="font-weight:600;font-size:14px">Order Summary</p><div style="display:flex;justify-content:space-between;font-size:12px;margin:8px 0"><span>Subtotal</span><span id="sumSub">UGX 0</span></div><div style="display:flex;justify-content:space-between;font-size:12px;margin:8px 0"><span>Delivery Fee</span><span>UGX 3,000</span></div><div style="display:flex;justify-content:space-between;font-size:12px;margin:8px 0"><span>Service Fee</span><span id="sumFee">UGX 0</span></div><hr style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-weight:700"><span>Total</span><span id="sumTotal">UGX 0</span></div><button class="btn-green" style="margin-top:16px" onclick="placeOrder()">Place Order</button></div>
-</div>
-
-<!-- SUCCESS -->
-<div id="success" class="screen" style="justify-content:center;align-items:center;text-align:center;padding:30px">
-<div style="width:80px;height:80px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;color:#fff;font-size:40px">✓</div>
-<h2 style="margin-top:20px">Order Placed!<br>Successfully!</h2><p style="color:#6b7280;font-size:13px;margin:12px 0">Thank you for shopping with<br>Kisakye Mart FMCG.</p><div style="background:var(--light);padding:12px 20px;border-radius:12px;margin:20px 0"><p style="font-size:12px;color:#6b7280">Order ID</p><b id="orderId">KM123456789</b></div><button class="btn-green" onclick="trackWhatsApp()">Track Order</button><button class="btn-outline" onclick="showScreen('home')">Continue Shopping</button>
-</div>
-
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kisakye Mart FMCG - 50 Products</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><style>:root{--green:#0B8A3E;--orange:#F59E0B;--dark:#1F2937;--light:#F3F4F6}*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}body{background:var(--light)}.screen{display:none;min-height:100vh;background:#fff}.screen.active{display:flex;flex-direction:column}.btn-green{background:var(--green);color:#fff;border:none;padding:14px;border-radius:12px;font-weight:600;width:100%}.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-around;padding:8px 0 12px 0;z-index:99}.bottom-nav button{border:none;background:none;color:#9ca3af;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}.bottom-nav button.active{color:var(--green)}.bottom-nav i{font-size:20px}.header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #f0f0f0}.banner{background:linear-gradient(135deg,#0B8A3E 0%,#16a34a 100%);margin:12px;border-radius:18px;padding:16px;color:#fff;display:flex;justify-content:space-between;align-items:center}.search{background:var(--light);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin:0 16px}.search input{border:none;background:none;flex:1;outline:none;font-size:14px}.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:16px}.cat-item{text-align:center;font-size:11px;cursor:pointer}.cat-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:22px}.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 90px 16px}.prod-card{background:#fff;border-radius:16px;padding:10px;border:1px solid #f0f0f0}.prod-card img{width:100%;height:110px;object-fit:cover;border-radius:12px}.prod-card h4{font-size:13px;margin:8px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.add-btn{background:#f0fdf4;border:1px solid var(--green);color:var(--green);padding:6px;border-radius:8px;width:100%;margin-top:6px;font-weight:600;font-size:12px}.input{width:100%;padding:13px;border:1.5px solid #e5e7eb;border-radius:12px;margin:8px 0;outline:none}.splash{background:var(--green);justify-content:center;align-items:center;color:#fff;text-align:center}</style></head><body>
+<div id="splash" class="screen active splash"><div><div style="font-size:70px;font-weight:800">K<span style="color:var(--orange)">J</span> 🛒</div><h2>KISAKYE MART<br><span style="font-size:14px;letter-spacing:4px">FMCG - 50 PRODUCTS</span></h2><p style="margin-top:20px"><i class="fa-solid fa-spinner fa-spin"></i> Loading 50 Products...</p></div></div>
+<div id="home" class="screen" style="background:var(--light)"><div class="header"><div><p style="font-size:11px;color:#6b7280"><i class="fa-solid fa-location-dot"></i> Deliver to</p><b style="font-size:13px">Kampala, Uganda <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></b></div><div style="display:flex;gap:12px;align-items:center"><i class="fa-regular fa-bell"></i><div onclick="showScreen('cart')" style="position:relative"><i class="fa-solid fa-cart-shopping"></i><span id="cartBadge" style="background:var(--orange);color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;position:absolute;top:-8px;right:-10px">0</span></div></div></div><div class="search"><i class="fa-solid fa-magnifying-glass" style="color:#9ca3af"></i><input id="searchBox" placeholder="Search 50 products..." oninput="renderProducts()"></div><div class="banner"><div><h3 style="font-size:16px">50 Daily Essentials<br>Delivered Fast</h3><p style="font-size:11px;opacity:.9;margin:6px 0">Best Quality, Best Prices</p><button style="background:#fff;color:var(--green);border:none;padding:6px 14px;border-radius:20px;font-weight:700;font-size:12px;margin-top:6px">UGX Real Money</button></div><div style="font-size:48px">🛒</div></div><div class="cat-grid"><div class="cat-item" onclick="filterCat('all')"><div class="cat-icon" style="background:#dcfce7;color:var(--green)"><i class="fa-solid fa-border-all"></i></div>All 50</div><div class="cat-item" onclick="filterCat('Beverages')"><div class="cat-icon" style="background:#fef3c7"><i class="fa-solid fa-bottle-water" style="color:var(--orange)"></i></div>Beverages</div><div class="cat-item" onclick="filterCat('Grocery')"><div class="cat-icon" style="background:#fee2e2"><i class="fa-solid fa-cookie" style="color:#ef4444"></i></div>Grocery</div><div class="cat-item" onclick="filterCat('Personal')"><div class="cat-icon" style="background:#fce7f3"><i class="fa-solid fa-pump-soap" style="color:#ec4899"></i></div>Personal</div><div class="cat-item" onclick="filterCat('Home')"><div class="cat-icon" style="background:#dbeafe"><i class="fa-solid fa-spray-can-sparkles" style="color:#3b82f6"></i></div>Home Care</div></div><div style="display:flex;justify-content:space-between;padding:0 16px;margin:8px 0"><b>Popular Products - <span id="prodCount">50</span></b><span style="color:var(--green);font-size:12px">See all</span></div><div id="prodSection" class="prod-grid"></div><div style="padding:0 16px 100px 16px"><div style="background:#fff;border-radius:12px;padding:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><span style="background:#1a1f71;color:#fff;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700">VISA</span><span style="background:#eb001b;color:#fff;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700">MasterCard</span><span style="background:#ff5f00;color:#fff;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700">Airtel</span><span style="background:#ffcc00;color:#000;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700">MTN MoMo</span></div><p style="text-align:center;color:#888;font-size:11px;margin-top:12px">© 2026 Kisakye Mart • +256744590988 • 50 Products • Real Money</p></div><div class="bottom-nav"><button class="active"><i class="fa-solid fa-house"></i>Home</button><button><i class="fa-solid fa-border-all"></i>Categories</button><button><i class="fa-solid fa-receipt"></i>Orders</button><button onclick="showScreen('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button><i class="fa-regular fa-user"></i>Account</button></div></div>
+<div id="cart" class="screen" style="background:var(--light)"><div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')"></i><b>My Cart (<span id="cartCount2">0</span>)</b><span></span></div><div id="cartList" style="padding:16px"></div><div style="background:#fff;margin:16px;border-radius:16px;padding:16px"><div style="display:flex;justify-content:space-between;font-size:13px;margin:6px 0"><span>Subtotal (50 products)</span><b id="subtotal">UGX 0</b></div><div style="display:flex;justify-content:space-between;font-size:13px;margin:6px 0"><span>Delivery Fee</span><span>UGX 3,000</span></div><div style="display:flex;justify-content:space-between;font-size:13px;margin:6px 0"><span>Service 5%</span><span id="serviceFee">UGX 0</span></div><hr style="margin:10px 0;border:none;border-top:1px solid #eee"><div style="display:flex;justify-content:space-between;font-weight:700"><span>Total Real Money</span><span id="totalPrice">UGX 0</span></div><input id="custName" class="input" placeholder="Your Name"><input id="custPhone" class="input" placeholder="Phone 07..."><button class="btn-green" style="margin-top:10px" onclick="placeOrder()">Order via WhatsApp 0744590988</button></div></div>
+<div id="success" class="screen" style="justify-content:center;align-items:center;text-align:center;padding:30px"><div style="width:80px;height:80px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;color:#fff;font-size:40px">✓</div><h2 style="margin-top:20px">Order Placed!<br>Successfully!</h2><p style="color:#6b7280;font-size:13px;margin:12px 0">Thank you for shopping with<br>Kisakye Mart FMCG - 50 Products.</p><div style="background:var(--light);padding:12px 20px;border-radius:12px;margin:20px 0"><p style="font-size:12px;color:#6b7280">Order ID</p><b id="orderId">KM123456789</b></div><button class="btn-green" onclick="trackWhatsApp()">Track via WhatsApp</button><button class="btn-green" style="background:#fff;color:var(--green);border:1.5px solid var(--green);margin-top:10px" onclick="showScreen('home')">Continue Shopping 50 Products</button></div>
 <script>
-let WA="256744590988";
-let products=[
-{name:"Posho Maize Meal 2kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400",desc:"High quality maize meal, finely ground for the best taste."},
+let WA="256744590988";let products=[
+{name:"Posho Maize Meal 2kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
 {name:"Coca Cola 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
 {name:"Royal Cooking Oil 2L",price:13000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
 {name:"Sugar 1kg",price:5500,cat:"Grocery",img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
 {name:"Rice 1kg",price:4500,cat:"Grocery",img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=400"},
-{name:"Matooke Bunch Green",price:20000,cat:"Grocery",img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Green_bananas.jpg/640px-Green_bananas.jpg"},
+{name:"Matooke Bunch Green",price:20000,cat:"Grocery",img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
 {name:"Tomatoes 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
-{name:"Bread Loaf",price:5000,cat:"Snacks",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"},
+{name:"Bread Loaf",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"},
 {name:"Milk 500ml",price:2500,cat:"Beverages",img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
 {name:"Eggs Tray",price:15000,cat:"Grocery",img:"https://images.unsplash.com/photo-1488679831987-9564a7c76c7b?w=400"},
+{name:"Jik Bleach 1L",price:3500,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{name:"Kakira Sugar 50kg",price:160000,cat:"Grocery",img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
+{name:"Nescafe 100g",price:15000,cat:"Beverages",img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400"},
+{name:"Sunseed Oil 1L",price:11000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
+{name:"BBQ Sauce",price:15000,cat:"Grocery",img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
 {name:"Avocado 1pc",price:500,cat:"Grocery",img:"https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?w=400"},
 {name:"Mangoes 1kg",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1553279768-865429fa0078?w=400"},
 {name:"Omo 500g",price:4000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
-{name:"Toothpaste",price:3000,cat:"Personal",img:"https://images.unsplash.com/photo-1559671088-5ef93d3b0e5e?w=400"},
-{name:"Soda 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
-{name:"Cooking Oil 1L",price:7500,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"}
+{name:"Toothpaste Colgate",price:3000,cat:"Personal",img:"https://images.unsplash.com/photo-1559671088-5ef93d3b0e5e?w=400"},
+{name:"Soda Fanta 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{name:"Cooking Oil 1L",price:7500,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
+{name:"Cassava Flour 1kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{name:"Sweet Potatoes 1kg",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1518977676608-bd36c2ca4f0d?w=400"},
+{name:"Watermelon 1pc",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?w=400"},
+{name:"Pineapple 1pc",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1550254478-ead40cc54513?w=400"},
+{name:"Oranges 1kg",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=400"},
+{name:"Green Pepper 1kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=400"},
+{name:"Cabbage 1pc",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=400"},
+{name:"Carrots 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1447175008436-054170c2e979?w=400"},
+{name:"Sukuma Wiki Bunch",price:1000,cat:"Grocery",img:"https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400"},
+{name:"Nakati Bunch",price:1000,cat:"Grocery",img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400"},
+{name:"Passion Fruits 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=400"},
+{name:"Pawpaw 1pc",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1617112848923-cc2234396a8d?w=400"},
+{name:"Garlic 1kg",price:8000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
+{name:"Ginger 1kg",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
+{name:"Peas 1kg",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"},
+{name:"Ground Nuts 1kg",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=400"},
+{name:"Honey 500ml",price:12000,cat:"Grocery",img:"https://images.unsplash.com/photo-1558642084-fd43571d5462?w=400"},
+{name:"Millet Flour 1kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
+{name:"Salt 1kg",price:1500,cat:"Grocery",img:"https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=400"},
+{name:"Tea Leaves 250g",price:3500,cat:"Beverages",img:"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400"},
+{name:"Blue Band 250g",price:6500,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
+{name:"Royco 100g",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{name:"Bar Soap Mukwano",price:3500,cat:"Home",img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
+{name:"Vaseline 250ml",price:2500,cat:"Personal",img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=400"},
+{name:"Pampers Baby",price:25000,cat:"Personal",img:"https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400"},
+{name:"Biscuits Sumz",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400"},
+{name:"Juice 1L Fresh",price:3500,cat:"Beverages",img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400"},
+{name:"Water 1L Rwenzori",price:1000,cat:"Beverages",img:"https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400"},
+{name:"Charcoal Sack",price:35000,cat:"Home",img:"https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400"},
+{name:"Onions 1kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?w=400"}
 ];
-let cart=[];let currentCat='all';let lastOrderMsg="";
+let cart=[];let currentCat='all';let lastMsg="";
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='home')renderProducts();if(id==='cart')renderCart()}
-setTimeout(()=>{showScreen('welcome')},1800);
-function renderProducts(list=products){
-let grid=document.getElementById('prodSection');grid.innerHTML='';
-let filtered=list.filter(p=>{let okCat=currentCat==='all'||p.cat===currentCat;let q=document.getElementById('searchBox')?document.getElementById('searchBox').value.toLowerCase():'';let okSearch=!q||p.name.toLowerCase().includes(q);return okCat&&okSearch});
-filtered.forEach((p,i)=>{
-grid.innerHTML+=`<div class="prod-card" onclick="openProduct(${products.indexOf(p)})"><img src="${p.img}"><h4>${p.name}</h4><div style="display:flex;justify-content:space-between;align-items:center"><span class="price">UGX ${p.price.toLocaleString()}</span><span style="font-size:10px;color:#22c55e;background:#dcfce7;padding:2px 6px;border-radius:20px">In Stock</span></div><button class="add-btn" onclick="event.stopPropagation();addToCart(${products.indexOf(p)})">Add</button></div>`;
-});
-document.getElementById('cartBadge').innerText=cart.length;
-}
+setTimeout(()=>showScreen('home'),1500);
+function renderProducts(){let grid=document.getElementById('prodSection');grid.innerHTML='';let q=(document.getElementById('searchBox')?.value||'').toLowerCase();let list=products.filter(p=>{let okCat=currentCat==='all'||p.cat===currentCat;let okQ=!q||p.name.toLowerCase().includes(q);return okCat&&okQ});document.getElementById('prodCount').innerText=list.length;list.forEach((p,idx)=>{let realIdx=products.indexOf(p);grid.innerHTML+=`<div class="prod-card"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/200'"><h4>${p.name}</h4><div style="display:flex;justify-content:space-between;align-items:center"><span style="color:var(--green);font-weight:700;font-size:13px">UGX ${p.price.toLocaleString()}</span><span style="font-size:9px;background:#dcfce7;color:var(--green);padding:2px 6px;border-radius:20px">In Stock</span></div><button class="add-btn" onclick="addToCart(${realIdx})">Add to Cart</button></div>`});}
 function filterCat(c){currentCat=c;renderProducts()}
-function filterProds(){renderProducts()}
-function openProduct(i){
-let p=products[i];
-document.getElementById('productDetail').innerHTML=`<img src="${p.img}" style="width:100%;height:280px;object-fit:cover;border-radius:16px"><h2 style="margin-top:14px">${p.name}</h2><p style="color:var(--green);font-weight:700;font-size:18px;margin:8px 0">UGX ${p.price.toLocaleString()}</p><p style="color:#22c55e;font-size:12px"><i class="fa-solid fa-circle" style="font-size:8px"></i> In Stock</p><p style="margin-top:12px"><b>Desrcription</b></p><p style="color:#6b7280;font-size:13px;margin-top:6px">${p.desc||'Fresh and quality product from Kisakye Mart FMCG. Best price guaranteed.'}</p><div style="display:flex;align-items:center;gap:14px;margin-top:16px"><span>Quantity</span><div style="display:flex;align-items:center;gap:10px;border:1px solid #e5e7eb;border-radius:8px;padding:4px 10px"><button onclick="this.nextElementSibling.innerText=Math.max(1,+this.nextElementSibling.innerText-1)" style="border:none;background:none;font-size:18px">-</button><span>1</span><button onclick="this.previousElementSibling.innerText=+this.previousElementSibling.innerText+1" style="border:none;background:none;font-size:18px">+</button></div></div><button class="btn-green" style="margin-top:20px" onclick="addToCart(${i});showScreen('cart')">Add to Cart</button>`;
-showScreen('product');
-}
-function addToCart(i){cart.push(products[i]);document.getElementById('cartBadge').innerText=cart.length;document.getElementById('cartCount2').innerText=cart.length;renderCart();showScreen('cart')}
-function renderCart(){
-let list=document.getElementById('cartList');list.innerHTML='';let sub=0;
-cart.forEach((c,idx)=>{sub+=c.price;list.innerHTML+=`<div style="background:#fff;border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;margin-bottom:10px"><img src="${c.img}" style="width:60px;height:60px;border-radius:10px;object-fit:cover"><div style="flex:1"><b style="font-size:13px">${c.name}</b><br><span style="color:var(--green);font-weight:600;font-size:13px">UGX ${c.price.toLocaleString()}</span><br><span style="font-size:11px;color:#6b7280">Qty: 1</span></div><i class="fa-solid fa-xmark" style="color:#9ca3af" onclick="cart.splice(${idx},1);renderCart();renderProducts()"></i></div>`});
-let fee=Math.round(sub*0.05);let total=sub+3000+fee;
-document.getElementById('subtotal').innerText='UGX '+sub.toLocaleString();
-document.getElementById('serviceFee').innerText='UGX '+fee.toLocaleString();
-document.getElementById('totalPrice').innerText='UGX '+total.toLocaleString();
-document.getElementById('sumSub').innerText='UGX '+sub.toLocaleString();
-document.getElementById('sumFee').innerText='UGX '+fee.toLocaleString();
-document.getElementById('sumTotal').innerText='UGX '+total.toLocaleString();
-document.getElementById('cartBadge').innerText=cart.length;
-document.getElementById('cartCount2').innerText=cart.length;
-}
-function placeOrder(){
-if(!cart.length)return alert('Cart empty');
-let sub=cart.reduce((a,b)=>a+b.price,0);let total=sub+3000+Math.round(sub*0.05);
-let momo=document.getElementById('momoNumber').value||'0744590988';
-let id='KM'+Date.now().toString().slice(-9);
-document.getElementById('orderId').innerText=id;
-let msg=`*NEW ORDER KISAKYE MART FMCG*%0AOrder ID: ${id}%0AMoMo: ${momo}%0AItems:%0A`+cart.map(c=>`- ${c.name} UGX ${c.price}`).join('%0A')+`%0ATotal: UGX ${total}`;
-lastOrderMsg=msg;
-cart=[];renderCart();showScreen('success');
-}
-function trackWhatsApp(){window.open(`https://wa.me/${WA}?text=${lastOrderMsg}`,'_blank')}
+function addToCart(i){cart.push(products[i]);renderCart();showScreen('cart')}
+function renderCart(){let list=document.getElementById('cartList');list.innerHTML='';let sub=0;cart.forEach((c,idx)=>{sub+=c.price;list.innerHTML+=`<div style="background:#fff;border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;margin-bottom:10px"><img src="${c.img}" style="width:60px;height:60px;border-radius:10px;object-fit:cover"><div style="flex:1"><b style="font-size:13px">${c.name}</b><br><span style="color:var(--green);font-weight:600;font-size:13px">UGX ${c.price.toLocaleString()}</span></div><i class="fa-solid fa-xmark" style="color:#9ca3af" onclick="cart.splice(${idx},1);renderCart()"></i></div>`});let fee=Math.round(sub*0.05);let total=sub+3000+fee;document.getElementById('subtotal').innerText='UGX '+sub.toLocaleString();document.getElementById('serviceFee').innerText='UGX '+fee.toLocaleString();document.getElementById('totalPrice').innerText='UGX '+total.toLocaleString();document.getElementById('cartBadge').innerText=cart.length;document.getElementById('cartCount2').innerText=cart.length;window._total=total;window._sub=sub}
+function placeOrder(){if(!cart.length)return alert('Cart empty');let name=document.getElementById('custName').value||'Customer';let phone=document.getElementById('custPhone').value||'No phone';let id='KM'+Date.now().toString().slice(-8);document.getElementById('orderId').innerText=id;let total=window._total;let msg=`*NEW ORDER KISAKYE MART 50 PRODUCTS*%0AOrder ID: ${id}%0AName: ${name}%0APhone: ${phone}%0AItems:%0A`+cart.map(c=>`- ${c.name} UGX ${c.price}`).join('%0A')+`%0ATotal UGX ${total}%0AReal Money Order`;lastMsg=msg;cart=[];renderCart();showScreen('success')}
+function trackWhatsApp(){window.open(`https://wa.me/${WA}?text=${lastMsg}`,'_blank')}
 renderProducts();
-</script>
-</body>
-                                                         </html>
+</script></body></html>
