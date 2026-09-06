@@ -1,240 +1,148 @@
-// KISAKYE MART - 110+ PRODUCTS UNLIMITED - DATABASE + MONEY MONITOR
-// WhatsApp: 0744590988 + 0774360584 | PIN: 7445
-const express = require('express');
-const cors = require('cors');
-const app = express();
-app.use(cors());
-app.use(express.json({ limit: '20mb' }));
-const PORT = 3000;
-
-// ===== 110 PRODUCTS DATABASE - UNLIMITED ADD =====
-let products = [
-{id:1,name:"Posho Maize Meal 2kg",price:3500,cat:"Grocery",stock:100,img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
-{id:2,name:"Coca Cola 500ml",price:1500,cat:"Beverages",stock:200,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
-{id:3,name:"Royal Cooking Oil 2L",price:13000,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
-{id:4,name:"Sugar 1kg",price:5500,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
-{id:5,name:"Rice 1kg",price:4500,cat:"Grocery",stock:90,img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=400"},
-{id:6,name:"Matooke Bunch",price:20000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
-{id:7,name:"Tomatoes 1kg",price:3000,cat:"Grocery",stock:100,img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
-{id:8,name:"Bread Loaf",price:5000,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"},
-{id:9,name:"Milk 500ml",price:2500,cat:"Beverages",stock:70,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
-{id:10,name:"Eggs Tray 30pcs",price:15000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1488679831987-9564a7c76c7b?w=400"},
-{id:11,name:"Jik Bleach 1L",price:3500,cat:"Home",stock:100,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
-{id:12,name:"Kakira Sugar 50kg",price:160000,cat:"Grocery",stock:10,img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
-{id:13,name:"Nescafe 100g",price:15000,cat:"Beverages",stock:50,img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400"},
-{id:14,name:"Sunseed Oil 1L",price:11000,cat:"Grocery",stock:45,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
-{id:15,name:"BBQ Sauce 500ml",price:15000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
-{id:16,name:"Avocado 1pc",price:500,cat:"Grocery",stock:200,img:"https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?w=400"},
-{id:17,name:"Mangoes 1kg",price:2000,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1553279768-865429fa0078?w=400"},
-{id:18,name:"Omo 500g",price:4000,cat:"Home",stock:100,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
-{id:19,name:"Colgate Toothpaste",price:3000,cat:"Personal",stock:120,img:"https://images.unsplash.com/photo-1559671088-5ef93d3b0e5e?w=400"},
-{id:20,name:"Fanta 500ml",price:1500,cat:"Beverages",stock:150,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
-{id:21,name:"Fortune Cooking Oil 1L",price:7500,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
-{id:22,name:"Cassava Flour 1kg",price:3500,cat:"Grocery",stock:70,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
-{id:23,name:"Sweet Potatoes 1kg",price:2000,cat:"Grocery",stock:90,img:"https://images.unsplash.com/photo-1518977676608-bd36c2ca4f0d?w=400"},
-{id:24,name:"Watermelon Whole",price:5000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?w=400"},
-{id:25,name:"Pineapple 1pc",price:3000,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1550254478-ead40cc54513?w=400"},
-{id:26,name:"Oranges 1kg",price:2500,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=400"},
-{id:27,name:"Green Pepper 1kg",price:4000,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=400"},
-{id:28,name:"Cabbage 1pc",price:2000,cat:"Grocery",stock:70,img:"https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=400"},
-{id:29,name:"Carrots 1kg",price:3000,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1447175008436-054170c2e979?w=400"},
-{id:30,name:"Sukuma Wiki Bunch",price:1000,cat:"Grocery",stock:150,img:"https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400"},
-{id:31,name:"Nakati Bunch",price:1000,cat:"Grocery",stock:150,img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400"},
-{id:32,name:"Passion Fruits 1kg",price:3000,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=400"},
-{id:33,name:"Pawpaw 1pc",price:2500,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1617112848923-cc2234396a8d?w=400"},
-{id:34,name:"Garlic 1kg",price:8000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
-{id:35,name:"Ginger 1kg",price:6000,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
-{id:36,name:"Peas 1kg",price:5000,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"},
-{id:37,name:"Ground Nuts 1kg",price:6000,cat:"Grocery",stock:55,img:"https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=400"},
-{id:38,name:"Honey 500ml",price:12000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1558642084-fd43571d5462?w=400"},
-{id:39,name:"Millet Flour 1kg",price:4000,cat:"Grocery",stock:70,img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
-{id:40,name:"Salt 1kg",price:1500,cat:"Grocery",stock:100,img:"https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=400"},
-{id:41,name:"Tea Leaves 250g",price:3500,cat:"Beverages",stock:80,img:"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400"},
-{id:42,name:"Blue Band 250g",price:6500,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
-{id:43,name:"Royco Mchuzi 100g",price:2000,cat:"Grocery",stock:100,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
-{id:44,name:"Bar Soap 1kg",price:3500,cat:"Home",stock:120,img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
-{id:45,name:"Vaseline 250ml",price:2500,cat:"Personal",stock:100,img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=400"},
-{id:46,name:"Pampers Medium 20pcs",price:25000,cat:"Personal",stock:25,img:"https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400"},
-{id:47,name:"Biscuits Britannia",price:2000,cat:"Snacks",stock:150,img:"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400"},
-{id:48,name:"Mango Juice 1L",price:3500,cat:"Beverages",stock:80,img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400"},
-{id:49,name:"Rwenzori Water 1L",price:1000,cat:"Beverages",stock:200,img:"https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400"},
-{id:50,name:"Onions 1kg",price:3500,cat:"Grocery",stock:90,img:"https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?w=400"},
-// 60 MORE TO MAKE 110+
-{id:51,name:"Yoghurt 500ml",price:3000,cat:"Beverages",stock:60,img:"https://images.unsplash.com/photo-1488477181946-64290103bbd6?w=400"},
-{id:52,name:"Beef 1kg",price:15000,cat:"Grocery",stock:20,img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400"},
-{id:53,name:"Chicken Whole 1.5kg",price:18000,cat:"Grocery",stock:15,img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400"},
-{id:54,name:"Fish Tilapia 1kg",price:12000,cat:"Grocery",stock:20,img:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400"},
-{id:55,name:"Cooking Gas 6kg",price:45000,cat:"Home",stock:10,img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400"},
-{id:56,name:"Dettol Soap",price:2000,cat:"Personal",stock:100,img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
-{id:57,name:"Mukwano Soap",price:3000,cat:"Home",stock:80,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
-{id:58,name:"Pepsi 500ml",price:1500,cat:"Beverages",stock:120,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
-{id:59,name:"Mountain Dew 500ml",price:1500,cat:"Beverages",stock:120,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
-{id:60,name:"Soda Mirinda 500ml",price:1500,cat:"Beverages",stock:120,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
-{id:61,name:"Minute Maid Juice",price:4000,cat:"Beverages",stock:60,img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400"},
-{id:62,name:"Lato Milk 1L",price:4500,cat:"Beverages",stock:50,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
-{id:63,name:"Jesa Milk 500ml",price:2500,cat:"Beverages",stock:70,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
-{id:64,name:"Bread - Hot Loaf",price:3500,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"},
-{id:65,name:"Donuts 6pcs",price:6000,cat:"Snacks",stock:30,img:"https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400"},
-{id:66,name:"Samosa 1pc",price:1000,cat:"Snacks",stock:100,img:"https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400"},
-{id:67,name:"Chapati 1pc",price:1000,cat:"Snacks",stock:100,img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400"},
-{id:68,name:"Rolex - Chapati + Eggs",price:3000,cat:"Snacks",stock:50,img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400"},
-{id:69,name:"Beans 1kg",price:4000,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"},
-{id:70,name:"Maize Flour 5kg",price:15000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
-{id:71,name:"Wheat Flour 2kg",price:7000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
-{id:72,name:"Spaghetti 500g",price:3500,cat:"Grocery",stock:70,img:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400"},
-{id:73,name:"Macaroni 500g",price:3500,cat:"Grocery",stock:70,img:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400"},
-{id:74,name:"Tomato Paste 200g",price:2500,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
-{id:75,name:"Curry Powder 100g",price:2000,cat:"Grocery",stock:90,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
-{id:76,name:"Black Pepper 50g",price:2000,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
-{id:77,name:"Cooking Oil - Kimbo 1kg",price:8000,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
-{id:78,name:"Margarine Prestige 500g",price:7000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
-{id:79,name:"Sugar - Kinyara 2kg",price:11000,cat:"Grocery",stock:35,img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
-{id:80,name:"Rice - Pishori 2kg",price:9000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=400"},
-{id:81,name:"Ketchup 500ml",price:5000,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
-{id:82,name:"Mayonnaise 500ml",price:6000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
-{id:83,name:"Peanut Butter 500g",price:8000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
-{id:84,name:"Jam 500g",price:6000,cat:"Grocery",stock:35,img:"https://images.unsplash.com/photo-1474440690486-ef8a1751f4b3?w=400"},
-{id:85,name:"Corn Flakes 500g",price:12000,cat:"Grocery",stock:25,img:"https://images.unsplash.com/photo-1586511925558-a80b90cc8d8d?w=400"},
-{id:86,name:"Weetabix 500g",price:10000,cat:"Grocery",stock:25,img:"https://images.unsplash.com/photo-1586511925558-a80b90cc8d8d?w=400"},
-{id:87,name:"Nido Milk Powder 400g",price:18000,cat:"Grocery",stock:20,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
-{id:88,name:"Cocoa Powder 200g",price:8000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400"},
-{id:89,name:"Lays Chips",price:3000,cat:"Snacks",stock:80,img:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400"},
-{id:90,name:"Chevda Mix",price:2500,cat:"Snacks",stock:70,img:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400"},
-{id:91,name:"Face Wash - Nivea",price:12000,cat:"Personal",stock:30,img:"https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400"},
-{id:92,name:"Lotion - Vaseline 400ml",price:12000,cat:"Personal",stock:35,img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=400"},
-{id:93,name:"Shampoo 400ml",price:8000,cat:"Personal",stock:40,img:"https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400"},
-{id:94,name:"Conditioner",price:8000,cat:"Personal",stock:35,img:"https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400"},
-{id:95,name:"Toothbrush",price:2000,cat:"Personal",stock:100,img:"https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=400"},
-{id:96,name:"Deodorant",price:5000,cat:"Personal",stock:50,img:"https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=400"},
-{id:97,name:"Sanitary Pads",price:3500,cat:"Personal",stock:60,img:"https://images.unsplash.com/photo-1584305574586-0a33e7399cb8?w=400"},
-{id:98,name:"Bathing Sponge",price:1500,cat:"Personal",stock:80,img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
-{id:99,name:"Dish Paste - Green",price:2500,cat:"Home",stock:70,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
-{id:100,name:"Toilet Cleaner Harpic",price:5000,cat:"Home",stock:50,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
-{id:101,name:"Air Freshener",price:4000,cat:"Home",stock:45,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
-{id:102,name:"Insecticide Doom",price:5000,cat:"Home",stock:40,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
-{id:103,name:"Match Box",price:500,cat:"Home",stock:200,img:"https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400"},
-{id:104,name:"Candles 6pcs",price:2000,cat:"Home",stock:80,img:"https://images.unsplash.com/photo-1603006905003-be475563bc59?w=400"},
-{id:105,name:"Torch Battery",price:3000,cat:"Home",stock:60,img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400"},
-{id:106,name:"Extension Cable",price:15000,cat:"Home",stock:20,img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400"},
-{id:107,name:"Soda - Novida 500ml",price:1500,cat:"Beverages",stock:100,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
-{id:108,name:"Energy Drink - Red Bull",price:5000,cat:"Beverages",stock:50,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
-{id:109,name:"Whiskey - Uganda Waragi 200ml",price:8000,cat:"Beverages",stock:30,img:"https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400"},
-{id:110,name:"Beer - Nile Special",price:3000,cat:"Beverages",stock:100,img:"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400"}
-];
-
-let orders = [];
-let orderItems = [];
-let monitor = { totalSales:0, totalProfit:0, totalOrders:0 };
-
-// ============ APIs - DATABASE ============
-app.get('/api/products', (req,res)=>{ res.json({success:true, count:products.length, products}); });
-
-app.post('/api/products', (req,res)=>{
-  const {name,price,cat,img,stock} = req.body;
-  if(!name||!price) return res.status(400).json({success:false, error:"Name & price required"});
-  const newId = products.length ? Math.max(...products.map(p=>p.id))+1 : 1;
-  const prod = {id:newId, name, price:Number(price), cat:cat||"Grocery", stock:Number(stock)||100, img:img||"https://via.placeholder.com/400"};
-  products.unshift(prod); // Add to top - UNLIMITED
-  res.status(201).json({success:true, product:prod, total:products.length});
-});
-
-app.delete('/api/products/:id',(req,res)=>{
-  products = products.filter(p=>p.id!==Number(req.params.id));
-  res.json({success:true, total:products.length});
-});
-
-app.put('/api/products/:id',(req,res)=>{
-  const p = products.find(x=>x.id===Number(req.params.id));
-  if(!p) return res.status(404).json({success:false});
-  Object.assign(p, req.body);
-  res.json({success:true, product:p});
-});
-
-// ===== ORDER API - MONEY MONITOR (Your screenshot code fixed) =====
-app.post('/api/orders', (req,res)=>{
-  try{
-    const {customer_name, customer_phone, items, total} = req.body;
-    if(!items||!items.length) throw new Error("Cart empty");
-    const order_id = Date.now();
-    let calcTotal = 0;
-    // BEGIN TRANSACTION - Like your screenshot
-    items.forEach(item=>{
-      const prod = products.find(p=>p.id===item.product_id);
-      if(!prod) throw new Error(`Product ${item.product_id} not found`);
-      if(prod.stock < item.quantity) throw new Error(`Low stock: ${prod.name}`);
-      const subtotal = item.quantity * item.unit_price;
-      calcTotal += subtotal;
-      orderItems.push({order_id, product_id:item.product_id, quantity:item.quantity, unit_price:item.unit_price, subtotal});
-      prod.stock = prod.stock - item.quantity; // UPDATE products SET stock = stock - $1
-      prod.updated_at = new Date();
-    });
-    const order = {id:order_id, customer_name, customer_phone, total: total||calcTotal, items, wa1:"0744590988", wa2:"0774360584", created_at:new Date()};
-    orders.push(order);
-    // COMMIT - Update Money Monitor
-    monitor.totalSales += order.total;
-    monitor.totalProfit = Math.round(monitor.totalSales * 0.05);
-    monitor.totalOrders += 1;
-    res.status(201).json({success:true, order_id, total_amount:order.total, message:"Order created successfully", whatsapp1:`https://wa.me/256744590988?text=NEW ORDER ${order_id} UGX ${order.total} - ${customer_name}`, whatsapp2:`https://wa.me/256774360584?text=NEW ORDER ${order_id} UGX ${order.total} - ${customer_name}`});
-  }catch(err){
-    // ROLLBACK
-    res.status(400).json({success:false, error:err.message});
-  }
-});
-
-app.get('/api/monitor',(req,res)=>{
-  if(req.query.pin!=="7445") return res.status(403).json({success:false, error:"Wrong PIN! Use 7445"});
-  res.json({success:true, monitor:{...monitor, totalProducts:products.length}, orders:orders.slice(-30).reverse()});
-});
-
-// ===== FRONTEND - FIXES Loading products... =====
-app.get('/',(req,res)=>res.send(`
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kisakye Mart FMCG - 110+ Unlimited</title><style>body{margin:0;font-family:Poppins,Arial;background:#f3f4f6}.top{background:#0B8A3E;color:#fff;padding:14px;text-align:center}.search{background:#fff;margin:12px;border-radius:12px;padding:12px;display:flex;gap:8px}.search input{flex:1;border:none;outline:none}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}.card{background:#fff;border-radius:14px;padding:10px}.card img{width:100%;height:110px;object-fit:cover;border-radius:10px}.btn{background:#0B8A3E;color:#fff;border:none;padding:8px;border-radius:8px;width:100%}.money{background:linear-gradient(135deg,#0B8A3E,#22c55e);color:#fff;margin:12px;padding:14px;border-radius:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center}.money b{font-size:18px;display:block}</style></head><body>
-<div class="top"><h2 style="margin:0">🛒 Kisakye Mart FMCG</h2><p style="margin:4px 0;font-size:13px">Quality FMCG products at your fingertips</p><small>110+ Products • Unlimited Add • 0744590988 • 0774360584</small></div>
-<div class="search"><input id="q" placeholder="Search products, brands or categories..." oninput="load()"><button onclick="load()" style="background:#0B8A3E;color:#fff;border:none;padding:8px 12px;border-radius:8px">Search</button></div>
-<div class="money"><div><small>Sales</small><b id="s">UGX 0</b></div><div><small>Profit 5%</small><b id="p">UGX 0</b></div><div><small>Orders</small><b id="o">0</b><small id="pcount">110 products</small></div></div>
-<div id="status" style="text-align:center;padding:10px;color:#666">Loading products via Database API...</div>
-<div id="grid" class="grid"></div>
-<div style="background:#fff;margin:12px;padding:14px;border-radius:16px">
-<h3>🔐 Seller Dashboard - PIN 7445</h3><input id="pin" type="password" placeholder="Enter PIN 7445" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ddd"><button class="btn" onclick="monitorAPI()" style="margin-top:8px">Unlock Money Monitor</button><div id="mon"></div>
-<h3 style="margin-top:18px">📸 Add Product Manually - Unlimited</h3><input id="n" placeholder="Product Name" style="width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #ddd"><input id="pr" type="number" placeholder="Price UGX" style="width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #ddd"><input id="st" type="number" placeholder="Stock qty e.g 100" style="width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #ddd"><select id="cat" style="width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #ddd"><option>Grocery</option><option>Beverages</option><option>Home</option><option>Personal</option><option>Snacks</option></select><input id="img" placeholder="Image URL or Base64 - leave empty for placeholder" style="width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #ddd"><input type="file" id="file" accept="image/*" style="width:100%;margin:6px 0"><img id="preview" style="width:80px;height:80px;border-radius:10px;display:none;object-fit:cover"><button class="btn" onclick="addProd()">+ Add Product - Unlimited</button><p style="font-size:11px;color:#666">You can add unlimited products! They save in database and show instantly. No limit!</p>
-</div>
-<div style="background:#000;color:#fff;text-align:center;padding:14px"><p>Kisakye Mart FMCG</p><p>Kampala • Wakiso • Entebbe</p><p>0744590988 / 0774360584 • <span id="totalProd">110+</span> Products Unlimited</p></div>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kisakye Mart FMCG - 110+ Products Visible</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><style>:root{--green:#0B8A3E;--orange:#F59E0B}*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}body{background:#f3f4f6}.screen{display:none;min-height:100vh;padding-bottom:80px}.screen.active{display:flex;flex-direction:column}.header{padding:12px 16px;background:#fff;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;border-bottom:1px solid #eee}.search{background:#fff;margin:12px 16px;padding:12px;border-radius:12px;display:flex;gap:8px;box-shadow:0 1px 3px rgba(0,0,0,.1)}.search input{flex:1;border:none;outline:none}.banner{background:linear-gradient(135deg,#0B8A3E,#16a34a);margin:12px 16px;border-radius:18px;padding:14px;color:#fff;display:flex;justify-content:space-between}.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:12px}.cat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px}.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px}.prod-card{background:#fff;border-radius:14px;padding:8px;border:1px solid #f0f0f0}.prod-card img{width:100%;height:100px;object-fit:cover;border-radius:10px}.add-btn{background:#f0fdf4;border:1px solid var(--green);color:var(--green);padding:6px;border-radius:8px;width:100%;margin-top:6px;font-weight:600;font-size:11px}.btn-green{background:var(--green);color:#fff;border:none;padding:13px;border-radius:12px;font-weight:600;width:100%}.input{width:100%;padding:12px;border:1.5px solid #e5e7eb;border-radius:10px;margin:6px 0;outline:none}.card{background:#fff;border-radius:14px;padding:14px;margin:10px;box-shadow:0 2px 6px rgba(0,0,0,.05)}.money{background:linear-gradient(135deg,#0B8A3E,#22c55e);color:#fff;border-radius:16px;padding:14px;margin:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center}.money b{font-size:16px;display:block}.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-around;padding:8px 0 10px;z-index:99}.bottom-nav button{border:none;background:none;color:#9ca3af;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:2px}.bottom-nav button.active{color:var(--green)}.bottom-nav i{font-size:18px}</style></head><body>
+<div id="splash" class="screen active" style="background:var(--green);justify-content:center;align-items:center;color:#fff;text-align:center"><div><div style="font-size:60px;font-weight:800">KJ 🛒</div><h3>KISAKYE MART<br><small style="letter-spacing:2px">110+ PRODUCTS VISIBLE</small></h3><p style="margin-top:15px"><i class="fa-solid fa-spinner fa-spin"></i> Loading 110 Products...</p></div></div>
+<div id="home" class="screen"><div class="header"><div><p style="font-size:10px;color:#6b7280"><i class="fa-solid fa-location-dot"></i> Deliver to</p><b style="font-size:12px">Kampala, Uganda</b></div><div onclick="showScreen('cart')" style="position:relative"><i class="fa-solid fa-cart-shopping"></i><span id="cartBadge" style="background:var(--orange);color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;position:absolute;top:-8px;right:-10px">0</span></div></div><div class="search"><i class="fa-solid fa-magnifying-glass" style="color:#9ca3af"></i><input id="searchBox" placeholder="Search 110+ products..." oninput="renderProducts()"><button onclick="renderProducts()" style="background:var(--green);color:#fff;border:none;padding:6px 10px;border-radius:8px">Search</button></div><div class="banner"><div><h4>110+ Products Visible<br>Unlimited Manual Add</h4><p style="font-size:11px">0744590988 • 0774360584</p></div><div style="font-size:32px">💰</div></div><div class="cat-grid"><div onclick="filterCat('all')"><div class="cat-icon" style="background:#dcfce7;color:var(--green)"><i class="fa-solid fa-border-all"></i></div><small>All 110+</small></div><div onclick="filterCat('Grocery')"><div class="cat-icon" style="background:#fee2e2">🛒</div><small>Grocery</small></div><div onclick="filterCat('Beverages')"><div class="cat-icon" style="background:#fef3c7">🥤</div><small>Drinks</small></div><div onclick="filterCat('Personal')"><div class="cat-icon" style="background:#fce7f3">🧴</div><small>Personal</small></div><div onclick="filterCat('Home')"><div class="cat-icon" style="background:#dbeafe">🧹</div><small>Home</small></div></div><div style="display:flex;justify-content:space-between;padding:0 12px;margin:6px 0"><b>All Products - <span id="prodCount">110+</span> Visible</b><span style="color:var(--green);font-size:11px" onclick="showScreen('add')">+ Add Unlimited</span></div><div id="prodGrid" class="prod-grid"></div><div class="bottom-nav"><button class="active"><i class="fa-solid fa-house"></i>Home</button><button onclick="showScreen('seller')"><i class="fa-solid fa-chart-line"></i>Money</button><button onclick="showScreen('add')"><i class="fa-solid fa-plus"></i>Add</button><button onclick="showScreen('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button onclick="showScreen('account')"><i class="fa-regular fa-user"></i>Both No.</button></div></div>
+<div id="seller" class="screen"><div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')"></i><b>Money Monitor - PIN 7445</b><span></span></div><div class="card" id="ownerLogin"><h3>Enter PIN 7445</h3><input id="ownerPin" class="input" type="password" placeholder="PIN 7445"><button class="btn-green" onclick="unlockOwner()">Unlock - See Money</button></div><div id="ownerControls" style="display:none"><div class="money"><div><small>Sales</small><b id="sales">UGX 0</b></div><div><small>Profit 5%</small><b id="profit">UGX 0</b></div><div><small>Orders</small><b id="orderCount">0</b></div></div><div class="card"><h3>Manage 110+ Products</h3><div id="manageList"></div><button class="btn-green" style="background:#dc2626;margin-top:10px" onclick="resetShop()">Reset to 110 Default</button><button class="btn-green" style="background:#333;margin-top:6px" onclick="lockOwner()">Lock</button></div><div class="card"><h3>Orders - Real Money</h3><div id="ordersList">No orders</div></div></div></div>
+<div id="add" class="screen"><div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')"></i><b>Add Unlimited Products</b><span></span></div><div class="card"><h3>📸 Add Product - Unlimited Number</h3><p style="font-size:11px;color:#666">You can add unlimited products manually! No limit!</p><input id="pname" class="input" placeholder="Product Name e.g Posho 5kg"><input id="pprice" type="number" class="input" placeholder="Price UGX"><input id="pstock" type="number" class="input" placeholder="Stock Qty e.g 100"><select id="pcat" class="input"><option>Grocery</option><option>Beverages</option><option>Personal</option><option>Home</option><option>Snacks</option></select><p style="font-size:11px">📷 Camera / Gallery:</p><input type="file" id="pfile" accept="image/*" capture="environment" class="input"><img id="preview" style="width:80px;height:80px;border-radius:10px;display:none;object-fit:cover"><p style="font-size:11px">OR Paste Image Link:</p><input id="pimg" class="input" placeholder="https://..."><button class="btn-green" style="margin-top:10px" onclick="addProduct()">+ Add Product - Visible Instantly</button></div><div class="bottom-nav"><button onclick="showScreen('home')"><i class="fa-solid fa-house"></i>Home</button><button onclick="showScreen('seller')"><i class="fa-solid fa-chart-line"></i>Money</button><button class="active"><i class="fa-solid fa-plus"></i>Add</button><button onclick="showScreen('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button onclick="showScreen('account')"><i class="fa-regular fa-user"></i>Both No.</button></div></div>
+<div id="cart" class="screen"><div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')"></i><b>Cart (<span id="cartCount2">0</span>)</b><span></span></div><div id="cartList" style="padding:12px"></div><div class="card"><div style="display:flex;justify-content:space-between;font-size:12px;margin:4px 0"><span>Subtotal</span><b id="subtotal">UGX 0</b></div><div style="display:flex;justify-content:space-between;font-size:12px;margin:4px 0"><span>Delivery</span><span>UGX 3,000</span></div><div style="display:flex;justify-content:space-between;font-size:12px;margin:4px 0"><span>Service 5%</span><span id="serviceFee">UGX 0</span></div><hr><div style="display:flex;justify-content:space-between;font-weight:700"><span>Total Real Money</span><span id="totalPrice">UGX 0</span></div><input id="custName" class="input" placeholder="Your Name"><input id="custPhone" class="input" placeholder="Phone 07..."><button class="btn-green" style="margin-top:8px" onclick="placeOrder()">Place Order - Send to BOTH Numbers</button><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><button style="background:#25D366;color:#fff;border:none;padding:10px;border-radius:10px;font-weight:600;font-size:11px" onclick="openWA(WA)">WhatsApp 0744590988</button><button style="background:#075E54;color:#fff;border:none;padding:10px;border-radius:10px;font-weight:600;font-size:11px" onclick="openWA(WA2)">WhatsApp 0774360584</button></div></div></div>
+<div id="account" class="screen"><div class="header"><b>Both WhatsApp Numbers Active</b></div><div class="money"><div><small>Total Sales</small><b id="sales2">UGX 0</b></div><div><small>Your Profit</small><b id="profit2">UGX 0</b></div><div><small>Orders</small><b id="orderCount2">0</b></div></div><div class="card"><h3>0744590988 + 0774360584</h3><p style="font-size:13px;margin:8px 0">Every order automatically sends to BOTH numbers!<br>110+ products visible + Unlimited add manually!<br>Your products never hide!</p><button class="btn-green" onclick="showScreen('seller')">Money Dashboard</button></div><div class="bottom-nav"><button onclick="showScreen('home')"><i class="fa-solid fa-house"></i>Home</button><button onclick="showScreen('seller')"><i class="fa-solid fa-chart-line"></i>Money</button><button onclick="showScreen('add')"><i class="fa-solid fa-plus"></i>Add</button><button onclick="showScreen('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button class="active"><i class="fa-regular fa-user"></i>Both No.</button></div></div>
+<div id="success" class="screen" style="justify-content:center;align-items:center;text-align:center;background:#fff"><div style="width:70px;height:70px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;color:#fff;font-size:32px">✓</div><h3 style="margin-top:14px">Order Placed!</h3><p style="font-size:12px;color:#6b7280">Money added to monitor</p><div style="background:#f3f4f6;padding:10px 18px;border-radius:10px;margin:14px 0"><p style="font-size:10px">Order ID</p><b id="orderId">KM000</b></div><button class="btn-green" onclick="trackBoth()">📱 Send to BOTH Numbers</button><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;width:100%;max-width:280px"><button style="background:#25D366;color:#fff;border:none;padding:10px;border-radius:10px;font-weight:700;font-size:11px" onclick="trackWA(WA)">0744590988</button><button style="background:#075E54;color:#fff;border:none;padding:10px;border-radius:10px;font-weight:700;font-size:11px" onclick="trackWA(WA2)">0774360584</button></div><button class="btn-green" style="background:#fff;color:var(--green);border:1.5px solid var(--green);margin-top:10px" onclick="showScreen('home')">Continue - See 110 Products</button></div>
 <script>
-let cart=[]; let selImg='';
-document.getElementById('file').addEventListener('change',e=>{const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{selImg=ev.target.result; document.getElementById('preview').src=selImg; document.getElementById('preview').style.display='block'; document.getElementById('img').value=selImg;}; r.readAsDataURL(f);});
-async function load(){
-  const q=document.getElementById('q').value.toLowerCase();
-  document.getElementById('status').innerText='Loading 110+ products from Database API...';
-  const res=await fetch('/api/products'); const data=await res.json();
-  let list=data.products; if(q) list=list.filter(x=>x.name.toLowerCase().includes(q)||x.cat.toLowerCase().includes(q));
-  document.getElementById('status').innerText=data.count+'+ Products Loaded - Unlimited Database';
-  document.getElementById('totalProd').innerText=data.count; document.getElementById('pcount').innerText=data.count+' products';
-  document.getElementById('grid').innerHTML=list.map(p=>\`<div class="card"><img src="\${p.img}" onerror="this.src='https://via.placeholder.com/300'"><h4 style="font-size:13px;margin:6px 0">\${p.name}</h4><p style="font-size:11px;color:#666">\${p.cat} • Stock:\${p.stock}</p><p style="color:#0B8A3E;font-weight:700">UGX \${p.price.toLocaleString()}</p><button class="btn" onclick="addToCart(\${p.id},\${p.price},'\${p.name.replace(/'/g,'')}')">Add</button></div>\`).join('');
-}
-async function addToCart(id,price,name){
-  cart.push({product_id:id, quantity:1, unit_price:price, name});
-  if(confirm(name+' added! Cart:'+cart.length+' Checkout?')){
-    const customer_name=prompt('Your name:')||'Customer'; const customer_phone=prompt('Phone:')||'07...'; const total=cart.reduce((s,i)=>s+i.unit_price*i.quantity,0)+3000;
-    const res=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({customer_name,customer_phone,items:cart,total})});
-    const data=await res.json();
-    if(data.success){alert('Order #'+data.order_id+' Created! Total UGX '+data.total_amount+'\\nSending to BOTH WhatsApp numbers!'); window.open(data.whatsapp1,'_blank'); setTimeout(()=>window.open(data.whatsapp2,'_blank'),900); cart=[]; load(); monitorAPI();}
-    else alert(data.error);
-  }
-}
-async function monitorAPI(){
-  const pin=document.getElementById('pin').value||'7445'; const res=await fetch('/api/monitor?pin='+pin); const data=await res.json();
-  if(!data.success) return alert(data.error);
-  document.getElementById('s').innerText='UGX '+data.monitor.totalSales.toLocaleString(); document.getElementById('p').innerText='UGX '+data.monitor.totalProfit.toLocaleString(); document.getElementById('o').innerText=data.monitor.totalOrders; document.getElementById('pcount').innerText=data.monitor.totalProducts+' products';
-  document.getElementById('mon').innerHTML='<h4>Recent Orders - Money Monitor</h4>'+data.orders.map(o=>\`<div style="background:#f0fdf4;padding:8px;margin:6px 0;border-radius:8px;font-size:12px"><b>\${o.customer_name}</b> \${o.customer_phone} - UGX \${o.total.toLocaleString()} - \${new Date(o.created_at).toLocaleString()}<br><small>\${o.items.map(i=>i.name).join(', ')}</small></div>\`).join('');
-}
-async function addProd(){
-  const name=document.getElementById('n').value, price=document.getElementById('pr').value, cat=document.getElementById('cat').value, stock=document.getElementById('st').value, img=document.getElementById('img').value||selImg;
-  if(!name||!price) return alert('Enter name & price');
-  const res=await fetch('/api/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,price,cat,stock,img})});
-  const data=await res.json(); if(data.success){alert('Added! Now '+data.total+' products - Unlimited!'); document.getElementById('n').value=''; document.getElementById('pr').value=''; document.getElementById('img').value=''; selImg=''; document.getElementById('preview').style.display='none'; load();}
-}
-load();
+let WA="256744590988";let WA2="256774360584";let OWNER_PIN="7445";
+let defaultProducts=[
+{id:1,name:"Posho Maize Meal 2kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
+{id:2,name:"Coca Cola 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:3,name:"Royal Cooking Oil 2L",price:13000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
+{id:4,name:"Sugar 1kg",price:5500,cat:"Grocery",img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
+{id:5,name:"Rice 1kg",price:4500,cat:"Grocery",img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=400"},
+{id:6,name:"Matooke Bunch",price:20000,cat:"Grocery",img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
+{id:7,name:"Tomatoes 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
+{id:8,name:"Bread Loaf",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"},
+{id:9,name:"Milk 500ml",price:2500,cat:"Beverages",img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
+{id:10,name:"Eggs Tray 30pcs",price:15000,cat:"Grocery",img:"https://images.unsplash.com/photo-1488679831987-9564a7c76c7b?w=400"},
+{id:11,name:"Jik Bleach 1L",price:3500,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:12,name:"Kakira Sugar 50kg",price:160000,cat:"Grocery",img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
+{id:13,name:"Nescafe 100g",price:15000,cat:"Beverages",img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400"},
+{id:14,name:"Sunseed Oil 1L",price:11000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
+{id:15,name:"BBQ Sauce 500ml",price:15000,cat:"Grocery",img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
+{id:16,name:"Avocado 1pc",price:500,cat:"Grocery",img:"https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?w=400"},
+{id:17,name:"Mangoes 1kg",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1553279768-865429fa0078?w=400"},
+{id:18,name:"Omo 500g",price:4000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:19,name:"Toothpaste",price:3000,cat:"Personal",img:"https://images.unsplash.com/photo-1559671088-5ef93d3b0e5e?w=400"},
+{id:20,name:"Fanta 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:21,name:"Cooking Oil 1L",price:7500,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
+{id:22,name:"Cassava Flour 1kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:23,name:"Sweet Potatoes 1kg",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1518977676608-bd36c2ca4f0d?w=400"},
+{id:24,name:"Watermelon",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?w=400"},
+{id:25,name:"Pineapple",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1550254478-ead40cc54513?w=400"},
+{id:26,name:"Oranges 1kg",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=400"},
+{id:27,name:"Green Pepper 1kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=400"},
+{id:28,name:"Cabbage",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=400"},
+{id:29,name:"Carrots 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1447175008436-054170c2e979?w=400"},
+{id:30,name:"Sukuma Wiki",price:1000,cat:"Grocery",img:"https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400"},
+{id:31,name:"Nakati",price:1000,cat:"Grocery",img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400"},
+{id:32,name:"Passion Fruits 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=400"},
+{id:33,name:"Pawpaw",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1617112848923-cc2234396a8d?w=400"},
+{id:34,name:"Garlic 1kg",price:8000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
+{id:35,name:"Ginger 1kg",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
+{id:36,name:"Peas 1kg",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"},
+{id:37,name:"Ground Nuts 1kg",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=400"},
+{id:38,name:"Honey 500ml",price:12000,cat:"Grocery",img:"https://images.unsplash.com/photo-1558642084-fd43571d5462?w=400"},
+{id:39,name:"Millet Flour 1kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
+{id:40,name:"Salt 1kg",price:1500,cat:"Grocery",img:"https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=400"},
+{id:41,name:"Tea Leaves 250g",price:3500,cat:"Beverages",img:"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400"},
+{id:42,name:"Blue Band 250g",price:6500,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
+{id:43,name:"Royco 100g",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:44,name:"Bar Soap",price:3500,cat:"Home",img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
+{id:45,name:"Vaseline 250ml",price:2500,cat:"Personal",img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=400"},
+{id:46,name:"Pampers Medium",price:25000,cat:"Personal",img:"https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400"},
+{id:47,name:"Biscuits",price:2000,cat:"Snacks",img:"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400"},
+{id:48,name:"Juice 1L",price:3500,cat:"Beverages",img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400"},
+{id:49,name:"Water 1L",price:1000,cat:"Beverages",img:"https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400"},
+{id:50,name:"Onions 1kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?w=400"},
+{id:51,name:"Yoghurt 500ml",price:3000,cat:"Beverages",img:"https://images.unsplash.com/photo-1488477181946-64290103bbd6?w=400"},
+{id:52,name:"Beef 1kg",price:15000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400"},
+{id:53,name:"Chicken Whole",price:18000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400"},
+{id:54,name:"Tilapia 1kg",price:12000,cat:"Grocery",img:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400"},
+{id:55,name:"Cooking Gas 6kg",price:45000,cat:"Home",img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400"},
+{id:56,name:"Dettol Soap",price:2000,cat:"Personal",img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
+{id:57,name:"Mukwano Soap",price:3000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:58,name:"Pepsi 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:59,name:"Mountain Dew",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:60,name:"Mirinda 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:61,name:"Minute Maid",price:4000,cat:"Beverages",img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400"},
+{id:62,name:"Lato Milk 1L",price:4500,cat:"Beverages",img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
+{id:63,name:"Jesa Milk",price:2500,cat:"Beverages",img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
+{id:64,name:"Hot Loaf Bread",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"},
+{id:65,name:"Donuts 6pcs",price:6000,cat:"Snacks",img:"https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400"},
+{id:66,name:"Samosa",price:1000,cat:"Snacks",img:"https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400"},
+{id:67,name:"Chapati",price:1000,cat:"Snacks",img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400"},
+{id:68,name:"Rolex",price:3000,cat:"Snacks",img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400"},
+{id:69,name:"Beans 1kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"},
+{id:70,name:"Maize Flour 5kg",price:15000,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
+{id:71,name:"Wheat Flour 2kg",price:7000,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:72,name:"Spaghetti 500g",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400"},
+{id:73,name:"Macaroni 500g",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400"},
+{id:74,name:"Tomato Paste",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:75,name:"Curry Powder",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:76,name:"Black Pepper",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:77,name:"Kimbo 1kg",price:8000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
+{id:78,name:"Prestige 500g",price:7000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
+{id:79,name:"Kinyara Sugar 2kg",price:11000,cat:"Grocery",img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
+{id:80,name:"Pishori Rice 2kg",price:9000,cat:"Grocery",img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=400"},
+{id:81,name:"Ketchup 500ml",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
+{id:82,name:"Mayonnaise 500ml",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
+{id:83,name:"Peanut Butter",price:8000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
+{id:84,name:"Jam 500g",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474440690486-ef8a1751f4b3?w=400"},
+{id:85,name:"Corn Flakes",price:12000,cat:"Grocery",img:"https://images.unsplash.com/photo-1586511925558-a80b90cc8d8d?w=400"},
+{id:86,name:"Weetabix",price:10000,cat:"Grocery",img:"https://images.unsplash.com/photo-1586511925558-a80b90cc8d8d?w=400"},
+{id:87,name:"Nido 400g",price:18000,cat:"Grocery",img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
+{id:88,name:"Cocoa Powder",price:8000,cat:"Grocery",img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400"},
+{id:89,name:"Lays Chips",price:3000,cat:"Snacks",img:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400"},
+{id:90,name:"Chevda Mix",price:2500,cat:"Snacks",img:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400"},
+{id:91,name:"Nivea Face Wash",price:12000,cat:"Personal",img:"https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400"},
+{id:92,name:"Vaseline Lotion 400ml",price:12000,cat:"Personal",img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=400"},
+{id:93,name:"Shampoo 400ml",price:8000,cat:"Personal",img:"https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400"},
+{id:94,name:"Conditioner",price:8000,cat:"Personal",img:"https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400"},
+{id:95,name:"Toothbrush",price:2000,cat:"Personal",img:"https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=400"},
+{id:96,name:"Deodorant",price:5000,cat:"Personal",img:"https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=400"},
+{id:97,name:"Sanitary Pads",price:3500,cat:"Personal",img:"https://images.unsplash.com/photo-1584305574586-0a33e7399cb8?w=400"},
+{id:98,name:"Bathing Sponge",price:1500,cat:"Personal",img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
+{id:99,name:"Dish Paste Green",price:2500,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:100,name:"Harpic Toilet Cleaner",price:5000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:101,name:"Air Freshener",price:4000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:102,name:"Doom Insecticide",price:5000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:103,name:"Match Box",price:500,cat:"Home",img:"https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400"},
+{id:104,name:"Candles 6pcs",price:2000,cat:"Home",img:"https://images.unsplash.com/photo-1603006905003-be475563bc59?w=400"},
+{id:105,name:"Torch Battery",price:3000,cat:"Home",img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400"},
+{id:106,name:"Extension Cable",price:15000,cat:"Home",img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400"},
+{id:107,name:"Novida Soda",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:108,name:"Red Bull Energy",price:5000,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:109,name:"Uganda Waragi 200ml",price:8000,cat:"Beverages",img:"https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400"},
+{id:110,name:"Nile Special Beer",price:3000,cat:"Beverages",img:"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400"},
+{id:111,name:"Bell Lager",price:3000,cat:"Beverages",img:"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400"},
+{id:112,name:"Club Beer",price:3000,cat:"Beverages",img:"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400"},
+{id:113,name:"Sodas Box 24pcs",price:25000,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:114,name:"Loaf - White Bread",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"},
+{id:115,name:"Brown Bread",price:4500,cat:"Grocery",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"}
+];
+let products=JSON.parse(localStorage.getItem('kisakye_110_visible')||'null')||defaultProducts;
+let cart=JSON.parse(localStorage.getItem('cart_visible')||'[]');let sales=+localStorage.getItem('sales_visible')||0;let allOrders=JSON.parse(localStorage.getItem('orders_visible')||'[]');let selImg="";let ownerUnlocked=localStorage.getItem('ownerUnlocked_visible')==='yes';let currentCat='all';let lastMsg="";
+document.getElementById('pfile')?.addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=ev=>{selImg=ev.target.result;let pv=document.getElementById('preview');pv.src=selImg;pv.style.display='block'};r.readAsDataURL(f)});
+function saveAll(){localStorage.setItem('kisakye_110_visible',JSON.stringify(products));localStorage.setItem('cart_visible',JSON.stringify(cart));localStorage.setItem('sales_visible',sales);localStorage.setItem('orders_visible',JSON.stringify(allOrders))}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='seller'&&ownerUnlocked){document.getElementById('ownerLogin').style.display='none';document.getElementById('ownerControls').style.display='block'}renderProducts()}
+setTimeout(()=>showScreen('home'),800);
+function unlockOwner(){if(document.getElementById('ownerPin').value===OWNER_PIN){ownerUnlocked=true;localStorage.setItem('ownerUnlocked_visible','yes');document.getElementById('ownerLogin').style.display='none';document.getElementById('ownerControls').style.display='block';renderProducts()}else alert('Wrong PIN 7445')}
+function lockOwner(){ownerUnlocked=false;localStorage.removeItem('ownerUnlocked_visible');document.getElementById('ownerLogin').style.display='block';document.getElementById('ownerControls').style.display='none'}
+function renderProducts(){let grid=document.getElementById('prodGrid');if(!grid)return;grid.innerHTML='';let q=(document.getElementById('searchBox')?.value||'').toLowerCase();let list=products.filter(p=>{let okCat=currentCat==='all'||p.cat===currentCat;let okQ=!q||p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q);return okCat&&okQ});document.getElementById('prodCount').innerText=list.length+' / '+products.length;list.forEach((p,idx)=>{let realIdx=products.indexOf(p);grid.innerHTML+=`<div class="prod-card"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/300'"><h4 style="font-size:11px;margin:4px 0">${p.name}</h4><div style="display:flex;justify-content:space-between;align-items:center"><span style="color:var(--green);font-weight:700;font-size:11px">UGX ${p.price.toLocaleString()}</span><span style="font-size:8px;background:#dcfce7;color:var(--green);padding:2px 5px;border-radius:8px">${p.cat}</span></div><button class="add-btn" onclick="addToCart(${realIdx})">Add to Cart</button></div>`});let ml=document.getElementById('manageList');if(ownerUnlocked&&ml){ml.innerHTML='';products.slice(0,50).forEach((p,i)=>{let real=products.indexOf(p);ml.innerHTML+=`<div style="background:#fff;padding:6px;margin:4px 0;border-radius:8px;display:flex;gap:6px;align-items:center;border-left:3px solid var(--green)"><img src="${p.img}" style="width:36px;height:36px;border-radius:6px;object-fit:cover"><div style="flex:1"><b style="font-size:10px">${p.name}</b><br><small>UGX ${p.price}</small></div><button style="background:red;color:#fff;border:none;padding:3px 6px;border-radius:5px;font-size:9px" onclick="deleteProd(${real})">X</button></div>`});if(products.length>50)ml.innerHTML+=`<p style="font-size:10px;color:#666">+ ${products.length-50} more products hidden for speed - All visible on Home!</p>`}let od=document.getElementById('ordersList');if(od){od.innerHTML=allOrders.length?'':'No orders yet';allOrders.slice().reverse().slice(0,15).forEach(o=>{od.innerHTML+=`<div style="background:#f0fdf4;border-left:3px solid var(--green);padding:6px;margin:5px 0;border-radius:6px;font-size:11px"><b>${o.name}</b> ${o.phone}<br>${o.items.join(', ')}<br><b>UGX ${o.total.toLocaleString()}</b> - ${o.time}</div>`})}document.getElementById('sales').innerText='UGX '+sales.toLocaleString();document.getElementById('profit').innerText='UGX '+Math.round(sales*0.05).toLocaleString();document.getElementById('orderCount').innerText=allOrders.length;document.getElementById('sales2').innerText='UGX '+sales.toLocaleString();document.getElementById('profit2').innerText='UGX '+Math.round(sales*0.05).toLocaleString();document.getElementById('orderCount2').innerText=allOrders.length;renderCart()}
+function filterCat(c){currentCat=c;renderProducts()}
+function renderCart(){let list=document.getElementById('cartList');if(!list)return;list.innerHTML=cart.length?'':'<p style="text-align:center;color:#888;font-size:13px">Cart empty - Add products from Home, all 110+ visible!</p>';let sub=0;cart.forEach((c,idx)=>{sub+=c.price;list.innerHTML+=`<div style="background:#fff;border-radius:10px;padding:8px;display:flex;gap:8px;align-items:center;margin-bottom:8px"><img src="${c.img}" style="width:50px;height:50px;border-radius:8px;object-fit:cover"><div style="flex:1"><b style="font-size:11px">${c.name}</b><br><span style="color:var(--green);font-weight:600;font-size:11px">UGX ${c.price.toLocaleString()}</span></div><i class="fa-solid fa-xmark" onclick="cart.splice(${idx},1);saveAll();renderProducts()"></i></div>`});let fee=Math.round(sub*0.05);let total=sub+3000+fee;document.getElementById('subtotal').innerText='UGX '+sub.toLocaleString();document.getElementById('serviceFee').innerText='UGX '+fee.toLocaleString();document.getElementById('totalPrice').innerText='UGX '+total.toLocaleString();document.getElementById('cartBadge').innerText=cart.length;document.getElementById('cartCount2').innerText=cart.length;window._total=total;saveAll()}
+function addToCart(i){cart.push(products[i]);saveAll();renderProducts();showScreen('cart')}
+function addProduct(){let n=document.getElementById('pname').value.trim();let pr=+document.getElementById('pprice').value;let cat=document.getElementById('pcat').value;let stock=+document.getElementById('pstock').value||100;let link=document.getElementById('pimg').value.trim();let img=selImg||link||"https://via.placeholder.com/300";if(!n||!pr)return alert('Enter name & price');products.unshift({id:Date.now(),name:n,price:pr,cat:cat,img:img,stock:stock});saveAll();document.getElementById('pname').value='';document.getElementById('pprice').value='';document.getElementById('pstock').value='';document.getElementById('pimg').value='';document.getElementById('pfile').value='';document.getElementById('preview').style.display='none';selImg='';renderProducts();showScreen('home');alert(n+' added! Now total: '+products.length+' products - ALL VISIBLE!')}
+function deleteProd(i){if(confirm('Delete '+products[i].name+'?')){products.splice(i,1);saveAll();renderProducts()}}
+function resetShop(){if(confirm('Reset to 115 default products? Your added products will be deleted!')){products=[...defaultProducts];saveAll();renderProducts()}}
+function placeOrder(){if(!cart.length)return alert('Cart empty - Add from 110+ visible products!');let name=document.getElementById('custName').value||'Customer';let phone=document.getElementById('custPhone').value||'07...';let total=window._total;let order={name:name,phone:phone,items:cart.map(c=>c.name),total:total,time:new Date().toLocaleString()};allOrders.push(order);sales+=total;saveAll();let id='KM'+Date.now().toString().slice(-6);document.getElementById('orderId').innerText=id;let msg=`*KISAKYE MART 110+ PRODUCTS - NEW ORDER*%0AOrder ID: ${id}%0AName: ${name}%0APhone: ${phone}%0AItems:%0A`+cart.map(c=>`- ${c.name} UGX ${c.price}`).join('%0A')+`%0ATotal: UGX ${total}%0AProfit 5%: UGX ${Math.round(total*0.05)}%0ATotal Sales: UGX ${sales}%0AProducts Count: ${products.length} visible%0ABoth Numbers: 0744590988 & 0774360584`;lastMsg=msg;cart=[];saveAll();renderProducts();showScreen('success')}
+function openWA(num){let m=lastMsg||'Hello Kisakye Mart - I want to order from your 110+ products!';window.open(`https://wa.me/${num}?text=${m}`,'_blank')}
+function trackWA(num){openWA(num)}function trackBoth(){openWA(WA);setTimeout(()=>openWA(WA2),800)}
+if(ownerUnlocked){document.getElementById('ownerLogin').style.display='none';document.getElementById('ownerControls').style.display='block'}
+renderProducts();
 </script></body></html>
-`));
-
-app.listen(PORT,()=>console.log(`Kisakye Mart 110+ UNLIMITED running http://localhost:${PORT}`));
