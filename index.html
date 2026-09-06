@@ -1,10 +1,829 @@
+/*
+===========================================================
+ KISAKYE MART FMCG - STAGE 3
+ ALL-IN-ONE PRODUCT + DATABASE SERVER
+===========================================================
+
+ Technology:
+ - Node.js
+ - Express
+ - PostgreSQL
+
+ Includes:
+ - FMCG products
+ - Product images
+ - Categories
+ - Sellers
+ - Buyers
+ - Orders
+ - Order items
+ - Payments
+ - Kisakye Mart 5% commission
+ - Delivery records
+ - Admin-ready database
+ - Product search
+ - Product display
+===========================================================
+*/
+
+const express = require("express");
+const { Pool } = require("pg");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+/* =========================================================
+   DATABASE CONNECTION
+========================================================= */
+
+const pool = new Pool({
+    connectionString:
+        process.env.DATABASE_URL ||
+        "postgresql://postgres:YOUR_PASSWORD@localhost:5432/kisakye_mart"
+});
+
+/* =========================================================
+   MIDDLEWARE
+========================================================= */
+
+app.use(express.json());
+
+/* =========================================================
+   DATABASE SETUP
+========================================================= */
+
+async function setupDatabase() {
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS sellers (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(150) NOT NULL,
+            phone VARCHAR(30) UNIQUE NOT NULL,
+            email VARCHAR(150),
+            status VARCHAR(30) DEFAULT 'active',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS buyers (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(150),
+            phone VARCHAR(30) UNIQUE NOT NULL,
+            email VARCHAR(150),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS categories (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(100) UNIQUE NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS products (
+            id SERIAL PRIMARY KEY,
+            seller_id INTEGER REFERENCES sellers(id),
+            category_id INTEGER REFERENCES categories(id),
+            name VARCHAR(200) NOT NULL,
+            description TEXT,
+            brand VARCHAR(150),
+            unit VARCHAR(100),
+            price_ugx NUMERIC(12,2) NOT NULL CHECK(price_ugx >= 0),
+            stock INTEGER DEFAULT 0 CHECK(stock >= 0),
+            image_url TEXT,
+            active BOOLEAN DEFAULT TRUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS orders (
+            id SERIAL PRIMARY KEY,
+            buyer_id INTEGER REFERENCES buyers(id),
+            total_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+            commission_rate NUMERIC(5,2) DEFAULT 5.00,
+            commission_amount NUMERIC(12,2) DEFAULT 0,
+            seller_amount NUMERIC(12,2) DEFAULT 0,
+            payment_status VARCHAR(40) DEFAULT 'pending',
+            order_status VARCHAR(40) DEFAULT 'pending',
+            delivery_address TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS order_items (
+            id SERIAL PRIMARY KEY,
+            order_id INTEGER REFERENCES orders(id) ON DELETE CASCADE,
+            product_id INTEGER REFERENCES products(id),
+            quantity INTEGER NOT NULL CHECK(quantity > 0),
+            unit_price NUMERIC(12,2) NOT NULL,
+            subtotal NUMERIC(12,2) NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS payments (
+            id SERIAL PRIMARY KEY,
+            order_id INTEGER REFERENCES orders(id),
+            buyer_id INTEGER REFERENCES buyers(id),
+            amount NUMERIC(12,2) NOT NULL,
+            provider VARCHAR(50),
+            transaction_reference VARCHAR(150),
+            status VARCHAR(40) DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS delivery_records (
+            id SERIAL PRIMARY KEY,
+            order_id INTEGER REFERENCES orders(id),
+            delivery_partner VARCHAR(100),
+            delivery_fee NUMERIC(12,2) DEFAULT 0,
+            delivery_commission_rate NUMERIC(5,2) DEFAULT 2.00,
+            delivery_commission NUMERIC(12,2) DEFAULT 0,
+            status VARCHAR(40) DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    `);
+
+    console.log("Database tables ready.");
+}
+
+/* =========================================================
+   CATEGORIES
+========================================================= */
+
+const categories = [
+    "Food",
+    "Beverages",
+    "Cooking Oil",
+    "Sugar",
+    "Flour",
+    "Rice",
+    "Pasta",
+    "Canned Foods",
+    "Biscuits & Snacks",
+    "Dairy",
+    "Personal Care",
+    "Baby Care",
+    "Cleaning",
+    "Laundry",
+    "Toiletries",
+    "Household",
+    "Water",
+    "Soft Drinks"
+];
+
+/* =========================================================
+   PRODUCT CATALOGUE
+========================================================= */
+
+const products = [
+
+    {
+        category: "Food",
+        name: "Posho Maize Flour",
+        brand: "Generic",
+        unit: "1 kg",
+        price: 2500,
+        stock: 100,
+        image:
+            "https://images.unsplash.com/photo-1603046891744-76e6300d3e00?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Rice",
+        name: "Premium Rice",
+        brand: "Generic",
+        unit: "1 kg",
+        price: 4500,
+        stock: 100,
+        image:
+            "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Sugar",
+        name: "White Sugar",
+        brand: "Generic",
+        unit: "1 kg",
+        price: 4500,
+        stock: 100,
+        image:
+            "https://images.unsplash.com/photo-1581441363689-1f3c3c414635?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Cooking Oil",
+        name: "Cooking Oil",
+        brand: "Generic",
+        unit: "1 litre",
+        price: 7500,
+        stock: 80,
+        image:
+            "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Flour",
+        name: "Wheat Flour",
+        brand: "Generic",
+        unit: "1 kg",
+        price: 4000,
+        stock: 80,
+        image:
+            "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Pasta",
+        name: "Spaghetti",
+        brand: "Generic",
+        unit: "500 g",
+        price: 3500,
+        stock: 100,
+        image:
+            "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Beverages",
+        name: "Tea Leaves",
+        brand: "Generic",
+        unit: "250 g",
+        price: 5000,
+        stock: 70,
+        image:
+            "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Beverages",
+        name: "Instant Coffee",
+        brand: "Generic",
+        unit: "100 g",
+        price: 8500,
+        stock: 50,
+        image:
+            "https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Soft Drinks",
+        name: "Soft Drink",
+        brand: "Generic",
+        unit: "500 ml",
+        price: 2000,
+        stock: 150,
+        image:
+            "https://images.unsplash.com/photo-1629203849820-fdd70d49c38e?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Water",
+        name: "Bottled Water",
+        brand: "Generic",
+        unit: "1.5 litre",
+        price: 2000,
+        stock: 150,
+        image:
+            "https://images.unsplash.com/photo-1564419320461-6870880221ad?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Biscuits & Snacks",
+        name: "Biscuits",
+        brand: "Generic",
+        unit: "Pack",
+        price: 2500,
+        stock: 100,
+        image:
+            "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Dairy",
+        name: "Fresh Milk",
+        brand: "Generic",
+        unit: "1 litre",
+        price: 4500,
+        stock: 60,
+        image:
+            "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Personal Care",
+        name: "Bathing Soap",
+        brand: "Generic",
+        unit: "Bar",
+        price: 2500,
+        stock: 100,
+        image:
+            "https://images.unsplash.com/photo-1607006344380-b6775a0824a7?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Personal Care",
+        name: "Toothpaste",
+        brand: "Generic",
+        unit: "100 ml",
+        price: 5000,
+        stock: 80,
+        image:
+            "https://images.unsplash.com/photo-1559591937-9f7d4a1a1a4b?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Laundry",
+        name: "Washing Powder",
+        brand: "Generic",
+        unit: "1 kg",
+        price: 7500,
+        stock: 80,
+        image:
+            "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Cleaning",
+        name: "Dishwashing Liquid",
+        brand: "Generic",
+        unit: "500 ml",
+        price: 5000,
+        stock: 70,
+        image:
+            "https://images.unsplash.com/photo-1585421514738-01798e348b17?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Household",
+        name: "Toilet Paper",
+        brand: "Generic",
+        unit: "4 Rolls",
+        price: 6000,
+        stock: 100,
+        image:
+            "https://images.unsplash.com/photo-1584556812952-905ffd0c611a?auto=format&fit=crop&w=700&q=80"
+    },
+
+    {
+        category: "Baby Care",
+        name: "Baby Diapers",
+        brand: "Generic",
+        unit: "Pack",
+        price: 25000,
+        stock: 50,
+        image:
+            "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=700&q=80"
+    }
+];
+
+/* =========================================================
+   INSERT CATEGORIES
+========================================================= */
+
+async function seedCategories() {
+
+    for (const category of categories) {
+
+        await pool.query(
+            `
+            INSERT INTO categories(name)
+            VALUES($1)
+            ON CONFLICT(name) DO NOTHING
+            `,
+            [category]
+        );
+    }
+}
+
+/* =========================================================
+   INSERT DEMO SELLER
+========================================================= */
+
+async function seedSeller() {
+
+    await pool.query(
+        `
+        INSERT INTO sellers(name, phone, email)
+        VALUES($1, $2, $3)
+        ON CONFLICT(phone) DO NOTHING
+        `,
+        [
+            "Kisakye Mart Main Store",
+            "0700000000",
+            "admin@kisakyemart.com"
+        ]
+    );
+}
+
+/* =========================================================
+   INSERT PRODUCTS
+========================================================= */
+
+async function seedProducts() {
+
+    const sellerResult = await pool.query(
+        `SELECT id FROM sellers WHERE phone = $1`,
+        ["0700000000"]
+    );
+
+    const sellerId = sellerResult.rows[0].id;
+
+    for (const product of products) {
+
+        const categoryResult = await pool.query(
+            `SELECT id FROM categories WHERE name = $1`,
+            [product.category]
+        );
+
+        const categoryId = categoryResult.rows[0].id;
+
+        await pool.query(
+            `
+            INSERT INTO products
+            (
+                seller_id,
+                category_id,
+                name,
+                brand,
+                unit,
+                price_ugx,
+                stock,
+                image_url
+            )
+            SELECT $1,$2,$3,$4,$5,$6,$7,$8
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM products
+                WHERE name = $3
+            )
+            `,
+            [
+                sellerId,
+                categoryId,
+                product.name,
+                product.brand,
+                product.unit,
+                product.price,
+                product.stock,
+                product.image
+            ]
+        );
+    }
+
+    console.log("Product catalogue loaded.");
+}
+
+/* =========================================================
+   GET ALL PRODUCTS
+========================================================= */
+
+app.get("/api/products", async (req, res) => {
+
+    try {
+
+        const result = await pool.query(`
+            SELECT
+                p.id,
+                p.name,
+                p.description,
+                p.brand,
+                p.unit,
+                p.price_ugx,
+                p.stock,
+                p.image_url,
+                c.name AS category,
+                s.name AS seller
+            FROM products p
+            LEFT JOIN categories c
+                ON p.category_id = c.id
+            LEFT JOIN sellers s
+                ON p.seller_id = s.id
+            WHERE p.active = TRUE
+            ORDER BY p.id DESC
+        `);
+
+        res.json(result.rows);
+
+    } catch (error) {
+
+        console.error(error);
+        res.status(500).json({
+            error: "Unable to load products"
+        });
+
+    }
+});
+
+/* =========================================================
+   SEARCH PRODUCTS
+========================================================= */
+
+app.get("/api/products/search", async (req, res) => {
+
+    try {
+
+        const search = `%${req.query.q || ""}%`;
+
+        const result = await pool.query(
+            `
+            SELECT
+                p.id,
+                p.name,
+                p.brand,
+                p.unit,
+                p.price_ugx,
+                p.stock,
+                p.image_url,
+                c.name AS category
+            FROM products p
+            LEFT JOIN categories c
+                ON p.category_id = c.id
+            WHERE p.active = TRUE
+            AND (
+                p.name ILIKE $1
+                OR p.brand ILIKE $1
+                OR c.name ILIKE $1
+            )
+            ORDER BY p.name
+            `,
+            [search]
+        );
+
+        res.json(result.rows);
+
+    } catch (error) {
+
+        console.error(error);
+        res.status(500).json({
+            error: "Search failed"
+        });
+
+    }
+});
+
+/* =========================================================
+   GET CATEGORIES
+========================================================= */
+
+app.get("/api/categories", async (req, res) => {
+
+    const result = await pool.query(`
+        SELECT id, name
+        FROM categories
+        ORDER BY name
+    `);
+
+    res.json(result.rows);
+});
+
+/* =========================================================
+   ADD NEW PRODUCT
+========================================================= */
+
+app.post("/api/products", async (req, res) => {
+
+    try {
+
+        const {
+            seller_id,
+            category_id,
+            name,
+            description,
+            brand,
+            unit,
+            price_ugx,
+            stock,
+            image_url
+        } = req.body;
+
+        const result = await pool.query(
+            `
+            INSERT INTO products
+            (
+                seller_id,
+                category_id,
+                name,
+                description,
+                brand,
+                unit,
+                price_ugx,
+                stock,
+                image_url
+            )
+            VALUES
+            ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+            RETURNING *
+            `,
+            [
+                seller_id,
+                category_id,
+                name,
+                description,
+                brand,
+                unit,
+                price_ugx,
+                stock,
+                image_url
+            ]
+        );
+
+        res.status(201).json(result.rows[0]);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            error: "Product could not be added"
+        });
+    }
+});
+
+/* =========================================================
+   CREATE ORDER
+========================================================= */
+
+app.post("/api/orders", async (req, res) => {
+
+    const client = await pool.connect();
+
+    try {
+
+        await client.query("BEGIN");
+
+        const {
+            buyer_id,
+            items,
+            delivery_address
+        } = req.body;
+
+        let total = 0;
+
+        for (const item of items) {
+
+            const productResult = await client.query(
+                `
+                SELECT *
+                FROM products
+                WHERE id = $1
+                AND active = TRUE
+                FOR UPDATE
+                `,
+                [item.product_id]
+            );
+
+            if (productResult.rows.length === 0) {
+                throw new Error("Product not found");
+            }
+
+            const product = productResult.rows[0];
+
+            if (product.stock < item.quantity) {
+                throw new Error(
+                    `Not enough stock for ${product.name}`
+                );
+            }
+
+            total +=
+                Number(product.price_ugx) *
+                Number(item.quantity);
+        }
+
+        /*
+        -----------------------------------------------------
+        KISAKYE MART COMMISSION
+        -----------------------------------------------------
+        The customer does NOT need to see this calculation.
+        It is stored in the backend.
+        -----------------------------------------------------
+        */
+
+        const commissionRate = 5;
+        const commission =
+            total * commissionRate / 100;
+
+        const sellerAmount =
+            total - commission;
+
+        const orderResult = await client.query(
+            `
+            INSERT INTO orders
+            (
+                buyer_id,
+                total_amount,
+                commission_rate,
+                commission_amount,
+                seller_amount,
+                delivery_address
+            )
+            VALUES($1,$2,$3,$4,$5,$6)
+            RETURNING *
+            `,
+            [
+                buyer_id,
+                total,
+                commissionRate,
+                commission,
+                sellerAmount,
+                delivery_address
+            ]
+        );
+
+        const order = orderResult.rows[0];
+
+        for (const item of items) {
+
+            const productResult = await client.query(
+                `
+                SELECT *
+                FROM products
+                WHERE id = $1
+                FOR UPDATE
+                `,
+                [item.product_id]
+            );
+
+            const product = productResult.rows[0];
+
+            const subtotal =
+                Number(product.price_ugx) *
+                Number(item.quantity);
+
+            await client.query(
+                `
+                INSERT INTO order_items
+                (
+                    order_id,
+                    product_id,
+                    quantity,
+                    unit_price,
+                    subtotal
+                )
+                VALUES($1,$2,$3,$4,$5)
+                `,
+                [
+                    order.id,
+                    product.id,
+                    item.quantity,
+                    product.price_ugx,
+                    subtotal
+                ]
+            );
+
+            await client.query(
+                `
+                UPDATE products
+                SET stock = stock - $1,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = $2
+                `,
+                [
+                    item.quantity,
+                    product.id
+                ]
+            );
+        }
+
+        await client.query("COMMIT");
+
+        res.status(201).json({
+            success: true,
+            order_id: order.id,
+            total_amount: total,
+            message: "Order created successfully"
+        });
+
+    } catch (error) {
+
+        await client.query("ROLLBACK");
+
+        console.error(error);
+
+        res.status(400).json({
+            success: false,
+            error: error.message
+        });
+
+    } finally {
+
+        client.release();
+    }
+});
+
+/* =========================================================
+   FRONTEND
+========================================================= */
+
+app.get("/", async (req, res) => {
+
+    res.send(`
 <!DOCTYPE html>
-<html lang="en">
+
+<html>
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Kisakye Mart FMCG</title>
 
@@ -17,13 +836,13 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #f5f6f8;
+    background: #f5f5f5;
 }
 
 header {
-    background: #075e54;
+    background: #0b7a3b;
     color: white;
-    padding: 18px;
+    padding: 20px;
     text-align: center;
 }
 
@@ -32,29 +851,29 @@ header h1 {
 }
 
 .search {
-    padding: 15px;
+    padding: 20px;
     background: white;
 }
 
 .search input {
     width: 100%;
-    padding: 13px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
     font-size: 16px;
 }
 
 .categories {
     display: flex;
-    gap: 8px;
-    padding: 10px;
     overflow-x: auto;
+    gap: 10px;
+    padding: 15px;
     background: white;
 }
 
 .categories button {
-    padding: 10px 15px;
     border: none;
+    padding: 10px 15px;
     border-radius: 20px;
     background: #eee;
     white-space: nowrap;
@@ -63,23 +882,24 @@ header h1 {
 .products {
     display: grid;
     grid-template-columns:
-        repeat(auto-fill, minmax(170px, 1fr));
+        repeat(auto-fill, minmax(180px, 1fr));
+
     gap: 15px;
-    padding: 15px;
+    padding: 20px;
 }
 
 .product {
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.08);
 }
 
 .product img {
     width: 100%;
     height: 170px;
-    object-fit: contain;
-    background: white;
+    object-fit: cover;
 }
 
 .product-info {
@@ -87,7 +907,7 @@ header h1 {
 }
 
 .product h3 {
-    margin: 0 0 7px;
+    margin: 0 0 8px;
     font-size: 16px;
 }
 
@@ -97,125 +917,110 @@ header h1 {
 }
 
 .price {
-    color: #075e54;
+    color: #0b7a3b;
+    font-size: 18px;
     font-weight: bold;
-    margin: 8px 0;
+    margin-top: 8px;
 }
 
 .stock {
     font-size: 12px;
-    color: #666;
+    color: #555;
+    margin-top: 5px;
 }
 
-button.buy {
+.buy {
     width: 100%;
+    margin-top: 10px;
     padding: 10px;
     border: none;
-    border-radius: 7px;
-    background: #075e54;
+    background: #0b7a3b;
     color: white;
-    cursor: pointer;
+    border-radius: 8px;
 }
 
-.cart {
-    position: fixed;
-    right: 15px;
-    bottom: 15px;
-    background: #075e54;
+footer {
+    text-align: center;
+    padding: 30px;
+    background: #222;
     color: white;
-    border-radius: 50px;
-    padding: 15px 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,.25);
 }
 
 </style>
+
 </head>
 
 <body>
 
 <header>
-    <h1>KISAKYE MART FMCG</h1>
-    <p>Shop FMCG products across Uganda</p>
+
+<h1>🛒 Kisakye Mart FMCG</h1>
+
+<p>Quality FMCG products at your fingertips</p>
+
 </header>
 
 <div class="search">
-    <input
-        type="text"
-        id="search"
-        placeholder="Search Coca-Cola, soap, milk, noodles..."
-    >
+
+<input
+id="search"
+placeholder="Search products, brands or categories..."
+oninput="searchProducts()">
+
 </div>
 
-<div class="categories">
-    <button onclick="filterCategory('All')">
-        All
-    </button>
-
-    <button onclick="filterCategory('Food')">
-        Food
-    </button>
-
-    <button onclick="filterCategory('Drinks')">
-        Drinks
-    </button>
-
-    <button onclick="filterCategory('Beverages')">
-        Beverages
-    </button>
-
-    <button onclick="filterCategory('Home Care')">
-        Home Care
-    </button>
-
-    <button onclick="filterCategory('Personal Care')">
-        Personal Care
-    </button>
+<div
+class="categories"
+id="categories">
 </div>
 
-<div id="products"
-     class="products">
+<div
+class="products"
+id="products">
+
+Loading products...
+
 </div>
 
-<div class="cart">
-    🛒 Cart:
-    <span id="cartCount">0</span>
-</div>
+<footer>
+
+<p>Kisakye Mart FMCG</p>
+
+<p>Kampala • Wakiso • Entebbe</p>
+
+</footer>
 
 <script>
 
 let allProducts = [];
-let cart = [];
+
+/* =========================================
+   LOAD PRODUCTS
+========================================= */
 
 async function loadProducts() {
 
-    try {
+    const response =
+        await fetch("/api/products");
 
-        const response =
-            await fetch("/api/products");
+    allProducts =
+        await response.json();
 
-        allProducts =
-            await response.json();
+    displayProducts(allProducts);
 
-        displayProducts(allProducts);
-
-    } catch (error) {
-
-        document.getElementById("products")
-            .innerHTML =
-            "<p>Unable to load products.</p>";
-
-        console.error(error);
-    }
+    loadCategories();
 }
+
+/* =========================================
+   DISPLAY PRODUCTS
+========================================= */
 
 function displayProducts(products) {
 
     const container =
         document.getElementById("products");
 
-    container.innerHTML = "";
-
-    if (!products.length) {
+    if (products.length === 0) {
 
         container.innerHTML =
             "<p>No products found.</p>";
@@ -223,20 +1028,15 @@ function displayProducts(products) {
         return;
     }
 
-    products.forEach(product => {
+    container.innerHTML =
+        products.map(product => `
 
-        const card =
-            document.createElement("div");
-
-        card.className = "product";
-
-        card.innerHTML = `
+        <div class="product">
 
             <img
-                src="${product.image_url}"
-                alt="${product.name}"
-                onerror="this.src='https://via.placeholder.com/300?text=Product'"
-            >
+            src="${product.image_url}"
+            alt="${product.name}"
+            onerror="this.src='https://images.unsplash.com/photo-1601598851547-4302969d07cb?auto=format&fit=crop&w=700&q=80'">
 
             <div class="product-info">
 
@@ -248,105 +1048,190 @@ function displayProducts(products) {
                     ${product.brand || ""}
                 </div>
 
+                <div>
+                    ${product.unit || ""}
+                </div>
+
                 <div class="price">
-                    UGX
-                    ${Number(product.price_ugx)
-                        .toLocaleString()}
+                    UGX ${Number(product.price_ugx).toLocaleString()}
                 </div>
 
                 <div class="stock">
-                    Stock:
-                    ${product.stock}
+                    Stock: ${product.stock}
                 </div>
 
-                <br>
-
                 <button
-                    class="buy"
-                    onclick="addToCart(${product.id})">
+                class="buy"
+                onclick="buyProduct(${product.id})">
 
                     Add to Cart
 
                 </button>
 
             </div>
-        `;
 
-        container.appendChild(card);
-    });
+        </div>
+
+    `).join("");
+
 }
 
-function addToCart(id) {
+/* =========================================
+   SEARCH
+========================================= */
 
-    const product =
-        allProducts.find(p => p.id === id);
+function searchProducts() {
 
-    if (!product) return;
-
-    if (product.stock <= 0) {
-
-        alert("This product is out of stock.");
-
-        return;
-    }
-
-    cart.push(product);
-
-    document.getElementById("cartCount")
-        .textContent = cart.length;
-
-    alert(product.name + " added to cart.");
-}
-
-function filterCategory(category) {
-
-    if (category === "All") {
-
-        displayProducts(allProducts);
-
-        return;
-    }
+    const text =
+        document
+        .getElementById("search")
+        .value
+        .toLowerCase();
 
     const filtered =
-        allProducts.filter(
-            p => p.category === category
+        allProducts.filter(product =>
+
+            product.name
+            .toLowerCase()
+            .includes(text)
+
+            ||
+
+            (product.brand || "")
+            .toLowerCase()
+            .includes(text)
+
+            ||
+
+            (product.category || "")
+            .toLowerCase()
+            .includes(text)
         );
 
     displayProducts(filtered);
 }
 
-document.getElementById("search")
-    .addEventListener("input", function() {
+/* =========================================
+   CATEGORIES
+========================================= */
 
-        const value =
-            this.value.toLowerCase();
+async function loadCategories() {
 
-        const filtered =
-            allProducts.filter(product =>
+    const response =
+        await fetch("/api/categories");
 
-                product.name
-                    .toLowerCase()
-                    .includes(value)
+    const categories =
+        await response.json();
 
-                ||
+    const container =
+        document.getElementById("categories");
 
-                (product.brand || "")
-                    .toLowerCase()
-                    .includes(value)
+    container.innerHTML = `
+        <button onclick="displayProducts(allProducts)">
+            All
+        </button>
+    `;
 
-                ||
+    categories.forEach(category => {
 
-                product.category
-                    .toLowerCase()
-                    .includes(value)
-            );
+        container.innerHTML += `
 
-        displayProducts(filtered);
+            <button
+            onclick="filterCategory('${category.name}')">
+
+                ${category.name}
+
+            </button>
+
+        `;
     });
+}
+
+/* =========================================
+   CATEGORY FILTER
+========================================= */
+
+function filterCategory(category) {
+
+    const filtered =
+        allProducts.filter(
+            product =>
+            product.category === category
+        );
+
+    displayProducts(filtered);
+}
+
+/* =========================================
+   CART
+========================================= */
+
+function buyProduct(id) {
+
+    const product =
+        allProducts.find(
+            p => p.id === id
+        );
+
+    if (!product) return;
+
+    alert(
+        product.name +
+        " added to your cart."
+    );
+}
+
+/* =========================================
+   START
+========================================= */
 
 loadProducts();
 
 </script>
 
 </body>
+
 </html>
+    `);
+
+});
+
+/* =========================================================
+   START SERVER
+========================================================= */
+
+async function startServer() {
+
+    try {
+
+        await setupDatabase();
+
+        await seedCategories();
+
+        await seedSeller();
+
+        await seedProducts();
+
+        app.listen(PORT, () => {
+
+            console.log(
+                `Kisakye Mart running on port ${PORT}`
+            );
+
+            console.log(
+                `Open: http://localhost:${PORT}`
+            );
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Server startup failed:",
+            error
+        );
+
+    }
+}
+
+startServer();
