@@ -1,1070 +1,1644 @@
-Yes. Here is the complete Stage 1 HTML code for the Kisakye Mart FMCG marketplace, with an expanded FMCG catalogue and the ability to add unlimited products.
-Replace your current HTML with this:
-Writing
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kisakye Mart FMCG</title>
+/*
+===========================================================
+KISAKYE MART FMCG - STAGE 2
+ALL-IN-ONE BACKEND
+===========================================================
 
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
+Technology:
+- Node.js
+- Express
+- PostgreSQL
 
-body {
-    background: #f5f6f8;
-    color: #222;
-}
+Features:
+- Buyers
+- Sellers
+- Products
+- Orders
+- Payments
+- 5% Kisakye Mart commission
+- Seller settlements
+- Delivery records
+- Audit logs
+- Payment webhook protection
+- Admin financial dashboard
 
-header {
-    background: #087f23;
-    color: white;
-    padding: 18px;
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
+IMPORTANT:
+This is the secure backend foundation.
+MTN/Airtel production credentials are NOT included.
+Never store customer Mobile Money PINs.
+===========================================================
+*/
 
-header h1 {
-    font-size: 25px;
-}
+require("dotenv").config();
 
-header p {
-    margin-top: 5px;
-    font-size: 13px;
-}
+const express = require("express");
+const cors = require("cors");
+const { Pool } = require("pg");
+const crypto = require("crypto");
 
-.container {
-    width: 95%;
-    max-width: 1200px;
-    margin: auto;
-}
+const app = express();
 
-.search-box {
-    margin: 15px 0;
-}
+app.use(cors());
+app.use(express.json());
 
-.search-box input {
-    width: 100%;
-    padding: 13px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-}
+/* =========================================================
+DATABASE CONNECTION
+========================================================= */
 
-.categories {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-}
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
 
-.categories button {
-    border: none;
-    padding: 10px 15px;
-    border-radius: 20px;
-    background: white;
-    color: #087f23;
-    border: 1px solid #087f23;
-    white-space: nowrap;
-}
+    ssl:
+        process.env.NODE_ENV === "production"
+            ? { rejectUnauthorized: false }
+            : false
+});
 
-.categories button:hover {
-    background: #087f23;
-    color: white;
-}
+/* =========================================================
+CONSTANTS
+========================================================= */
 
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
-}
+const COMMISSION_RATE = 0.05;
+const PORT = process.env.PORT || 5000;
 
-.product {
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding-bottom: 12px;
-}
+/* =========================================================
+DATABASE SETUP
+========================================================= */
 
-.product-image {
-    height: 130px;
-    background: #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 45px;
-}
+async function setupDatabase() {
 
-.product-info {
-    padding: 10px;
-}
+    const client = await pool.connect();
 
-.product h3 {
-    font-size: 15px;
-    margin-bottom: 6px;
-}
+    try {
 
-.product p {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 5px;
-}
+        await client.query(`
 
-.price {
-    font-size: 16px;
-    font-weight: bold;
-    color: #087f23;
-}
+        CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-.product button,
-.main-button {
-    width: 100%;
-    border: none;
-    background: #087f23;
-    color: white;
-    padding: 10px;
-    margin-top: 8px;
-    border-radius: 6px;
-    cursor: pointer;
-}
+        CREATE TABLE IF NOT EXISTS users (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-.product button:hover,
-.main-button:hover {
-    background: #055c18;
-}
+            full_name VARCHAR(150) NOT NULL,
 
-.section {
-    background: white;
-    margin: 20px 0;
-    padding: 18px;
-    border-radius: 10px;
-}
+            phone VARCHAR(30) NOT NULL UNIQUE,
 
-.section h2 {
-    color: #087f23;
-    margin-bottom: 15px;
-}
+            email VARCHAR(255) UNIQUE,
 
-.form-group {
-    margin-bottom: 12px;
-}
+            role VARCHAR(20) NOT NULL
+                CHECK(role IN ('BUYER','SELLER','ADMIN')),
 
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
+            password_hash TEXT,
 
-.form-group input,
-.form-group select {
-    width: 100%;
-    padding: 11px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-}
+            is_active BOOLEAN NOT NULL DEFAULT TRUE,
 
-.cart {
-    position: fixed;
-    right: 15px;
-    bottom: 15px;
-    background: #087f23;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 30px;
-    cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-    z-index: 200;
-}
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-.cart-count {
-    background: red;
-    padding: 3px 7px;
-    border-radius: 50%;
-    font-size: 12px;
-}
-
-.empty {
-    text-align: center;
-    padding: 30px;
-    color: #777;
-}
-
-footer {
-    background: #222;
-    color: white;
-    padding: 25px;
-    text-align: center;
-    margin-top: 30px;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 500;
-    overflow-y: auto;
-}
-
-.modal-content {
-    background: white;
-    width: 92%;
-    max-width: 500px;
-    margin: 50px auto;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-.close {
-    float: right;
-    font-size: 25px;
-    cursor: pointer;
-}
-
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
-}
-
-.delete-btn {
-    background: #d00000;
-    color: white;
-    border: none;
-    padding: 5px 8px;
-    border-radius: 4px;
-}
-
-.total {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 15px;
-    color: #087f23;
-}
-</style>
-</head>
-
-<body>
-
-<header>
-    <h1>🛒 Kisakye Mart FMCG</h1>
-    <p>Your trusted FMCG marketplace — Kampala, Wakiso & Entebbe</p>
-</header>
-
-<div class="container">
-
-    <div class="search-box">
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search products..."
-            onkeyup="searchProducts()">
-    </div>
-
-    <div class="categories">
-        <button onclick="filterProducts('All')">All</button>
-        <button onclick="filterProducts('Food')">Food</button>
-        <button onclick="filterProducts('Drinks')">Drinks</button>
-        <button onclick="filterProducts('Household')">Household</button>
-        <button onclick="filterProducts('Personal Care')">Personal Care</button>
-        <button onclick="filterProducts('Baby')">Baby</button>
-        <button onclick="filterProducts('Snacks')">Snacks</button>
-        <button onclick="filterProducts('Dairy')">Dairy</button>
-        <button onclick="filterProducts('Meat')">Meat</button>
-    </div>
-
-    <div class="section">
-        <h2>Available Products</h2>
-        <div id="products" class="products"></div>
-    </div>
-
-    <div class="section">
-        <h2>➕ Seller — Add Product</h2>
-
-        <div class="form-group">
-            <label>Product Name</label>
-            <input type="text" id="productName" placeholder="e.g. Sugar 1kg">
-        </div>
-
-        <div class="form-group">
-            <label>Price (UGX)</label>
-            <input type="number" id="productPrice" placeholder="e.g. 5000">
-        </div>
-
-        <div class="form-group">
-            <label>Category</label>
-            <select id="productCategory">
-                <option>Food</option>
-                <option>Drinks</option>
-                <option>Household</option>
-                <option>Personal Care</option>
-                <option>Baby</option>
-                <option>Snacks</option>
-                <option>Dairy</option>
-                <option>Meat</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Seller / Shop Name</label>
-            <input type="text" id="sellerName" placeholder="Your shop name">
-        </div>
-
-        <div class="form-group">
-            <label>Product Image URL</label>
-            <input type="text" id="productImage"
-                   placeholder="Optional image URL">
-        </div>
-
-        <button class="main-button" onclick="addProduct()">
-            Add Product
-        </button>
-    </div>
-
-</div>
-
-<div class="cart" onclick="openCart()">
-    🛒 Cart
-    <span class="cart-count" id="cartCount">0</span>
-</div>
-
-<div class="modal" id="cartModal">
-    <div class="modal-content">
-
-        <span class="close" onclick="closeCart()">&times;</span>
-
-        <h2>🛒 Your Cart</h2>
-
-        <div id="cartItems"></div>
-
-        <div class="total">
-            Total: UGX <span id="cartTotal">0</span>
-        </div>
-
-        <button class="main-button" onclick="checkout()">
-            Proceed to Checkout
-        </button>
-
-    </div>
-</div>
-
-<footer>
-    <p><strong>Kisakye Mart FMCG</strong></p>
-    <p>Connecting buyers and sellers across Uganda.</p>
-    <p>© 2026 Kisakye Mart FMCG</p>
-</footer>
-
-<script>
-
-let products = [
-
-    /* FOOD */
-
-    {
-        id: 1,
-        name: "Sugar 1kg",
-        price: 4500,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🍚"
-    },
-
-    {
-        id: 2,
-        name: "Sugar 2kg",
-        price: 8500,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🍚"
-    },
-
-    {
-        id: 3,
-        name: "Rice 1kg",
-        price: 4000,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🍚"
-    },
-
-    {
-        id: 4,
-        name: "Rice 5kg",
-        price: 18000,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🍚"
-    },
-
-    {
-        id: 5,
-        name: "Maize Flour 1kg",
-        price: 3000,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🌽"
-    },
-
-    {
-        id: 6,
-        name: "Wheat Flour 1kg",
-        price: 4500,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🌾"
-    },
-
-    {
-        id: 7,
-        name: "Cooking Oil 1L",
-        price: 7500,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🫗"
-    },
-
-    {
-        id: 8,
-        name: "Cooking Oil 2L",
-        price: 14000,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🫗"
-    },
-
-    {
-        id: 9,
-        name: "Salt 500g",
-        price: 1500,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🧂"
-    },
-
-    {
-        id: 10,
-        name: "Beans 1kg",
-        price: 5000,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🫘"
-    },
-
-    {
-        id: 11,
-        name: "Posho 5kg",
-        price: 12000,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🌽"
-    },
-
-    {
-        id: 12,
-        name: "Spaghetti 500g",
-        price: 4000,
-        category: "Food",
-        seller: "Kisakye Mart",
-        image: "🍝"
-    },
-
-    /* DRINKS */
-
-    {
-        id: 13,
-        name: "Mineral Water 500ml",
-        price: 1000,
-        category: "Drinks",
-        seller: "Kisakye Mart",
-        image: "💧"
-    },
-
-    {
-        id: 14,
-        name: "Mineral Water 1.5L",
-        price: 2500,
-        category: "Drinks",
-        seller: "Kisakye Mart",
-        image: "💧"
-    },
-
-    {
-        id: 15,
-        name: "Soda 500ml",
-        price: 2000,
-        category: "Drinks",
-        seller: "Kisakye Mart",
-        image: "🥤"
-    },
-
-    {
-        id: 16,
-        name: "Juice 1L",
-        price: 6000,
-        category: "Drinks",
-        seller: "Kisakye Mart",
-        image: "🧃"
-    },
-
-    {
-        id: 17,
-        name: "Milk 500ml",
-        price: 2500,
-        category: "Drinks",
-        seller: "Kisakye Mart",
-        image: "🥛"
-    },
-
-    /* DAIRY */
-
-    {
-        id: 18,
-        name: "Fresh Milk 1L",
-        price: 4500,
-        category: "Dairy",
-        seller: "Kisakye Mart",
-        image: "🥛"
-    },
-
-    {
-        id: 19,
-        name: "Yoghurt 500ml",
-        price: 4000,
-        category: "Dairy",
-        seller: "Kisakye Mart",
-        image: "🥛"
-    },
-
-    {
-        id: 20,
-        name: "Margarine 500g",
-        price: 7000,
-        category: "Dairy",
-        seller: "Kisakye Mart",
-        image: "🧈"
-    },
-
-    {
-        id: 21,
-        name: "Cheese 250g",
-        price: 10000,
-        category: "Dairy",
-        seller: "Kisakye Mart",
-        image: "🧀"
-    },
-
-    /* SNACKS */
-
-    {
-        id: 22,
-        name: "Biscuits",
-        price: 3000,
-        category: "Snacks",
-        seller: "Kisakye Mart",
-        image: "🍪"
-    },
-
-    {
-        id: 23,
-        name: "Potato Crisps",
-        price: 2500,
-        category: "Snacks",
-        seller: "Kisakye Mart",
-        image: "🥔"
-    },
-
-    {
-        id: 24,
-        name: "Chocolate",
-        price: 5000,
-        category: "Snacks",
-        seller: "Kisakye Mart",
-        image: "🍫"
-    },
-
-    {
-        id: 25,
-        name: "Bread",
-        price: 5000,
-        category: "Snacks",
-        seller: "Kisakye Mart",
-        image: "🍞"
-    },
-
-    /* HOUSEHOLD */
-
-    {
-        id: 26,
-        name: "Laundry Soap",
-        price: 3000,
-        category: "Household",
-        seller: "Kisakye Mart",
-        image: "🧼"
-    },
-
-    {
-        id: 27,
-        name: "Washing Powder 1kg",
-        price: 7500,
-        category: "Household",
-        seller: "Kisakye Mart",
-        image: "🧺"
-    },
-
-    {
-        id: 28,
-        name: "Dishwashing Liquid",
-        price: 5000,
-        category: "Household",
-        seller: "Kisakye Mart",
-        image: "🧴"
-    },
-
-    {
-        id: 29,
-        name: "Toilet Cleaner",
-        price: 6000,
-        category: "Household",
-        seller: "Kisakye Mart",
-        image: "🧴"
-    },
-
-    {
-        id: 30,
-        name: "Tissue 10 Pack",
-        price: 12000,
-        category: "Household",
-        seller: "Kisakye Mart",
-        image: "🧻"
-    },
-
-    {
-        id: 31,
-        name: "Garbage Bags",
-        price: 5000,
-        category: "Household",
-        seller: "Kisakye Mart",
-        image: "🗑️"
-    },
-
-    /* PERSONAL CARE */
-
-    {
-        id: 32,
-        name: "Bathing Soap",
-        price: 2500,
-        category: "Personal Care",
-        seller: "Kisakye Mart",
-        image: "🧼"
-    },
-
-    {
-        id: 33,
-        name: "Toothpaste",
-        price: 5000,
-        category: "Personal Care",
-        seller: "Kisakye Mart",
-        image: "🪥"
-    },
-
-    {
-        id: 34,
-        name: "Toothbrush",
-        price: 2500,
-        category: "Personal Care",
-        seller: "Kisakye Mart",
-        image: "🪥"
-    },
-
-    {
-        id: 35,
-        name: "Body Lotion",
-        price: 9000,
-        category: "Personal Care",
-        seller: "Kisakye Mart",
-        image: "🧴"
-    },
-
-    {
-        id: 36,
-        name: "Shampoo",
-        price: 10000,
-        category: "Personal Care",
-        seller: "Kisakye Mart",
-        image: "🧴"
-    },
-
-    /* BABY */
-
-    {
-        id: 37,
-        name: "Baby Diapers",
-        price: 25000,
-        category: "Baby",
-        seller: "Kisakye Mart",
-        image: "👶"
-    },
-
-    {
-        id: 38,
-        name: "Baby Wipes",
-        price: 7000,
-        category: "Baby",
-        seller: "Kisakye Mart",
-        image: "🧻"
-    },
-
-    {
-        id: 39,
-        name: "Baby Powder",
-        price: 7000,
-        category: "Baby",
-        seller: "Kisakye Mart",
-        image: "👶"
-    },
-
-    {
-        id: 40,
-        name: "Baby Soap",
-        price: 5000,
-        category: "Baby",
-        seller: "Kisakye Mart",
-        image: "🧼"
-    },
-
-    /* MEAT */
-
-    {
-        id: 41,
-        name: "Fresh Chicken",
-        price: 18000,
-        category: "Meat",
-        seller: "Kisakye Mart",
-        image: "🍗"
-    },
-
-    {
-        id: 42,
-        name: "Sausages",
-        price: 12000,
-        category: "Meat",
-        seller: "Kisakye Mart",
-        image: "🌭"
-    },
-
-    {
-        id: 43,
-        name: "Beef 1kg",
-        price: 18000,
-        category: "Meat",
-        seller: "Kisakye Mart",
-        image: "🥩"
-    },
-
-    {
-        id: 44,
-        name: "Fresh Fish",
-        price: 15000,
-        category: "Meat",
-        seller: "Kisakye Mart",
-        image: "🐟"
-    }
-
-];
-
-let cart = [];
-let currentCategory = "All";
-
-
-function displayProducts(list = products) {
-
-    const container = document.getElementById("products");
-
-    if (list.length === 0) {
-        container.innerHTML =
-            '<div class="empty">No products found.</div>';
-        return;
-    }
-
-    container.innerHTML = list.map(product => `
-
-        <div class="product">
-
-            <div class="product-image">
-                ${
-                    product.image &&
-                    product.image.startsWith("http")
-                    ? `<img src="${product.image}"
-                       style="width:100%;height:100%;object-fit:cover;">`
-                    : product.image
-                }
-            </div>
-
-            <div class="product-info">
-
-                <h3>${product.name}</h3>
-
-                <p>Seller: ${product.seller}</p>
-
-                <p>${product.category}</p>
-
-                <div class="price">
-                    UGX ${Number(product.price).toLocaleString()}
-                </div>
-
-                <button onclick="addToCart(${product.id})">
-                    Add to Cart
-                </button>
-
-            </div>
-
-        </div>
-
-    `).join("");
-}
-
-
-function addToCart(id) {
-
-    const product = products.find(p => p.id === id);
-
-    if (!product) return;
-
-    cart.push(product);
-
-    updateCart();
-
-    alert(product.name + " added to cart.");
-}
-
-
-function updateCart() {
-
-    document.getElementById("cartCount").textContent =
-        cart.length;
-
-    const cartItems =
-        document.getElementById("cartItems");
-
-    if (cart.length === 0) {
-
-        cartItems.innerHTML =
-            '<div class="empty">Your cart is empty.</div>';
-
-        document.getElementById("cartTotal").textContent = "0";
-
-        return;
-    }
-
-    cartItems.innerHTML = cart.map((item, index) => `
-
-        <div class="cart-item">
-
-            <div>
-                <strong>${item.name}</strong>
-                <br>
-                UGX ${Number(item.price).toLocaleString()}
-            </div>
-
-            <button
-                class="delete-btn"
-                onclick="removeFromCart(${index})">
-                Remove
-            </button>
-
-        </div>
-
-    `).join("");
-
-    const total =
-        cart.reduce((sum, item) =>
-            sum + Number(item.price), 0);
-
-    document.getElementById("cartTotal").textContent =
-        total.toLocaleString();
-}
-
-
-function removeFromCart(index) {
-
-    cart.splice(index, 1);
-
-    updateCart();
-}
-
-
-function openCart() {
-
-    document.getElementById("cartModal").style.display =
-        "block";
-
-    updateCart();
-}
-
-
-function closeCart() {
-
-    document.getElementById("cartModal").style.display =
-        "none";
-}
-
-
-function checkout() {
-
-    if (cart.length === 0) {
-
-        alert("Your cart is empty.");
-
-        return;
-    }
-
-    const total =
-        cart.reduce((sum, item) =>
-            sum + Number(item.price), 0);
-
-    alert(
-        "Checkout demonstration\n\n" +
-        "Order Total: UGX " +
-        total.toLocaleString() +
-        "\n\nStage 2 will connect this checkout to a real database and payment system."
-    );
-}
-
-
-function searchProducts() {
-
-    const search =
-        document.getElementById("searchInput")
-        .value
-        .toLowerCase();
-
-    const filtered =
-        products.filter(product => {
-
-            const matchesSearch =
-                product.name.toLowerCase()
-                .includes(search) ||
-                product.category.toLowerCase()
-                .includes(search) ||
-                product.seller.toLowerCase()
-                .includes(search);
-
-            const matchesCategory =
-                currentCategory === "All" ||
-                product.category === currentCategory;
-
-            return matchesSearch && matchesCategory;
-        });
-
-    displayProducts(filtered);
-}
-
-
-function filterProducts(category) {
-
-    currentCategory = category;
-
-    searchProducts();
-}
-
-
-function addProduct() {
-
-    const name =
-        document.getElementById("productName").value.trim();
-
-    const price =
-        document.getElementById("productPrice").value;
-
-    const category =
-        document.getElementById("productCategory").value;
-
-    const seller =
-        document.getElementById("sellerName").value.trim();
-
-    const image =
-        document.getElementById("productImage").value.trim();
-
-    if (!name || !price || !seller) {
-
-        alert(
-            "Please enter product name, price and seller name."
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
 
-        return;
+        CREATE TABLE IF NOT EXISTS seller_profiles (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+            user_id UUID NOT NULL UNIQUE
+                REFERENCES users(id),
+
+            shop_name VARCHAR(200) NOT NULL,
+
+            district VARCHAR(100),
+
+            address TEXT,
+
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+
+        CREATE TABLE IF NOT EXISTS products (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+            seller_id UUID NOT NULL
+                REFERENCES users(id),
+
+            name VARCHAR(255) NOT NULL,
+
+            description TEXT,
+
+            category VARCHAR(100) NOT NULL,
+
+            price_ugx NUMERIC(14,2) NOT NULL
+                CHECK(price_ugx >= 0),
+
+            stock_quantity INTEGER NOT NULL DEFAULT 0
+                CHECK(stock_quantity >= 0),
+
+            image_url TEXT,
+
+            is_active BOOLEAN NOT NULL DEFAULT TRUE,
+
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+
+        CREATE TABLE IF NOT EXISTS orders (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+            order_number VARCHAR(50) NOT NULL UNIQUE,
+
+            buyer_id UUID NOT NULL
+                REFERENCES users(id),
+
+            subtotal_ugx NUMERIC(14,2) NOT NULL,
+
+            delivery_fee_ugx NUMERIC(14,2) NOT NULL DEFAULT 0,
+
+            total_ugx NUMERIC(14,2) NOT NULL,
+
+            status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+
+        CREATE TABLE IF NOT EXISTS order_items (
+
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+            order_id UUID NOT NULL
+                REFERENCES orders(id),
+
+            product_id UUID NOT NULL
+                REFERENCES products(id),
+
+            seller_id UUID NOT NULL
+                REFERENCES users(id),
+
+            product_name_snapshot VARCHAR(255) NOT NULL,
+
+            unit_price_ugx NUMERIC(14,2) NOT NULL,
+
+            quantity INTEGER NOT NULL
+                CHECK(quantity > 0),
+
+            line_total_ugx NUMERIC(14,2) NOT NULL,
+
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+
+        CREATE TABLE IF NOT EXISTS payments (
+
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+            order_id UUID NOT NULL
+                REFERENCES orders(id),
+
+            provider VARCHAR(20) NOT NULL
+                CHECK(provider IN ('MTN','AIRTEL')),
+
+            provider_transaction_id VARCHAR(255),
+
+            payer_phone VARCHAR(30) NOT NULL,
+
+            amount_ugx NUMERIC(14,2) NOT NULL,
+
+            status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+
+            provider_response JSONB,
+
+            paid_at TIMESTAMPTZ,
+
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+            UNIQUE(provider, provider_transaction_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS commission_ledger (
+
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+            payment_id UUID NOT NULL UNIQUE
+                REFERENCES payments(id),
+
+            order_id UUID NOT NULL
+                REFERENCES orders(id),
+
+            gross_order_value_ugx NUMERIC(14,2) NOT NULL,
+
+            commission_rate NUMERIC(5,4) NOT NULL
+                DEFAULT 0.0500,
+
+            commission_amount_ugx NUMERIC(14,2) NOT NULL,
+
+            currency VARCHAR(3) NOT NULL DEFAULT 'UGX',
+
+            status VARCHAR(20) NOT NULL DEFAULT 'EARNED',
+
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+
+        CREATE TABLE IF NOT EXISTS seller_settlements (
+
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+            seller_id UUID NOT NULL
+                REFERENCES users(id),
+
+            order_id UUID NOT NULL
+                REFERENCES orders(id),
+
+            payment_id UUID NOT NULL
+                REFERENCES payments(id),
+
+            gross_amount_ugx NUMERIC(14,2) NOT NULL,
+
+            commission_amount_ugx NUMERIC(14,2) NOT NULL,
+
+            seller_amount_ugx NUMERIC(14,2) NOT NULL,
+
+            status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+
+            provider_transaction_id VARCHAR(255),
+
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+            settled_at TIMESTAMPTZ
+        );
+
+        CREATE TABLE IF NOT EXISTS delivery_orders (
+
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+            order_id UUID NOT NULL UNIQUE
+                REFERENCES orders(id),
+
+            delivery_partner VARCHAR(100),
+
+            customer_phone VARCHAR(30),
+
+            delivery_address TEXT,
+
+            delivery_fee_ugx NUMERIC(14,2) NOT NULL DEFAULT 0,
+
+            status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+            delivered_at TIMESTAMPTZ
+        );
+
+        CREATE TABLE IF NOT EXISTS audit_logs (
+
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+            actor_user_id UUID,
+
+            event_type VARCHAR(100) NOT NULL,
+
+            entity_type VARCHAR(100),
+
+            entity_id UUID,
+
+            event_data JSONB,
+
+            ip_address INET,
+
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+
+        CREATE TABLE IF NOT EXISTS payment_webhook_events (
+
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+            provider VARCHAR(20) NOT NULL,
+
+            provider_event_id VARCHAR(255) NOT NULL,
+
+            payload JSONB NOT NULL,
+
+            processed BOOLEAN DEFAULT FALSE,
+
+            received_at TIMESTAMPTZ DEFAULT NOW(),
+
+            processed_at TIMESTAMPTZ,
+
+            UNIQUE(provider, provider_event_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS commission_config (
+
+            id INTEGER PRIMARY KEY DEFAULT 1,
+
+            commission_rate NUMERIC(5,4) NOT NULL
+                DEFAULT 0.0500,
+
+            currency VARCHAR(3) NOT NULL DEFAULT 'UGX',
+
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        INSERT INTO commission_config
+        (id, commission_rate, currency)
+
+        VALUES
+        (1, 0.0500, 'UGX')
+
+        ON CONFLICT(id) DO NOTHING;
+
+        `);
+
+        console.log("Kisakye Mart database ready.");
+
+    } finally {
+
+        client.release();
+
     }
-
-    const newProduct = {
-
-        id: Date.now(),
-
-        name: name,
-
-        price: Number(price),
-
-        category: category,
-
-        seller: seller,
-
-        image: image || "🛒"
-    };
-
-    products.push(newProduct);
-
-    displayProducts();
-
-    document.getElementById("productName").value = "";
-    document.getElementById("productPrice").value = "";
-    document.getElementById("sellerName").value = "";
-    document.getElementById("productImage").value = "";
-
-    alert(
-        "Product added successfully to Kisakye Mart."
-    );
 }
 
+/* =========================================================
+HEALTH CHECK
+========================================================= */
 
-window.onclick = function(event) {
+app.get("/api/health", async (req, res) => {
 
-    const modal =
-        document.getElementById("cartModal");
+    try {
 
-    if (event.target === modal) {
+        await pool.query("SELECT 1");
 
-        modal.style.display = "none";
+        res.json({
+
+            success: true,
+
+            application: "Kisakye Mart FMCG",
+
+            database: "connected",
+
+            commission: "5%"
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            success: false,
+
+            database: "disconnected"
+
+        });
+
     }
-};
 
+});
 
-displayProducts();
-updateCart();
+/* =========================================================
+ADD USER
+========================================================= */
 
-</script>
+app.post("/api/users", async (req, res) => {
 
-</body>
-</html>
-What this Stage 1 version does:
-44+ starting FMCG products.
-Food, drinks, dairy, snacks, household, personal care, baby and meat categories.
-Product search.
-Category filtering.
-Shopping cart.
-Add/remove products from cart.
-Seller product-upload section.
-Sellers can keep adding products without a fixed catalogue limit.
-Seller/shop name and price fields.
-Optional product image URL.
-Checkout demonstration.
-Important: this is still the Stage 1 frontend/demo. The products and cart are currently held in the browser; it is not yet a real database or real-money payment system.
-Next we can move to Stage 2: real database + buyer/seller accounts + orders, and then connect the payment system securely.
+    try {
+
+        const {
+            full_name,
+            phone,
+            email,
+            role
+        } = req.body;
+
+        if (!full_name || !phone || !role) {
+
+            return res.status(400).json({
+
+                error: "Full name, phone and role are required."
+
+            });
+
+        }
+
+        const result = await pool.query(`
+
+            INSERT INTO users
+            (full_name, phone, email, role)
+
+            VALUES ($1,$2,$3,$4)
+
+            RETURNING id, full_name, phone, email, role
+
+        `, [
+            full_name,
+            phone,
+            email || null,
+            role
+        ]);
+
+        res.status(201).json({
+
+            success: true,
+
+            user: result.rows[0]
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            error: error.message
+
+        });
+
+    }
+
+});
+
+/* =========================================================
+ADD PRODUCT
+========================================================= */
+
+app.post("/api/products", async (req, res) => {
+
+    try {
+
+        const {
+            seller_id,
+            name,
+            description,
+            category,
+            price_ugx,
+            stock_quantity,
+            image_url
+        } = req.body;
+
+        if (
+            !seller_id ||
+            !name ||
+            !category ||
+            price_ugx === undefined
+        ) {
+
+            return res.status(400).json({
+
+                error: "Required product information missing."
+
+            });
+
+        }
+
+        const result = await pool.query(`
+
+            INSERT INTO products
+            (
+                seller_id,
+                name,
+                description,
+                category,
+                price_ugx,
+                stock_quantity,
+                image_url
+            )
+
+            VALUES
+            ($1,$2,$3,$4,$5,$6,$7)
+
+            RETURNING *
+
+        `, [
+
+            seller_id,
+            name,
+            description || null,
+            category,
+            price_ugx,
+            stock_quantity || 0,
+            image_url || null
+
+        ]);
+
+        res.status(201).json({
+
+            success: true,
+
+            product: result.rows[0]
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            error: error.message
+
+        });
+
+    }
+
+});
+
+/* =========================================================
+LIST PRODUCTS
+========================================================= */
+
+app.get("/api/products", async (req, res) => {
+
+    try {
+
+        const result = await pool.query(`
+
+            SELECT
+                p.*,
+                s.shop_name
+
+            FROM products p
+
+            LEFT JOIN seller_profiles s
+                ON s.user_id = p.seller_id
+
+            WHERE p.is_active = TRUE
+
+            ORDER BY p.created_at DESC
+
+        `);
+
+        res.json({
+
+            success: true,
+
+            count: result.rows.length,
+
+            products: result.rows
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            error: error.message
+
+        });
+
+    }
+
+});
+
+/* =========================================================
+CREATE ORDER
+========================================================= */
+
+app.post("/api/orders", async (req, res) => {
+
+    const client = await pool.connect();
+
+    try {
+
+        const {
+            buyer_id,
+            items,
+            delivery_fee_ugx
+        } = req.body;
+
+        if (
+            !buyer_id ||
+            !Array.isArray(items) ||
+            items.length === 0
+        ) {
+
+            return res.status(400).json({
+
+                error: "Buyer and order items are required."
+
+            });
+
+        }
+
+        await client.query("BEGIN");
+
+        let subtotal = 0;
+
+        const orderItems = [];
+
+        for (const item of items) {
+
+            const productResult =
+                await client.query(`
+
+                SELECT *
+
+                FROM products
+
+                WHERE id = $1
+
+                AND is_active = TRUE
+
+                FOR UPDATE
+
+            `, [item.product_id]);
+
+            if (productResult.rows.length === 0) {
+
+                throw new Error(
+                    "Product not found."
+                );
+
+            }
+
+            const product = productResult.rows[0];
+
+            const quantity =
+                Number(item.quantity);
+
+            if (
+                !Number.isInteger(quantity) ||
+                quantity <= 0
+            ) {
+
+                throw new Error(
+                    "Invalid quantity."
+                );
+
+            }
+
+            if (
+                product.stock_quantity < quantity
+            ) {
+
+                throw new Error(
+                    `Insufficient stock for ${product.name}`
+                );
+
+            }
+
+            const lineTotal =
+                Number(product.price_ugx) *
+                quantity;
+
+            subtotal += lineTotal;
+
+            orderItems.push({
+
+                product,
+                quantity,
+                lineTotal
+
+            });
+
+            await client.query(`
+
+                UPDATE products
+
+                SET stock_quantity =
+                    stock_quantity - $1,
+
+                    updated_at = NOW()
+
+                WHERE id = $2
+
+            `, [
+                quantity,
+                product.id
+            ]);
+
+        }
+
+        const delivery =
+            Number(delivery_fee_ugx || 0);
+
+        const total =
+            subtotal + delivery;
+
+        const orderNumber =
+            "KM-" +
+            Date.now() +
+            "-" +
+            crypto.randomBytes(3)
+                .toString("hex")
+                .toUpperCase();
+
+        const orderResult =
+            await client.query(`
+
+            INSERT INTO orders
+            (
+                order_number,
+                buyer_id,
+                subtotal_ugx,
+                delivery_fee_ugx,
+                total_ugx,
+                status
+            )
+
+            VALUES
+            ($1,$2,$3,$4,$5,'PAYMENT_PENDING')
+
+            RETURNING *
+
+        `, [
+
+            orderNumber,
+            buyer_id,
+            subtotal,
+            delivery,
+            total
+
+        ]);
+
+        const order =
+            orderResult.rows[0];
+
+        for (const item of orderItems) {
+
+            await client.query(`
+
+                INSERT INTO order_items
+                (
+                    order_id,
+                    product_id,
+                    seller_id,
+                    product_name_snapshot,
+                    unit_price_ugx,
+                    quantity,
+                    line_total_ugx
+                )
+
+                VALUES
+                ($1,$2,$3,$4,$5,$6,$7)
+
+            `, [
+
+                order.id,
+
+                item.product.id,
+
+                item.product.seller_id,
+
+                item.product.name,
+
+                item.product.price_ugx,
+
+                item.quantity,
+
+                item.lineTotal
+
+            ]);
+
+        }
+
+        await client.query(`
+
+            INSERT INTO audit_logs
+            (
+                event_type,
+                entity_type,
+                entity_id,
+                event_data
+            )
+
+            VALUES
+            (
+                'ORDER_CREATED',
+                'ORDER',
+                $1,
+                $2
+            )
+
+        `, [
+
+            order.id,
+
+            JSON.stringify({
+
+                order_number:
+                    order.order_number,
+
+                total_ugx:
+                    total
+
+            })
+
+        ]);
+
+        await client.query("COMMIT");
+
+        res.status(201).json({
+
+            success: true,
+
+            order
+
+        });
+
+    } catch (error) {
+
+        await client.query("ROLLBACK");
+
+        res.status(500).json({
+
+            error: error.message
+
+        });
+
+    } finally {
+
+        client.release();
+
+    }
+
+});
+
+/* =========================================================
+CREATE PAYMENT REQUEST
+=========================================================
+
+This creates a pending payment record.
+
+It does NOT process the real MTN/Airtel payment yet.
+========================================================= */
+
+app.post("/api/payments/request", async (req, res) => {
+
+    try {
+
+        const {
+            order_id,
+            provider,
+            payer_phone
+        } = req.body;
+
+        if (
+            !order_id ||
+            !provider ||
+            !payer_phone
+        ) {
+
+            return res.status(400).json({
+
+                error:
+                    "Order, provider and phone are required."
+
+            });
+
+        }
+
+        if (
+            !["MTN", "AIRTEL"]
+                .includes(provider)
+        ) {
+
+            return res.status(400).json({
+
+                error:
+                    "Provider must be MTN or AIRTEL."
+
+            });
+
+        }
+
+        const orderResult =
+            await pool.query(`
+
+            SELECT *
+
+            FROM orders
+
+            WHERE id = $1
+
+        `, [order_id]);
+
+        if (orderResult.rows.length === 0) {
+
+            return res.status(404).json({
+
+                error: "Order not found."
+
+            });
+
+        }
+
+        const order = orderResult.rows[0];
+
+        const result =
+            await pool.query(`
+
+            INSERT INTO payments
+            (
+                order_id,
+                provider,
+                payer_phone,
+                amount_ugx,
+                status
+            )
+
+            VALUES
+            ($1,$2,$3,$4,'PENDING')
+
+            RETURNING id, order_id,
+                      provider,
+                      amount_ugx,
+                      status,
+                      created_at
+
+        `, [
+
+            order_id,
+            provider,
+            payer_phone,
+            order.total_ugx
+
+        ]);
+
+        res.status(201).json({
+
+            success: true,
+
+            payment:
+                result.rows[0],
+
+            message:
+                "Payment request created. Provider integration required."
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            error: error.message
+
+        });
+
+    }
+
+});
+
+/* =========================================================
+PAYMENT CONFIRMATION
+=========================================================
+
+This endpoint represents the provider callback.
+
+In production, it must verify the provider signature/
+credentials before accepting the notification.
+========================================================= */
+
+app.post("/api/payments/webhook", async (req, res) => {
+
+    const client = await pool.connect();
+
+    try {
+
+        const {
+
+            provider,
+            provider_event_id,
+            provider_transaction_id,
+            payment_id,
+            status
+
+        } = req.body;
+
+        if (
+            !provider ||
+            !provider_event_id ||
+            !payment_id ||
+            !status
+        ) {
+
+            return res.status(400).json({
+
+                error: "Invalid webhook."
+
+            });
+
+        }
+
+        await client.query("BEGIN");
+
+        const existing =
+            await client.query(`
+
+            SELECT id
+
+            FROM payment_webhook_events
+
+            WHERE provider = $1
+
+            AND provider_event_id = $2
+
+            FOR UPDATE
+
+        `, [
+
+            provider,
+            provider_event_id
+
+        ]);
+
+        if (existing.rows.length > 0) {
+
+            await client.query("COMMIT");
+
+            return res.json({
+
+                success: true,
+
+                message:
+                    "Webhook already processed."
+
+            });
+
+        }
+
+        await client.query(`
+
+            INSERT INTO payment_webhook_events
+            (
+                provider,
+                provider_event_id,
+                payload
+            )
+
+            VALUES
+            ($1,$2,$3)
+
+        `, [
+
+            provider,
+            provider_event_id,
+            JSON.stringify(req.body)
+
+        ]);
+
+        const paymentResult =
+            await client.query(`
+
+            SELECT *
+
+            FROM payments
+
+            WHERE id = $1
+
+            FOR UPDATE
+
+        `, [payment_id]);
+
+        if (paymentResult.rows.length === 0) {
+
+            throw new Error(
+                "Payment not found."
+            );
+
+        }
+
+        const payment =
+            paymentResult.rows[0];
+
+        /*
+        In production:
+        verify the provider response first.
+        */
+
+        if (status !== "SUCCESSFUL") {
+
+            await client.query(`
+
+                UPDATE payments
+
+                SET status = 'FAILED'
+
+                WHERE id = $1
+
+            `, [payment_id]);
+
+            await client.query("COMMIT");
+
+            return res.json({
+
+                success: true,
+
+                payment_status: "FAILED"
+
+            });
+
+        }
+
+        /*
+        Prevent processing a successful
+        payment twice.
+        */
+
+        if (payment.status === "SUCCESSFUL") {
+
+            await client.query("COMMIT");
+
+            return res.json({
+
+                success: true,
+
+                message:
+                    "Payment already successful."
+
+            });
+
+        }
+
+        /*
+        Mark payment successful.
+        */
+
+        await client.query(`
+
+            UPDATE payments
+
+            SET
+                status = 'SUCCESSFUL',
+
+                provider_transaction_id = $1,
+
+                paid_at = NOW()
+
+            WHERE id = $2
+
+        `, [
+
+            provider_transaction_id || null,
+
+            payment_id
+
+        ]);
+
+        /*
+        IMPORTANT:
+
+        Commission is based on the verified
+        product/order value, not the delivery fee.
+        */
+
+        const orderResult =
+            await client.query(`
+
+            SELECT *
+
+            FROM orders
+
+            WHERE id = $1
+
+            FOR UPDATE
+
+        `, [payment.order_id]);
+
+        const order =
+            orderResult.rows[0];
+
+        const grossAmount =
+            Number(order.subtotal_ugx);
+
+        const commission =
+            Math.round(
+                grossAmount * COMMISSION_RATE
+            );
+
+        const sellerAmount =
+            grossAmount - commission;
+
+        /*
+        Create commission record.
+        */
+
+        await client.query(`
+
+            INSERT INTO commission_ledger
+            (
+                payment_id,
+                order_id,
+                gross_order_value_ugx,
+                commission_rate,
+                commission_amount_ugx,
+                status
+            )
+
+            VALUES
+            ($1,$2,$3,$4,$5,'EARNED')
+
+            ON CONFLICT(payment_id)
+            DO NOTHING
+
+        `, [
+
+            payment_id,
+
+            order.id,
+
+            grossAmount,
+
+            COMMISSION_RATE,
+
+            commission
+
+        ]);
+
+        /*
+        Update order.
+        */
+
+        await client.query(`
+
+            UPDATE orders
+
+            SET
+                status = 'PAID',
+
+                updated_at = NOW()
+
+            WHERE id = $1
+
+        `, [order.id]);
+
+        /*
+        Create seller settlement records.
+        */
+
+        const sellers =
+            await client.query(`
+
+            SELECT
+                seller_id,
+                SUM(line_total_ugx) AS seller_gross
+
+            FROM order_items
+
+            WHERE order_id = $1
+
+            GROUP BY seller_id
+
+        `, [order.id]);
+
+        for (const seller of sellers.rows) {
+
+            const sellerGross =
+                Number(seller.seller_gross);
+
+            /*
+            Allocate the 5% commission
+            proportionally across sellers.
+            */
+
+            const sellerCommission =
+                Math.round(
+                    sellerGross *
+                    COMMISSION_RATE
+                );
+
+            const sellerNet =
+                sellerGross -
+                sellerCommission;
+
+            await client.query(`
+
+                INSERT INTO seller_settlements
+                (
+                    seller_id,
+                    order_id,
+                    payment_id,
+                    gross_amount_ugx,
+                    commission_amount_ugx,
+                    seller_amount_ugx,
+                    status
+                )
+
+                VALUES
+                ($1,$2,$3,$4,$5,$6,'PENDING')
+
+            `, [
+
+                seller.seller_id,
+
+                order.id,
+
+                payment_id,
+
+                sellerGross,
+
+                sellerCommission,
+
+                sellerNet
+
+            ]);
+
+        }
+
+        /*
+        Audit record.
+        */
+
+        await client.query(`
+
+            INSERT INTO audit_logs
+            (
+                event_type,
+                entity_type,
+                entity_id,
+                event_data
+            )
+
+            VALUES
+            (
+                'PAYMENT_SUCCESSFUL',
+                'PAYMENT',
+                $1,
+                $2
+            )
+
+        `, [
+
+            payment_id,
+
+            JSON.stringify({
+
+                order_id:
+                    order.id,
+
+                gross_order_value:
+                    grossAmount,
+
+                commission:
+                    commission,
+
+                seller_amount:
+                    sellerAmount
+
+            })
+
+        ]);
+
+        await client.query(`
+
+            UPDATE payment_webhook_events
+
+            SET
+                processed = TRUE,
+
+                processed_at = NOW()
+
+            WHERE provider = $1
+
+            AND provider_event_id = $2
+
+        `, [
+
+            provider,
+
+            provider_event_id
+
+        ]);
+
+        await client.query("COMMIT");
+
+        res.json({
+
+            success: true,
+
+            message:
+                "Payment processed successfully.",
+
+            transaction: {
+
+                order_id:
+                    order.id,
+
+                gross_order_value_ugx:
+                    grossAmount,
+
+                kisakye_commission_ugx:
+                    commission,
+
+                seller_amount_ugx:
+                    sellerAmount
+
+            }
+
+        });
+
+    } catch (error) {
+
+        await client.query("ROLLBACK");
+
+        res.status(500).json({
+
+            error: error.message
+
+        });
+
+    } finally {
+
+        client.release();
+
+    }
+
+});
+
+/* =========================================================
+ADMIN FINANCIAL DASHBOARD
+========================================================= */
+
+app.get("/api/admin/financial-summary", async (req, res) => {
+
+    try {
+
+        const result =
+            await pool.query(`
+
+            SELECT
+
+                COUNT(*) AS transactions,
+
+                COALESCE(
+                    SUM(gross_order_value_ugx),
+                    0
+                ) AS total_sales,
+
+                COALESCE(
+                    SUM(commission_amount_ugx),
+                    0
+                ) AS kisakye_commission
+
+            FROM commission_ledger
+
+            WHERE status IN
+            ('EARNED','SETTLED')
+
+        `);
+
+        const sellers =
+            await pool.query(`
+
+            SELECT
+
+                COALESCE(
+                    SUM(seller_amount_ugx),
+                    0
+                ) AS seller_settlements
+
+            FROM seller_settlements
+
+            WHERE status IN
+            ('PENDING','PROCESSING','PAID')
+
+        `);
+
+        res.json({
+
+            success: true,
+
+            financial_summary: {
+
+                transactions:
+                    Number(
+                        result.rows[0].transactions
+                    ),
+
+                total_sales_ugx:
+                    Number(
+                        result.rows[0].total_sales
+                    ),
+
+                kisakye_commission_ugx:
+                    Number(
+                        result.rows[0].kisakye_commission
+                    ),
+
+                seller_settlements_ugx:
+                    Number(
+                        sellers.rows[0]
+                            .seller_settlements
+                    )
+
+            }
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            error: error.message
+
+        });
+
+    }
+
+});
+
+/* =========================================================
+TRANSACTION HISTORY
+========================================================= */
+
+app.get("/api/admin/transactions", async (req, res) => {
+
+    try {
+
+        const result =
+            await pool.query(`
+
+            SELECT
+
+                p.id AS payment_id,
+
+                p.provider,
+
+                p.provider_transaction_id,
+
+                p.amount_ugx,
+
+                p.status AS payment_status,
+
+                p.paid_at,
+
+                o.order_number,
+
+                c.commission_amount_ugx
+
+            FROM payments p
+
+            JOIN orders o
+                ON o.id = p.order_id
+
+            LEFT JOIN commission_ledger c
+                ON c.payment_id = p.id
+
+            ORDER BY p.created_at DESC
+
+            `);
+
+        res.json({
+
+            success: true,
+
+            transactions:
+                result.rows
+
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+
+            error: error.message
+
+        });
+
+    }
+
+});
+
+/* =========================================================
+START SERVER
+========================================================= */
+
+async function startServer() {
+
+    try {
+
+        await setupDatabase();
+
+        app.listen(PORT, () => {
+
+            console.log(
+                "===================================="
+            );
+
+            console.log(
+                "KISAKYE MART FMCG BACKEND"
+            );
+
+            console.log(
+                `Server: http://localhost:${PORT}`
+            );
+
+            console.log(
+                "Commission: 5%"
+            );
+
+            console.log(
+                "Currency: UGX"
+            );
+
+            console.log(
+                "===================================="
+            );
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Database startup failed:",
+            error
+        );
+
+        process.exit(1);
+
+    }
+
+}
+
+startServer();
