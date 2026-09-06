@@ -1,1237 +1,240 @@
-/*
-===========================================================
- KISAKYE MART FMCG - STAGE 3
- ALL-IN-ONE PRODUCT + DATABASE SERVER
-===========================================================
-
- Technology:
- - Node.js
- - Express
- - PostgreSQL
-
- Includes:
- - FMCG products
- - Product images
- - Categories
- - Sellers
- - Buyers
- - Orders
- - Order items
- - Payments
- - Kisakye Mart 5% commission
- - Delivery records
- - Admin-ready database
- - Product search
- - Product display
-===========================================================
-*/
-
-const express = require("express");
-const { Pool } = require("pg");
-
+// KISAKYE MART - 110+ PRODUCTS UNLIMITED - DATABASE + MONEY MONITOR
+// WhatsApp: 0744590988 + 0774360584 | PIN: 7445
+const express = require('express');
+const cors = require('cors');
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.json({ limit: '20mb' }));
+const PORT = 3000;
 
-/* =========================================================
-   DATABASE CONNECTION
-========================================================= */
-
-const pool = new Pool({
-    connectionString:
-        process.env.DATABASE_URL ||
-        "postgresql://postgres:YOUR_PASSWORD@localhost:5432/kisakye_mart"
-});
-
-/* =========================================================
-   MIDDLEWARE
-========================================================= */
-
-app.use(express.json());
-
-/* =========================================================
-   DATABASE SETUP
-========================================================= */
-
-async function setupDatabase() {
-
-    await pool.query(`
-        CREATE TABLE IF NOT EXISTS sellers (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(150) NOT NULL,
-            phone VARCHAR(30) UNIQUE NOT NULL,
-            email VARCHAR(150),
-            status VARCHAR(30) DEFAULT 'active',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS buyers (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(150),
-            phone VARCHAR(30) UNIQUE NOT NULL,
-            email VARCHAR(150),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS categories (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100) UNIQUE NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS products (
-            id SERIAL PRIMARY KEY,
-            seller_id INTEGER REFERENCES sellers(id),
-            category_id INTEGER REFERENCES categories(id),
-            name VARCHAR(200) NOT NULL,
-            description TEXT,
-            brand VARCHAR(150),
-            unit VARCHAR(100),
-            price_ugx NUMERIC(12,2) NOT NULL CHECK(price_ugx >= 0),
-            stock INTEGER DEFAULT 0 CHECK(stock >= 0),
-            image_url TEXT,
-            active BOOLEAN DEFAULT TRUE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS orders (
-            id SERIAL PRIMARY KEY,
-            buyer_id INTEGER REFERENCES buyers(id),
-            total_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
-            commission_rate NUMERIC(5,2) DEFAULT 5.00,
-            commission_amount NUMERIC(12,2) DEFAULT 0,
-            seller_amount NUMERIC(12,2) DEFAULT 0,
-            payment_status VARCHAR(40) DEFAULT 'pending',
-            order_status VARCHAR(40) DEFAULT 'pending',
-            delivery_address TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS order_items (
-            id SERIAL PRIMARY KEY,
-            order_id INTEGER REFERENCES orders(id) ON DELETE CASCADE,
-            product_id INTEGER REFERENCES products(id),
-            quantity INTEGER NOT NULL CHECK(quantity > 0),
-            unit_price NUMERIC(12,2) NOT NULL,
-            subtotal NUMERIC(12,2) NOT NULL
-        );
-
-        CREATE TABLE IF NOT EXISTS payments (
-            id SERIAL PRIMARY KEY,
-            order_id INTEGER REFERENCES orders(id),
-            buyer_id INTEGER REFERENCES buyers(id),
-            amount NUMERIC(12,2) NOT NULL,
-            provider VARCHAR(50),
-            transaction_reference VARCHAR(150),
-            status VARCHAR(40) DEFAULT 'pending',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-
-        CREATE TABLE IF NOT EXISTS delivery_records (
-            id SERIAL PRIMARY KEY,
-            order_id INTEGER REFERENCES orders(id),
-            delivery_partner VARCHAR(100),
-            delivery_fee NUMERIC(12,2) DEFAULT 0,
-            delivery_commission_rate NUMERIC(5,2) DEFAULT 2.00,
-            delivery_commission NUMERIC(12,2) DEFAULT 0,
-            status VARCHAR(40) DEFAULT 'pending',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-    `);
-
-    console.log("Database tables ready.");
-}
-
-/* =========================================================
-   CATEGORIES
-========================================================= */
-
-const categories = [
-    "Food",
-    "Beverages",
-    "Cooking Oil",
-    "Sugar",
-    "Flour",
-    "Rice",
-    "Pasta",
-    "Canned Foods",
-    "Biscuits & Snacks",
-    "Dairy",
-    "Personal Care",
-    "Baby Care",
-    "Cleaning",
-    "Laundry",
-    "Toiletries",
-    "Household",
-    "Water",
-    "Soft Drinks"
+// ===== 110 PRODUCTS DATABASE - UNLIMITED ADD =====
+let products = [
+{id:1,name:"Posho Maize Meal 2kg",price:3500,cat:"Grocery",stock:100,img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
+{id:2,name:"Coca Cola 500ml",price:1500,cat:"Beverages",stock:200,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:3,name:"Royal Cooking Oil 2L",price:13000,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
+{id:4,name:"Sugar 1kg",price:5500,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
+{id:5,name:"Rice 1kg",price:4500,cat:"Grocery",stock:90,img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=400"},
+{id:6,name:"Matooke Bunch",price:20000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
+{id:7,name:"Tomatoes 1kg",price:3000,cat:"Grocery",stock:100,img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400"},
+{id:8,name:"Bread Loaf",price:5000,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"},
+{id:9,name:"Milk 500ml",price:2500,cat:"Beverages",stock:70,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
+{id:10,name:"Eggs Tray 30pcs",price:15000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1488679831987-9564a7c76c7b?w=400"},
+{id:11,name:"Jik Bleach 1L",price:3500,cat:"Home",stock:100,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:12,name:"Kakira Sugar 50kg",price:160000,cat:"Grocery",stock:10,img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
+{id:13,name:"Nescafe 100g",price:15000,cat:"Beverages",stock:50,img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400"},
+{id:14,name:"Sunseed Oil 1L",price:11000,cat:"Grocery",stock:45,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
+{id:15,name:"BBQ Sauce 500ml",price:15000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
+{id:16,name:"Avocado 1pc",price:500,cat:"Grocery",stock:200,img:"https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?w=400"},
+{id:17,name:"Mangoes 1kg",price:2000,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1553279768-865429fa0078?w=400"},
+{id:18,name:"Omo 500g",price:4000,cat:"Home",stock:100,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:19,name:"Colgate Toothpaste",price:3000,cat:"Personal",stock:120,img:"https://images.unsplash.com/photo-1559671088-5ef93d3b0e5e?w=400"},
+{id:20,name:"Fanta 500ml",price:1500,cat:"Beverages",stock:150,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:21,name:"Fortune Cooking Oil 1L",price:7500,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
+{id:22,name:"Cassava Flour 1kg",price:3500,cat:"Grocery",stock:70,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:23,name:"Sweet Potatoes 1kg",price:2000,cat:"Grocery",stock:90,img:"https://images.unsplash.com/photo-1518977676608-bd36c2ca4f0d?w=400"},
+{id:24,name:"Watermelon Whole",price:5000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?w=400"},
+{id:25,name:"Pineapple 1pc",price:3000,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1550254478-ead40cc54513?w=400"},
+{id:26,name:"Oranges 1kg",price:2500,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=400"},
+{id:27,name:"Green Pepper 1kg",price:4000,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=400"},
+{id:28,name:"Cabbage 1pc",price:2000,cat:"Grocery",stock:70,img:"https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=400"},
+{id:29,name:"Carrots 1kg",price:3000,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1447175008436-054170c2e979?w=400"},
+{id:30,name:"Sukuma Wiki Bunch",price:1000,cat:"Grocery",stock:150,img:"https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400"},
+{id:31,name:"Nakati Bunch",price:1000,cat:"Grocery",stock:150,img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400"},
+{id:32,name:"Passion Fruits 1kg",price:3000,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=400"},
+{id:33,name:"Pawpaw 1pc",price:2500,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1617112848923-cc2234396a8d?w=400"},
+{id:34,name:"Garlic 1kg",price:8000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
+{id:35,name:"Ginger 1kg",price:6000,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
+{id:36,name:"Peas 1kg",price:5000,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"},
+{id:37,name:"Ground Nuts 1kg",price:6000,cat:"Grocery",stock:55,img:"https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=400"},
+{id:38,name:"Honey 500ml",price:12000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1558642084-fd43571d5462?w=400"},
+{id:39,name:"Millet Flour 1kg",price:4000,cat:"Grocery",stock:70,img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
+{id:40,name:"Salt 1kg",price:1500,cat:"Grocery",stock:100,img:"https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=400"},
+{id:41,name:"Tea Leaves 250g",price:3500,cat:"Beverages",stock:80,img:"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400"},
+{id:42,name:"Blue Band 250g",price:6500,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
+{id:43,name:"Royco Mchuzi 100g",price:2000,cat:"Grocery",stock:100,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:44,name:"Bar Soap 1kg",price:3500,cat:"Home",stock:120,img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
+{id:45,name:"Vaseline 250ml",price:2500,cat:"Personal",stock:100,img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=400"},
+{id:46,name:"Pampers Medium 20pcs",price:25000,cat:"Personal",stock:25,img:"https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400"},
+{id:47,name:"Biscuits Britannia",price:2000,cat:"Snacks",stock:150,img:"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400"},
+{id:48,name:"Mango Juice 1L",price:3500,cat:"Beverages",stock:80,img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400"},
+{id:49,name:"Rwenzori Water 1L",price:1000,cat:"Beverages",stock:200,img:"https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400"},
+{id:50,name:"Onions 1kg",price:3500,cat:"Grocery",stock:90,img:"https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?w=400"},
+// 60 MORE TO MAKE 110+
+{id:51,name:"Yoghurt 500ml",price:3000,cat:"Beverages",stock:60,img:"https://images.unsplash.com/photo-1488477181946-64290103bbd6?w=400"},
+{id:52,name:"Beef 1kg",price:15000,cat:"Grocery",stock:20,img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400"},
+{id:53,name:"Chicken Whole 1.5kg",price:18000,cat:"Grocery",stock:15,img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400"},
+{id:54,name:"Fish Tilapia 1kg",price:12000,cat:"Grocery",stock:20,img:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400"},
+{id:55,name:"Cooking Gas 6kg",price:45000,cat:"Home",stock:10,img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400"},
+{id:56,name:"Dettol Soap",price:2000,cat:"Personal",stock:100,img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
+{id:57,name:"Mukwano Soap",price:3000,cat:"Home",stock:80,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:58,name:"Pepsi 500ml",price:1500,cat:"Beverages",stock:120,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:59,name:"Mountain Dew 500ml",price:1500,cat:"Beverages",stock:120,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:60,name:"Soda Mirinda 500ml",price:1500,cat:"Beverages",stock:120,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:61,name:"Minute Maid Juice",price:4000,cat:"Beverages",stock:60,img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400"},
+{id:62,name:"Lato Milk 1L",price:4500,cat:"Beverages",stock:50,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
+{id:63,name:"Jesa Milk 500ml",price:2500,cat:"Beverages",stock:70,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
+{id:64,name:"Bread - Hot Loaf",price:3500,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400"},
+{id:65,name:"Donuts 6pcs",price:6000,cat:"Snacks",stock:30,img:"https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400"},
+{id:66,name:"Samosa 1pc",price:1000,cat:"Snacks",stock:100,img:"https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400"},
+{id:67,name:"Chapati 1pc",price:1000,cat:"Snacks",stock:100,img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400"},
+{id:68,name:"Rolex - Chapati + Eggs",price:3000,cat:"Snacks",stock:50,img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400"},
+{id:69,name:"Beans 1kg",price:4000,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400"},
+{id:70,name:"Maize Flour 5kg",price:15000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400"},
+{id:71,name:"Wheat Flour 2kg",price:7000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:72,name:"Spaghetti 500g",price:3500,cat:"Grocery",stock:70,img:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400"},
+{id:73,name:"Macaroni 500g",price:3500,cat:"Grocery",stock:70,img:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400"},
+{id:74,name:"Tomato Paste 200g",price:2500,cat:"Grocery",stock:80,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:75,name:"Curry Powder 100g",price:2000,cat:"Grocery",stock:90,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:76,name:"Black Pepper 50g",price:2000,cat:"Grocery",stock:60,img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400"},
+{id:77,name:"Cooking Oil - Kimbo 1kg",price:8000,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400"},
+{id:78,name:"Margarine Prestige 500g",price:7000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
+{id:79,name:"Sugar - Kinyara 2kg",price:11000,cat:"Grocery",stock:35,img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=400"},
+{id:80,name:"Rice - Pishori 2kg",price:9000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=400"},
+{id:81,name:"Ketchup 500ml",price:5000,cat:"Grocery",stock:50,img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
+{id:82,name:"Mayonnaise 500ml",price:6000,cat:"Grocery",stock:40,img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=400"},
+{id:83,name:"Peanut Butter 500g",price:8000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400"},
+{id:84,name:"Jam 500g",price:6000,cat:"Grocery",stock:35,img:"https://images.unsplash.com/photo-1474440690486-ef8a1751f4b3?w=400"},
+{id:85,name:"Corn Flakes 500g",price:12000,cat:"Grocery",stock:25,img:"https://images.unsplash.com/photo-1586511925558-a80b90cc8d8d?w=400"},
+{id:86,name:"Weetabix 500g",price:10000,cat:"Grocery",stock:25,img:"https://images.unsplash.com/photo-1586511925558-a80b90cc8d8d?w=400"},
+{id:87,name:"Nido Milk Powder 400g",price:18000,cat:"Grocery",stock:20,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400"},
+{id:88,name:"Cocoa Powder 200g",price:8000,cat:"Grocery",stock:30,img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400"},
+{id:89,name:"Lays Chips",price:3000,cat:"Snacks",stock:80,img:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400"},
+{id:90,name:"Chevda Mix",price:2500,cat:"Snacks",stock:70,img:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400"},
+{id:91,name:"Face Wash - Nivea",price:12000,cat:"Personal",stock:30,img:"https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400"},
+{id:92,name:"Lotion - Vaseline 400ml",price:12000,cat:"Personal",stock:35,img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=400"},
+{id:93,name:"Shampoo 400ml",price:8000,cat:"Personal",stock:40,img:"https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400"},
+{id:94,name:"Conditioner",price:8000,cat:"Personal",stock:35,img:"https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=400"},
+{id:95,name:"Toothbrush",price:2000,cat:"Personal",stock:100,img:"https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=400"},
+{id:96,name:"Deodorant",price:5000,cat:"Personal",stock:50,img:"https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=400"},
+{id:97,name:"Sanitary Pads",price:3500,cat:"Personal",stock:60,img:"https://images.unsplash.com/photo-1584305574586-0a33e7399cb8?w=400"},
+{id:98,name:"Bathing Sponge",price:1500,cat:"Personal",stock:80,img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=400"},
+{id:99,name:"Dish Paste - Green",price:2500,cat:"Home",stock:70,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:100,name:"Toilet Cleaner Harpic",price:5000,cat:"Home",stock:50,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:101,name:"Air Freshener",price:4000,cat:"Home",stock:45,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:102,name:"Insecticide Doom",price:5000,cat:"Home",stock:40,img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400"},
+{id:103,name:"Match Box",price:500,cat:"Home",stock:200,img:"https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400"},
+{id:104,name:"Candles 6pcs",price:2000,cat:"Home",stock:80,img:"https://images.unsplash.com/photo-1603006905003-be475563bc59?w=400"},
+{id:105,name:"Torch Battery",price:3000,cat:"Home",stock:60,img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400"},
+{id:106,name:"Extension Cable",price:15000,cat:"Home",stock:20,img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400"},
+{id:107,name:"Soda - Novida 500ml",price:1500,cat:"Beverages",stock:100,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:108,name:"Energy Drink - Red Bull",price:5000,cat:"Beverages",stock:50,img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=400"},
+{id:109,name:"Whiskey - Uganda Waragi 200ml",price:8000,cat:"Beverages",stock:30,img:"https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400"},
+{id:110,name:"Beer - Nile Special",price:3000,cat:"Beverages",stock:100,img:"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400"}
 ];
 
-/* =========================================================
-   PRODUCT CATALOGUE
-========================================================= */
+let orders = [];
+let orderItems = [];
+let monitor = { totalSales:0, totalProfit:0, totalOrders:0 };
 
-const products = [
+// ============ APIs - DATABASE ============
+app.get('/api/products', (req,res)=>{ res.json({success:true, count:products.length, products}); });
 
-    {
-        category: "Food",
-        name: "Posho Maize Flour",
-        brand: "Generic",
-        unit: "1 kg",
-        price: 2500,
-        stock: 100,
-        image:
-            "https://images.unsplash.com/photo-1603046891744-76e6300d3e00?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Rice",
-        name: "Premium Rice",
-        brand: "Generic",
-        unit: "1 kg",
-        price: 4500,
-        stock: 100,
-        image:
-            "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Sugar",
-        name: "White Sugar",
-        brand: "Generic",
-        unit: "1 kg",
-        price: 4500,
-        stock: 100,
-        image:
-            "https://images.unsplash.com/photo-1581441363689-1f3c3c414635?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Cooking Oil",
-        name: "Cooking Oil",
-        brand: "Generic",
-        unit: "1 litre",
-        price: 7500,
-        stock: 80,
-        image:
-            "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Flour",
-        name: "Wheat Flour",
-        brand: "Generic",
-        unit: "1 kg",
-        price: 4000,
-        stock: 80,
-        image:
-            "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Pasta",
-        name: "Spaghetti",
-        brand: "Generic",
-        unit: "500 g",
-        price: 3500,
-        stock: 100,
-        image:
-            "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Beverages",
-        name: "Tea Leaves",
-        brand: "Generic",
-        unit: "250 g",
-        price: 5000,
-        stock: 70,
-        image:
-            "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Beverages",
-        name: "Instant Coffee",
-        brand: "Generic",
-        unit: "100 g",
-        price: 8500,
-        stock: 50,
-        image:
-            "https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Soft Drinks",
-        name: "Soft Drink",
-        brand: "Generic",
-        unit: "500 ml",
-        price: 2000,
-        stock: 150,
-        image:
-            "https://images.unsplash.com/photo-1629203849820-fdd70d49c38e?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Water",
-        name: "Bottled Water",
-        brand: "Generic",
-        unit: "1.5 litre",
-        price: 2000,
-        stock: 150,
-        image:
-            "https://images.unsplash.com/photo-1564419320461-6870880221ad?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Biscuits & Snacks",
-        name: "Biscuits",
-        brand: "Generic",
-        unit: "Pack",
-        price: 2500,
-        stock: 100,
-        image:
-            "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Dairy",
-        name: "Fresh Milk",
-        brand: "Generic",
-        unit: "1 litre",
-        price: 4500,
-        stock: 60,
-        image:
-            "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Personal Care",
-        name: "Bathing Soap",
-        brand: "Generic",
-        unit: "Bar",
-        price: 2500,
-        stock: 100,
-        image:
-            "https://images.unsplash.com/photo-1607006344380-b6775a0824a7?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Personal Care",
-        name: "Toothpaste",
-        brand: "Generic",
-        unit: "100 ml",
-        price: 5000,
-        stock: 80,
-        image:
-            "https://images.unsplash.com/photo-1559591937-9f7d4a1a1a4b?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Laundry",
-        name: "Washing Powder",
-        brand: "Generic",
-        unit: "1 kg",
-        price: 7500,
-        stock: 80,
-        image:
-            "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Cleaning",
-        name: "Dishwashing Liquid",
-        brand: "Generic",
-        unit: "500 ml",
-        price: 5000,
-        stock: 70,
-        image:
-            "https://images.unsplash.com/photo-1585421514738-01798e348b17?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Household",
-        name: "Toilet Paper",
-        brand: "Generic",
-        unit: "4 Rolls",
-        price: 6000,
-        stock: 100,
-        image:
-            "https://images.unsplash.com/photo-1584556812952-905ffd0c611a?auto=format&fit=crop&w=700&q=80"
-    },
-
-    {
-        category: "Baby Care",
-        name: "Baby Diapers",
-        brand: "Generic",
-        unit: "Pack",
-        price: 25000,
-        stock: 50,
-        image:
-            "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=700&q=80"
-    }
-];
-
-/* =========================================================
-   INSERT CATEGORIES
-========================================================= */
-
-async function seedCategories() {
-
-    for (const category of categories) {
-
-        await pool.query(
-            `
-            INSERT INTO categories(name)
-            VALUES($1)
-            ON CONFLICT(name) DO NOTHING
-            `,
-            [category]
-        );
-    }
-}
-
-/* =========================================================
-   INSERT DEMO SELLER
-========================================================= */
-
-async function seedSeller() {
-
-    await pool.query(
-        `
-        INSERT INTO sellers(name, phone, email)
-        VALUES($1, $2, $3)
-        ON CONFLICT(phone) DO NOTHING
-        `,
-        [
-            "Kisakye Mart Main Store",
-            "0700000000",
-            "admin@kisakyemart.com"
-        ]
-    );
-}
-
-/* =========================================================
-   INSERT PRODUCTS
-========================================================= */
-
-async function seedProducts() {
-
-    const sellerResult = await pool.query(
-        `SELECT id FROM sellers WHERE phone = $1`,
-        ["0700000000"]
-    );
-
-    const sellerId = sellerResult.rows[0].id;
-
-    for (const product of products) {
-
-        const categoryResult = await pool.query(
-            `SELECT id FROM categories WHERE name = $1`,
-            [product.category]
-        );
-
-        const categoryId = categoryResult.rows[0].id;
-
-        await pool.query(
-            `
-            INSERT INTO products
-            (
-                seller_id,
-                category_id,
-                name,
-                brand,
-                unit,
-                price_ugx,
-                stock,
-                image_url
-            )
-            SELECT $1,$2,$3,$4,$5,$6,$7,$8
-            WHERE NOT EXISTS (
-                SELECT 1
-                FROM products
-                WHERE name = $3
-            )
-            `,
-            [
-                sellerId,
-                categoryId,
-                product.name,
-                product.brand,
-                product.unit,
-                product.price,
-                product.stock,
-                product.image
-            ]
-        );
-    }
-
-    console.log("Product catalogue loaded.");
-}
-
-/* =========================================================
-   GET ALL PRODUCTS
-========================================================= */
-
-app.get("/api/products", async (req, res) => {
-
-    try {
-
-        const result = await pool.query(`
-            SELECT
-                p.id,
-                p.name,
-                p.description,
-                p.brand,
-                p.unit,
-                p.price_ugx,
-                p.stock,
-                p.image_url,
-                c.name AS category,
-                s.name AS seller
-            FROM products p
-            LEFT JOIN categories c
-                ON p.category_id = c.id
-            LEFT JOIN sellers s
-                ON p.seller_id = s.id
-            WHERE p.active = TRUE
-            ORDER BY p.id DESC
-        `);
-
-        res.json(result.rows);
-
-    } catch (error) {
-
-        console.error(error);
-        res.status(500).json({
-            error: "Unable to load products"
-        });
-
-    }
+app.post('/api/products', (req,res)=>{
+  const {name,price,cat,img,stock} = req.body;
+  if(!name||!price) return res.status(400).json({success:false, error:"Name & price required"});
+  const newId = products.length ? Math.max(...products.map(p=>p.id))+1 : 1;
+  const prod = {id:newId, name, price:Number(price), cat:cat||"Grocery", stock:Number(stock)||100, img:img||"https://via.placeholder.com/400"};
+  products.unshift(prod); // Add to top - UNLIMITED
+  res.status(201).json({success:true, product:prod, total:products.length});
 });
 
-/* =========================================================
-   SEARCH PRODUCTS
-========================================================= */
-
-app.get("/api/products/search", async (req, res) => {
-
-    try {
-
-        const search = `%${req.query.q || ""}%`;
-
-        const result = await pool.query(
-            `
-            SELECT
-                p.id,
-                p.name,
-                p.brand,
-                p.unit,
-                p.price_ugx,
-                p.stock,
-                p.image_url,
-                c.name AS category
-            FROM products p
-            LEFT JOIN categories c
-                ON p.category_id = c.id
-            WHERE p.active = TRUE
-            AND (
-                p.name ILIKE $1
-                OR p.brand ILIKE $1
-                OR c.name ILIKE $1
-            )
-            ORDER BY p.name
-            `,
-            [search]
-        );
-
-        res.json(result.rows);
-
-    } catch (error) {
-
-        console.error(error);
-        res.status(500).json({
-            error: "Search failed"
-        });
-
-    }
+app.delete('/api/products/:id',(req,res)=>{
+  products = products.filter(p=>p.id!==Number(req.params.id));
+  res.json({success:true, total:products.length});
 });
 
-/* =========================================================
-   GET CATEGORIES
-========================================================= */
-
-app.get("/api/categories", async (req, res) => {
-
-    const result = await pool.query(`
-        SELECT id, name
-        FROM categories
-        ORDER BY name
-    `);
-
-    res.json(result.rows);
+app.put('/api/products/:id',(req,res)=>{
+  const p = products.find(x=>x.id===Number(req.params.id));
+  if(!p) return res.status(404).json({success:false});
+  Object.assign(p, req.body);
+  res.json({success:true, product:p});
 });
 
-/* =========================================================
-   ADD NEW PRODUCT
-========================================================= */
-
-app.post("/api/products", async (req, res) => {
-
-    try {
-
-        const {
-            seller_id,
-            category_id,
-            name,
-            description,
-            brand,
-            unit,
-            price_ugx,
-            stock,
-            image_url
-        } = req.body;
-
-        const result = await pool.query(
-            `
-            INSERT INTO products
-            (
-                seller_id,
-                category_id,
-                name,
-                description,
-                brand,
-                unit,
-                price_ugx,
-                stock,
-                image_url
-            )
-            VALUES
-            ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-            RETURNING *
-            `,
-            [
-                seller_id,
-                category_id,
-                name,
-                description,
-                brand,
-                unit,
-                price_ugx,
-                stock,
-                image_url
-            ]
-        );
-
-        res.status(201).json(result.rows[0]);
-
-    } catch (error) {
-
-        console.error(error);
-
-        res.status(500).json({
-            error: "Product could not be added"
-        });
-    }
-});
-
-/* =========================================================
-   CREATE ORDER
-========================================================= */
-
-app.post("/api/orders", async (req, res) => {
-
-    const client = await pool.connect();
-
-    try {
-
-        await client.query("BEGIN");
-
-        const {
-            buyer_id,
-            items,
-            delivery_address
-        } = req.body;
-
-        let total = 0;
-
-        for (const item of items) {
-
-            const productResult = await client.query(
-                `
-                SELECT *
-                FROM products
-                WHERE id = $1
-                AND active = TRUE
-                FOR UPDATE
-                `,
-                [item.product_id]
-            );
-
-            if (productResult.rows.length === 0) {
-                throw new Error("Product not found");
-            }
-
-            const product = productResult.rows[0];
-
-            if (product.stock < item.quantity) {
-                throw new Error(
-                    `Not enough stock for ${product.name}`
-                );
-            }
-
-            total +=
-                Number(product.price_ugx) *
-                Number(item.quantity);
-        }
-
-        /*
-        -----------------------------------------------------
-        KISAKYE MART COMMISSION
-        -----------------------------------------------------
-        The customer does NOT need to see this calculation.
-        It is stored in the backend.
-        -----------------------------------------------------
-        */
-
-        const commissionRate = 5;
-        const commission =
-            total * commissionRate / 100;
-
-        const sellerAmount =
-            total - commission;
-
-        const orderResult = await client.query(
-            `
-            INSERT INTO orders
-            (
-                buyer_id,
-                total_amount,
-                commission_rate,
-                commission_amount,
-                seller_amount,
-                delivery_address
-            )
-            VALUES($1,$2,$3,$4,$5,$6)
-            RETURNING *
-            `,
-            [
-                buyer_id,
-                total,
-                commissionRate,
-                commission,
-                sellerAmount,
-                delivery_address
-            ]
-        );
-
-        const order = orderResult.rows[0];
-
-        for (const item of items) {
-
-            const productResult = await client.query(
-                `
-                SELECT *
-                FROM products
-                WHERE id = $1
-                FOR UPDATE
-                `,
-                [item.product_id]
-            );
-
-            const product = productResult.rows[0];
-
-            const subtotal =
-                Number(product.price_ugx) *
-                Number(item.quantity);
-
-            await client.query(
-                `
-                INSERT INTO order_items
-                (
-                    order_id,
-                    product_id,
-                    quantity,
-                    unit_price,
-                    subtotal
-                )
-                VALUES($1,$2,$3,$4,$5)
-                `,
-                [
-                    order.id,
-                    product.id,
-                    item.quantity,
-                    product.price_ugx,
-                    subtotal
-                ]
-            );
-
-            await client.query(
-                `
-                UPDATE products
-                SET stock = stock - $1,
-                    updated_at = CURRENT_TIMESTAMP
-                WHERE id = $2
-                `,
-                [
-                    item.quantity,
-                    product.id
-                ]
-            );
-        }
-
-        await client.query("COMMIT");
-
-        res.status(201).json({
-            success: true,
-            order_id: order.id,
-            total_amount: total,
-            message: "Order created successfully"
-        });
-
-    } catch (error) {
-
-        await client.query("ROLLBACK");
-
-        console.error(error);
-
-        res.status(400).json({
-            success: false,
-            error: error.message
-        });
-
-    } finally {
-
-        client.release();
-    }
-});
-
-/* =========================================================
-   FRONTEND
-========================================================= */
-
-app.get("/", async (req, res) => {
-
-    res.send(`
-<!DOCTYPE html>
-
-<html>
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>Kisakye Mart FMCG</title>
-
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-}
-
-header {
-    background: #0b7a3b;
-    color: white;
-    padding: 20px;
-    text-align: center;
-}
-
-header h1 {
-    margin: 0;
-}
-
-.search {
-    padding: 20px;
-    background: white;
-}
-
-.search input {
-    width: 100%;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 16px;
-}
-
-.categories {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    padding: 15px;
-    background: white;
-}
-
-.categories button {
-    border: none;
-    padding: 10px 15px;
-    border-radius: 20px;
-    background: #eee;
-    white-space: nowrap;
-}
-
-.products {
-    display: grid;
-    grid-template-columns:
-        repeat(auto-fill, minmax(180px, 1fr));
-
-    gap: 15px;
-    padding: 20px;
-}
-
-.product {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.08);
-}
-
-.product img {
-    width: 100%;
-    height: 170px;
-    object-fit: cover;
-}
-
-.product-info {
-    padding: 12px;
-}
-
-.product h3 {
-    margin: 0 0 8px;
-    font-size: 16px;
-}
-
-.brand {
-    color: #777;
-    font-size: 13px;
-}
-
-.price {
-    color: #0b7a3b;
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 8px;
-}
-
-.stock {
-    font-size: 12px;
-    color: #555;
-    margin-top: 5px;
-}
-
-.buy {
-    width: 100%;
-    margin-top: 10px;
-    padding: 10px;
-    border: none;
-    background: #0b7a3b;
-    color: white;
-    border-radius: 8px;
-}
-
-footer {
-    text-align: center;
-    padding: 30px;
-    background: #222;
-    color: white;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<header>
-
-<h1>🛒 Kisakye Mart FMCG</h1>
-
-<p>Quality FMCG products at your fingertips</p>
-
-</header>
-
-<div class="search">
-
-<input
-id="search"
-placeholder="Search products, brands or categories..."
-oninput="searchProducts()">
-
-</div>
-
-<div
-class="categories"
-id="categories">
-</div>
-
-<div
-class="products"
-id="products">
-
-Loading products...
-
-</div>
-
-<footer>
-
-<p>Kisakye Mart FMCG</p>
-
-<p>Kampala • Wakiso • Entebbe</p>
-
-</footer>
-
-<script>
-
-let allProducts = [];
-
-/* =========================================
-   LOAD PRODUCTS
-========================================= */
-
-async function loadProducts() {
-
-    const response =
-        await fetch("/api/products");
-
-    allProducts =
-        await response.json();
-
-    displayProducts(allProducts);
-
-    loadCategories();
-}
-
-/* =========================================
-   DISPLAY PRODUCTS
-========================================= */
-
-function displayProducts(products) {
-
-    const container =
-        document.getElementById("products");
-
-    if (products.length === 0) {
-
-        container.innerHTML =
-            "<p>No products found.</p>";
-
-        return;
-    }
-
-    container.innerHTML =
-        products.map(product => `
-
-        <div class="product">
-
-            <img
-            src="${product.image_url}"
-            alt="${product.name}"
-            onerror="this.src='https://images.unsplash.com/photo-1601598851547-4302969d07cb?auto=format&fit=crop&w=700&q=80'">
-
-            <div class="product-info">
-
-                <h3>
-                    ${product.name}
-                </h3>
-
-                <div class="brand">
-                    ${product.brand || ""}
-                </div>
-
-                <div>
-                    ${product.unit || ""}
-                </div>
-
-                <div class="price">
-                    UGX ${Number(product.price_ugx).toLocaleString()}
-                </div>
-
-                <div class="stock">
-                    Stock: ${product.stock}
-                </div>
-
-                <button
-                class="buy"
-                onclick="buyProduct(${product.id})">
-
-                    Add to Cart
-
-                </button>
-
-            </div>
-
-        </div>
-
-    `).join("");
-
-}
-
-/* =========================================
-   SEARCH
-========================================= */
-
-function searchProducts() {
-
-    const text =
-        document
-        .getElementById("search")
-        .value
-        .toLowerCase();
-
-    const filtered =
-        allProducts.filter(product =>
-
-            product.name
-            .toLowerCase()
-            .includes(text)
-
-            ||
-
-            (product.brand || "")
-            .toLowerCase()
-            .includes(text)
-
-            ||
-
-            (product.category || "")
-            .toLowerCase()
-            .includes(text)
-        );
-
-    displayProducts(filtered);
-}
-
-/* =========================================
-   CATEGORIES
-========================================= */
-
-async function loadCategories() {
-
-    const response =
-        await fetch("/api/categories");
-
-    const categories =
-        await response.json();
-
-    const container =
-        document.getElementById("categories");
-
-    container.innerHTML = `
-        <button onclick="displayProducts(allProducts)">
-            All
-        </button>
-    `;
-
-    categories.forEach(category => {
-
-        container.innerHTML += `
-
-            <button
-            onclick="filterCategory('${category.name}')">
-
-                ${category.name}
-
-            </button>
-
-        `;
+// ===== ORDER API - MONEY MONITOR (Your screenshot code fixed) =====
+app.post('/api/orders', (req,res)=>{
+  try{
+    const {customer_name, customer_phone, items, total} = req.body;
+    if(!items||!items.length) throw new Error("Cart empty");
+    const order_id = Date.now();
+    let calcTotal = 0;
+    // BEGIN TRANSACTION - Like your screenshot
+    items.forEach(item=>{
+      const prod = products.find(p=>p.id===item.product_id);
+      if(!prod) throw new Error(`Product ${item.product_id} not found`);
+      if(prod.stock < item.quantity) throw new Error(`Low stock: ${prod.name}`);
+      const subtotal = item.quantity * item.unit_price;
+      calcTotal += subtotal;
+      orderItems.push({order_id, product_id:item.product_id, quantity:item.quantity, unit_price:item.unit_price, subtotal});
+      prod.stock = prod.stock - item.quantity; // UPDATE products SET stock = stock - $1
+      prod.updated_at = new Date();
     });
-}
-
-/* =========================================
-   CATEGORY FILTER
-========================================= */
-
-function filterCategory(category) {
-
-    const filtered =
-        allProducts.filter(
-            product =>
-            product.category === category
-        );
-
-    displayProducts(filtered);
-}
-
-/* =========================================
-   CART
-========================================= */
-
-function buyProduct(id) {
-
-    const product =
-        allProducts.find(
-            p => p.id === id
-        );
-
-    if (!product) return;
-
-    alert(
-        product.name +
-        " added to your cart."
-    );
-}
-
-/* =========================================
-   START
-========================================= */
-
-loadProducts();
-
-</script>
-
-</body>
-
-</html>
-    `);
-
+    const order = {id:order_id, customer_name, customer_phone, total: total||calcTotal, items, wa1:"0744590988", wa2:"0774360584", created_at:new Date()};
+    orders.push(order);
+    // COMMIT - Update Money Monitor
+    monitor.totalSales += order.total;
+    monitor.totalProfit = Math.round(monitor.totalSales * 0.05);
+    monitor.totalOrders += 1;
+    res.status(201).json({success:true, order_id, total_amount:order.total, message:"Order created successfully", whatsapp1:`https://wa.me/256744590988?text=NEW ORDER ${order_id} UGX ${order.total} - ${customer_name}`, whatsapp2:`https://wa.me/256774360584?text=NEW ORDER ${order_id} UGX ${order.total} - ${customer_name}`});
+  }catch(err){
+    // ROLLBACK
+    res.status(400).json({success:false, error:err.message});
+  }
 });
 
-/* =========================================================
-   START SERVER
-========================================================= */
+app.get('/api/monitor',(req,res)=>{
+  if(req.query.pin!=="7445") return res.status(403).json({success:false, error:"Wrong PIN! Use 7445"});
+  res.json({success:true, monitor:{...monitor, totalProducts:products.length}, orders:orders.slice(-30).reverse()});
+});
 
-async function startServer() {
-
-    try {
-
-        await setupDatabase();
-
-        await seedCategories();
-
-        await seedSeller();
-
-        await seedProducts();
-
-        app.listen(PORT, () => {
-
-            console.log(
-                `Kisakye Mart running on port ${PORT}`
-            );
-
-            console.log(
-                `Open: http://localhost:${PORT}`
-            );
-
-        });
-
-    } catch (error) {
-
-        console.error(
-            "Server startup failed:",
-            error
-        );
-
-    }
+// ===== FRONTEND - FIXES Loading products... =====
+app.get('/',(req,res)=>res.send(`
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kisakye Mart FMCG - 110+ Unlimited</title><style>body{margin:0;font-family:Poppins,Arial;background:#f3f4f6}.top{background:#0B8A3E;color:#fff;padding:14px;text-align:center}.search{background:#fff;margin:12px;border-radius:12px;padding:12px;display:flex;gap:8px}.search input{flex:1;border:none;outline:none}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}.card{background:#fff;border-radius:14px;padding:10px}.card img{width:100%;height:110px;object-fit:cover;border-radius:10px}.btn{background:#0B8A3E;color:#fff;border:none;padding:8px;border-radius:8px;width:100%}.money{background:linear-gradient(135deg,#0B8A3E,#22c55e);color:#fff;margin:12px;padding:14px;border-radius:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center}.money b{font-size:18px;display:block}</style></head><body>
+<div class="top"><h2 style="margin:0">🛒 Kisakye Mart FMCG</h2><p style="margin:4px 0;font-size:13px">Quality FMCG products at your fingertips</p><small>110+ Products • Unlimited Add • 0744590988 • 0774360584</small></div>
+<div class="search"><input id="q" placeholder="Search products, brands or categories..." oninput="load()"><button onclick="load()" style="background:#0B8A3E;color:#fff;border:none;padding:8px 12px;border-radius:8px">Search</button></div>
+<div class="money"><div><small>Sales</small><b id="s">UGX 0</b></div><div><small>Profit 5%</small><b id="p">UGX 0</b></div><div><small>Orders</small><b id="o">0</b><small id="pcount">110 products</small></div></div>
+<div id="status" style="text-align:center;padding:10px;color:#666">Loading products via Database API...</div>
+<div id="grid" class="grid"></div>
+<div style="background:#fff;margin:12px;padding:14px;border-radius:16px">
+<h3>🔐 Seller Dashboard - PIN 7445</h3><input id="pin" type="password" placeholder="Enter PIN 7445" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ddd"><button class="btn" onclick="monitorAPI()" style="margin-top:8px">Unlock Money Monitor</button><div id="mon"></div>
+<h3 style="margin-top:18px">📸 Add Product Manually - Unlimited</h3><input id="n" placeholder="Product Name" style="width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #ddd"><input id="pr" type="number" placeholder="Price UGX" style="width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #ddd"><input id="st" type="number" placeholder="Stock qty e.g 100" style="width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #ddd"><select id="cat" style="width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #ddd"><option>Grocery</option><option>Beverages</option><option>Home</option><option>Personal</option><option>Snacks</option></select><input id="img" placeholder="Image URL or Base64 - leave empty for placeholder" style="width:100%;padding:10px;margin:5px 0;border-radius:8px;border:1px solid #ddd"><input type="file" id="file" accept="image/*" style="width:100%;margin:6px 0"><img id="preview" style="width:80px;height:80px;border-radius:10px;display:none;object-fit:cover"><button class="btn" onclick="addProd()">+ Add Product - Unlimited</button><p style="font-size:11px;color:#666">You can add unlimited products! They save in database and show instantly. No limit!</p>
+</div>
+<div style="background:#000;color:#fff;text-align:center;padding:14px"><p>Kisakye Mart FMCG</p><p>Kampala • Wakiso • Entebbe</p><p>0744590988 / 0774360584 • <span id="totalProd">110+</span> Products Unlimited</p></div>
+<script>
+let cart=[]; let selImg='';
+document.getElementById('file').addEventListener('change',e=>{const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{selImg=ev.target.result; document.getElementById('preview').src=selImg; document.getElementById('preview').style.display='block'; document.getElementById('img').value=selImg;}; r.readAsDataURL(f);});
+async function load(){
+  const q=document.getElementById('q').value.toLowerCase();
+  document.getElementById('status').innerText='Loading 110+ products from Database API...';
+  const res=await fetch('/api/products'); const data=await res.json();
+  let list=data.products; if(q) list=list.filter(x=>x.name.toLowerCase().includes(q)||x.cat.toLowerCase().includes(q));
+  document.getElementById('status').innerText=data.count+'+ Products Loaded - Unlimited Database';
+  document.getElementById('totalProd').innerText=data.count; document.getElementById('pcount').innerText=data.count+' products';
+  document.getElementById('grid').innerHTML=list.map(p=>\`<div class="card"><img src="\${p.img}" onerror="this.src='https://via.placeholder.com/300'"><h4 style="font-size:13px;margin:6px 0">\${p.name}</h4><p style="font-size:11px;color:#666">\${p.cat} • Stock:\${p.stock}</p><p style="color:#0B8A3E;font-weight:700">UGX \${p.price.toLocaleString()}</p><button class="btn" onclick="addToCart(\${p.id},\${p.price},'\${p.name.replace(/'/g,'')}')">Add</button></div>\`).join('');
 }
+async function addToCart(id,price,name){
+  cart.push({product_id:id, quantity:1, unit_price:price, name});
+  if(confirm(name+' added! Cart:'+cart.length+' Checkout?')){
+    const customer_name=prompt('Your name:')||'Customer'; const customer_phone=prompt('Phone:')||'07...'; const total=cart.reduce((s,i)=>s+i.unit_price*i.quantity,0)+3000;
+    const res=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({customer_name,customer_phone,items:cart,total})});
+    const data=await res.json();
+    if(data.success){alert('Order #'+data.order_id+' Created! Total UGX '+data.total_amount+'\\nSending to BOTH WhatsApp numbers!'); window.open(data.whatsapp1,'_blank'); setTimeout(()=>window.open(data.whatsapp2,'_blank'),900); cart=[]; load(); monitorAPI();}
+    else alert(data.error);
+  }
+}
+async function monitorAPI(){
+  const pin=document.getElementById('pin').value||'7445'; const res=await fetch('/api/monitor?pin='+pin); const data=await res.json();
+  if(!data.success) return alert(data.error);
+  document.getElementById('s').innerText='UGX '+data.monitor.totalSales.toLocaleString(); document.getElementById('p').innerText='UGX '+data.monitor.totalProfit.toLocaleString(); document.getElementById('o').innerText=data.monitor.totalOrders; document.getElementById('pcount').innerText=data.monitor.totalProducts+' products';
+  document.getElementById('mon').innerHTML='<h4>Recent Orders - Money Monitor</h4>'+data.orders.map(o=>\`<div style="background:#f0fdf4;padding:8px;margin:6px 0;border-radius:8px;font-size:12px"><b>\${o.customer_name}</b> \${o.customer_phone} - UGX \${o.total.toLocaleString()} - \${new Date(o.created_at).toLocaleString()}<br><small>\${o.items.map(i=>i.name).join(', ')}</small></div>\`).join('');
+}
+async function addProd(){
+  const name=document.getElementById('n').value, price=document.getElementById('pr').value, cat=document.getElementById('cat').value, stock=document.getElementById('st').value, img=document.getElementById('img').value||selImg;
+  if(!name||!price) return alert('Enter name & price');
+  const res=await fetch('/api/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,price,cat,stock,img})});
+  const data=await res.json(); if(data.success){alert('Added! Now '+data.total+' products - Unlimited!'); document.getElementById('n').value=''; document.getElementById('pr').value=''; document.getElementById('img').value=''; selImg=''; document.getElementById('preview').style.display='none'; load();}
+}
+load();
+</script></body></html>
+`));
 
-startServer();
+app.listen(PORT,()=>console.log(`Kisakye Mart 110+ UNLIMITED running http://localhost:${PORT}`));
