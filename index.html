@@ -1,36 +1,3210 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KISAKYE MART - GREEN - ONLY AIRTEL 07544590988</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><style>:root{--green:#0B8A3E}*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}body{background:#f3f4f6}.screen{display:none;min-height:100vh;padding-bottom:80px}.screen.active{display:flex;flex-direction:column}.header{background:var(--green);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}.search{background:#fff;margin:12px 16px;padding:12px;border-radius:12px;display:flex;gap:8px}.search input{flex:1;border:none;outline:none}.banner{background:linear-gradient(135deg,#0B8A3E,#16a34a);margin:12px 16px;border-radius:18px;padding:14px;color:#fff;display:flex;justify-content:space-between}.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:12px}.cat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px}.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px}.prod-card{background:#fff;border-radius:14px;padding:8px;border:1px solid #f0f0f0}.prod-card img{width:100%;height:110px;object-fit:cover;border-radius:10px}.add-btn{background:#f0fdf4;border:1px solid var(--green);color:var(--green);padding:6px;border-radius:8px;width:100%;margin-top:6px;font-weight:600;font-size:11px}.btn-green{background:var(--green);color:#fff;border:none;padding:13px;border-radius:12px;font-weight:600;width:100%}.input{width:100%;padding:12px;border:1.5px solid #e5e7eb;border-radius:10px;margin:6px 0;outline:none}.card{background:#fff;border-radius:18px;padding:18px;margin:10px;box-shadow:0 4px 12px rgba(0,0,0,.05)}.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e7eb;display:flex;justify-content:space-around;padding:8px 0 10px;z-index:99}.bottom-nav button{border:none;background:none;color:#9ca3af;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:2px}.bottom-nav button.active{color:var(--green)}.bottom-nav i{font-size:18px}#editModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);z-index:9999;justify-content:center;align-items:center;padding:16px}</style></head><body>
-<div id="splash" class="screen active" style="background:var(--green);justify-content:center;align-items:center;color:#fff;text-align:center"><div><div style="width:90px;height:90px;background:#fff;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto;color:var(--green);font-weight:900;font-size:36px">KM</div><h1 style="margin-top:12px;font-size:34px;font-weight:900">KISAKYE MART</h1><p style="color:#dcfce7">FMCG Supermarket Uganda</p><p style="margin-top:8px;background:#fff;color:var(--green);padding:6px 14px;border-radius:20px;display:inline-block;font-weight:700;font-size:12px">ONLY AIRTEL 07544590988</p><p style="margin-top:20px;font-size:12px"><i class="fa-solid fa-spinner fa-spin"></i> Loading 115 Real Products...</p></div></div>
-<div id="home" class="screen"><div class="header"><div style="display:flex;gap:10px;align-items:center"><div style="width:48px;height:48px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--green);font-size:20px">KM</div><div><div style="font-weight:900;font-size:18px;color:#fff">KISAKYE MART</div><div style="font-size:11px;color:#dcfce7">FMCG - ONLY AIRTEL 07544590988</div></div></div><div onclick="showScreen('cart')" style="position:relative;background:#fff;padding:8px 12px;border-radius:10px"><i class="fa-solid fa-cart-shopping" style="color:var(--green)"></i><span id="cartBadge" style="background:#000;color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;position:absolute;top:-8px;right:-10px">0</span></div></div><div style="background:#fff;padding:10px 16px;border-bottom:2px solid var(--green);display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:16px;color:var(--green)">KISAKYE MART</b><br><small>115 Real • Only Airtel</small></div><div style="background:var(--green);color:#fff;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700">07544590988</div></div><div class="search"><i class="fa-solid fa-magnifying-glass" style="color:#9ca3af"></i><input id="searchBox" placeholder="Search Kakira, Omo, Blue Band..." oninput="renderProducts()"><button onclick="renderProducts()" style="background:var(--green);color:#fff;border:none;padding:6px 10px;border-radius:8px">Search</button></div><div class="banner"><div><h4>KISAKYE MART<br>115 REAL Products</h4><p style="font-size:11px">Only Airtel 07544590988 - Green Theme</p></div><div style="font-size:32px">🛒</div></div><div class="cat-grid"><div onclick="filterCat('all')"><div class="cat-icon" style="background:#dcfce7;color:var(--green)"><i class="fa-solid fa-border-all"></i></div><small>All 115</small></div><div onclick="filterCat('Grocery')"><div class="cat-icon" style="background:#fee2e2">🛒</div><small>Grocery</small></div><div onclick="filterCat('Beverages')"><div class="cat-icon" style="background:#fef3c7">🥤</div><small>Drinks</small></div><div onclick="filterCat('Personal')"><div class="cat-icon" style="background:#fce7f3">🧴</div><small>Personal</small></div><div onclick="filterCat('Home')"><div class="cat-icon" style="background:#dbeafe">🧹</div><small>Home</small></div></div><div style="display:flex;justify-content:space-between;padding:0 12px;margin:6px 0"><b>KISAKYE MART - <span id="prodCount">115</span></b><span style="color:var(--green);font-size:11px" onclick="showScreen('add')">+ Add</span></div><div id="prodGrid" class="prod-grid"></div><div class="bottom-nav"><button class="active"><i class="fa-solid fa-house"></i>Home</button><button onclick="showScreen('seller')"><i class="fa-solid fa-chart-line"></i>Money</button><button onclick="showScreen('add')"><i class="fa-solid fa-plus"></i>Add</button><button onclick="showScreen('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button onclick="showScreen('account')"><i class="fa-regular fa-user"></i>Airtel</button></div></div>
-<div id="seller" class="screen"><div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')" style="color:#fff"></i><b style="color:#fff">KISAKYE MART - PIN 7445</b><span></span></div><div class="card" id="ownerLogin"><h3>KISAKYE MART PIN 7445</h3><p style="font-size:11px">Edit real name & real photo</p><input id="ownerPin" class="input" type="password" placeholder="PIN 7445"><button class="btn-green" onclick="unlockOwner()">Unlock - EDIT</button></div><div id="ownerControls" style="display:none"><div class="card" style="border-left:5px solid var(--green)"><div style="color:#6b7280;font-size:14px">KISAKYE MART - Net Income - ONLY AIRTEL 07544590988</div><div style="font-size:32px;font-weight:800;margin:8px 0" id="netIncome">32,425 UGX</div><div style="color:#6b7280;font-size:13px" id="breakdown">Cash: 11,500 · Airtel: 22,500 · Fees: 650</div></div><div class="card" style="background:var(--green);color:#fff"><div style="font-weight:800;font-size:20px">KISAKYE MART - 07544590988</div><div style="font-size:12px;color:#dcfce7">Only Airtel *185*9# • GREEN</div></div><div class="card"><h4>✏️ EDIT REAL PRODUCTS</h4><div id="manageList"></div><button style="width:100%;padding:10px;background:#dc2626;color:#fff;border:none;border-radius:10px;margin-top:10px" onclick="resetShop()">Reset 115</button><button style="width:100%;padding:10px;background:#333;color:#fff;border:none;border-radius:10px;margin-top:6px" onclick="lockOwner()">Lock</button></div><div class="card"><h4>Orders - 07544590988 ONLY</h4><div id="ordersList">No orders</div></div></div></div>
-<div id="add" class="screen"><div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')" style="color:#fff"></i><b style="color:#fff">KISAKYE MART Add</b><span></span></div><div class="card"><h3>📸 Add Real Product</h3><input id="pname" class="input" placeholder="Real Name e.g Kakira Sugar 1kg"><input id="pprice" type="number" class="input" placeholder="Price UGX"><input id="pstock" type="number" class="input" placeholder="Stock"><select id="pcat" class="input"><option>Grocery</option><option>Beverages</option><option>Personal</option><option>Home</option><option>Snacks</option></select><p style="font-size:11px">📷 Camera / Gallery:</p><input type="file" id="pfile" accept="image/*" capture="environment" class="input"><img id="preview" style="width:100%;height:140px;border-radius:10px;display:none;object-fit:cover"><input id="pimg" class="input" placeholder="Image Link https://..."><button class="btn-green" onclick="addProduct()">+ Add to KISAKYE MART</button></div></div>
-<div id="cart" class="screen"><div class="header"><i class="fa-solid fa-arrow-left" onclick="showScreen('home')" style="color:#fff"></i><b style="color:#fff">KISAKYE MART Cart (<span id="cartCount2">0</span>)</b><span></span></div><div id="cartList" style="padding:12px"></div><div class="card" style="border:2px solid var(--green)"><h3>💚 ONLY AIRTEL 07544590988</h3><div style="background:#f0fdf4;padding:12px;border-radius:12px;text-align:center;border:2px dashed var(--green);margin:8px 0"><div style="font-weight:800;color:var(--green)">AIRTEL MONEY ONLY</div><div style="font-size:22px;font-weight:800">07544590988</div><div style="font-size:12px">*185*9# → KISAKYE MART</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button id="btnAirtel" onclick="setPay('AIRTEL')" style="padding:14px;background:var(--green);color:#fff;border:none;border-radius:12px;font-weight:800">💚 AIRTEL<br>07544590988</button><button id="btnCASH" onclick="setPay('CASH')" style="padding:14px;background:#dcfce7;border-radius:12px;font-weight:800">💵 Cash</button></div><p id="paySelected" style="text-align:center;font-weight:700;color:var(--green);margin:8px 0">AIRTEL → 07544590988</p><div style="background:#f8fafc;padding:10px;border-radius:10px;font-size:12px"><div style="display:flex;justify-content:space-between"><span>Subtotal</span><b id="subtotal">UGX 0</b></div><div style="display:flex;justify-content:space-between"><span>Delivery</span><span>UGX 3,000</span></div><div style="display:flex;justify-content:space-between"><span>Fee 2%</span><span id="fee">UGX 0</span></div><hr style="margin:6px 0"><div style="display:flex;justify-content:space-between;font-weight:800"><span>Total</span><span id="totalPrice">UGX 0</span></div></div><input id="custName" class="input" placeholder="Your Name"><input id="custPhone" class="input" placeholder="Your Airtel Phone"><button class="btn-green" style="margin-top:8px" onclick="placeOrder()">Place Order → KISAKYE MART</button></div></div>
-<div id="account" class="screen"><div class="header"><b style="color:#fff">KISAKYE MART</b></div><div class="card"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center"><div><small>Sales</small><b id="sales2">UGX 0</b></div><div><small>Profit</small><b id="profit2">UGX 0</b></div><div><small>Orders</small><b id="orderCount2">0</b></div></div></div><div class="card"><h3 style="color:var(--green)">KISAKYE MART</h3><p style="font-size:13px">07544590988 ONLY AIRTEL - GREEN!<br>115 Real Products<br>EDIT: PIN 7445 → Edit name & real photo</p><button class="btn-green" onclick="showScreen('seller')">Edit Products</button></div><div class="bottom-nav"><button onclick="showScreen('home')"><i class="fa-solid fa-house"></i>Home</button><button onclick="showScreen('seller')"><i class="fa-solid fa-chart-line"></i>Money</button><button onclick="showScreen('add')"><i class="fa-solid fa-plus"></i>Add</button><button onclick="showScreen('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</button><button class="active"><i class="fa-regular fa-user"></i>Airtel</button></div></div>
-<div id="success" class="screen" style="justify-content:center;align-items:center;text-align:center;background:#fff"><div style="width:70px;height:70px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;color:#fff;font-size:32px">✓</div><h3 style="margin-top:14px">KISAKYE MART Order Placed!</h3><div style="background:#f3f4f6;padding:10px 18px;border-radius:10px;margin:14px 0"><p style="font-size:10px">Order ID</p><b id="orderId">KM000</b></div><button class="btn-green" onclick="trackWA()" style="max-width:280px">📱 WhatsApp 07544590988</button><button class="btn-green" style="background:#fff;color:var(--green);border:1.5px solid var(--green);margin-top:10px;max-width:280px" onclick="showScreen('home')">Continue - KISAKYE MART</button></div>
-<div id="editModal"><div style="background:#fff;border-radius:18px;padding:16px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto"><h3 style="color:var(--green)">✏️ Edit KISAKYE MART</h3><img id="editPreview" style="width:100%;height:160px;border-radius:12px;object-fit:cover;margin:8px 0;display:none"><input id="editName" class="input" placeholder="Real Product Name"><input id="editPrice" type="number" class="input" placeholder="Price UGX"><input id="editStock" type="number" class="input" placeholder="Stock"><select id="editCat" class="input"><option>Grocery</option><option>Beverages</option><option>Personal</option><option>Home</option><option>Snacks</option></select><p style="font-size:11px">📸 Update Real Photo - Camera:</p><input type="file" id="editFile" accept="image/*" capture="environment" class="input"><input id="editImgLink" class="input" placeholder="New Image Link https://..."><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><button onclick="closeEdit()" style="padding:12px;background:#eee;border:none;border-radius:10px;font-weight:700">Cancel</button><button onclick="saveEdit()" style="padding:12px;background:var(--green);color:#fff;border:none;border-radius:10px;font-weight:700">✅ Save</button></div></div></div>
+/*
+===========================================================
+ KISAKYE MART FMCG — STAGE 3 FINAL
+ ONE-FILE NODE.JS VERSION
+===========================================================
+
+Includes:
+- Attractive Kisakye Mart storefront
+- Buyer registration/login
+- Seller registration/login
+- ADMIN-ONLY product management
+- Camera/gallery product photos
+- Product name/category/price/stock
+- Cart
+- Orders
+- Manual MTN/Airtel payment
+- Payment reference
+- Admin payment verification
+- Private 5% commission
+- Admin dashboard
+- Local database file
+- No Mobile Money PIN collection
+
+IMPORTANT:
+This is the STARTING/manual-payment version.
+The app does NOT automatically confirm that money arrived.
+The admin verifies the payment reference manually.
+
+===========================================================
+*/
+
+const http = require("http");
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
+
+const PORT = 3000;
+
+const DB_FILE = path.join(__dirname, "kisakye-mart-data.json");
+const UPLOAD_DIR = path.join(__dirname, "uploads");
+
+if (!fs.existsSync(UPLOAD_DIR)) {
+    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
+
+const PAYMENT_NUMBERS = {
+    MTN: "0774360584",
+    AIRTEL: "0744590988"
+};
+
+const COMMISSION_RATE = 0.05;
+
+/*
+===========================================================
+ DATABASE
+===========================================================
+*/
+
+let db = {
+    users: [],
+    products: [],
+    orders: [],
+    sessions: []
+};
+
+if (fs.existsSync(DB_FILE)) {
+    try {
+        db = JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
+    } catch {
+        console.log("Database file could not be read. Creating new database.");
+    }
+}
+
+function saveDB() {
+    fs.writeFileSync(
+        DB_FILE,
+        JSON.stringify(db, null, 2)
+    );
+}
+
+/*
+===========================================================
+ SECURITY HELPERS
+===========================================================
+*/
+
+function hashPassword(password, salt) {
+    return crypto
+        .pbkdf2Sync(
+            password,
+            salt,
+            120000,
+            64,
+            "sha512"
+        )
+        .toString("hex");
+}
+
+function createPassword(password) {
+
+    const salt = crypto
+        .randomBytes(32)
+        .toString("hex");
+
+    const hash = hashPassword(password, salt);
+
+    return {
+        salt,
+        hash
+    };
+}
+
+function verifyPassword(password, user) {
+
+    const hash = hashPassword(
+        password,
+        user.passwordSalt
+    );
+
+    return crypto.timingSafeEqual(
+        Buffer.from(hash),
+        Buffer.from(user.passwordHash)
+    );
+}
+
+function randomId(prefix) {
+    return (
+        prefix +
+        "-" +
+        Date.now() +
+        "-" +
+        crypto.randomBytes(5).toString("hex")
+    );
+}
+
+function createSession(userId) {
+
+    const token = crypto
+        .randomBytes(40)
+        .toString("hex");
+
+    db.sessions.push({
+        token,
+        userId,
+        expires:
+            Date.now() +
+            7 * 24 * 60 * 60 * 1000
+    });
+
+    saveDB();
+
+    return token;
+}
+
+function getUser(req) {
+
+    const auth =
+        req.headers.authorization || "";
+
+    if (!auth.startsWith("Bearer ")) {
+        return null;
+    }
+
+    const token = auth.substring(7);
+
+    const session =
+        db.sessions.find(
+            s =>
+                s.token === token &&
+                s.expires > Date.now()
+        );
+
+    if (!session) {
+        return null;
+    }
+
+    return db.users.find(
+        u => u.id === session.userId
+    );
+}
+
+/*
+===========================================================
+ ADMIN ACCOUNT
+===========================================================
+
+CHANGE THESE BEFORE REAL USE.
+===========================================================
+*/
+
+const ADMIN_PHONE =
+    process.env.ADMIN_PHONE ||
+    "CHANGE_ADMIN_PHONE";
+
+const ADMIN_PASSWORD =
+    process.env.ADMIN_PASSWORD ||
+    "CHANGE_ADMIN_PASSWORD";
+
+if (
+    !db.users.some(
+        u => u.role === "admin"
+    )
+) {
+
+    const password =
+        createPassword(ADMIN_PASSWORD);
+
+    db.users.push({
+        id: randomId("USR"),
+        name: "Kisakye Mart Admin",
+        phone: ADMIN_PHONE,
+        role: "admin",
+        passwordSalt: password.salt,
+        passwordHash: password.hash,
+        createdAt: new Date().toISOString()
+    });
+
+    saveDB();
+
+    console.log(
+        "Admin account created."
+    );
+}
+
+/*
+===========================================================
+ RESPONSE HELPERS
+===========================================================
+*/
+
+function sendJSON(res, status, data) {
+
+    const output =
+        JSON.stringify(data);
+
+    res.writeHead(status, {
+        "Content-Type":
+            "application/json",
+        "Access-Control-Allow-Origin":
+            "*",
+        "Access-Control-Allow-Headers":
+            "Content-Type, Authorization",
+        "Access-Control-Allow-Methods":
+            "GET,POST,PUT,DELETE,OPTIONS"
+    });
+
+    res.end(output);
+}
+
+function sendHTML(res, html) {
+
+    res.writeHead(200, {
+        "Content-Type":
+            "text/html; charset=utf-8"
+    });
+
+    res.end(html);
+}
+
+function parseBody(req) {
+
+    return new Promise(
+        (resolve, reject) => {
+
+            let body = "";
+
+            req.on(
+                "data",
+                chunk => {
+
+                    body += chunk;
+
+                    if (
+                        body.length >
+                        15 * 1024 * 1024
+                    ) {
+                        reject(
+                            new Error(
+                                "Request too large."
+                            )
+                        );
+
+                        req.destroy();
+                    }
+                }
+            );
+
+            req.on(
+                "end",
+                () => {
+
+                    try {
+
+                        resolve(
+                            body
+                                ? JSON.parse(body)
+                                : {}
+                        );
+
+                    } catch {
+
+                        reject(
+                            new Error(
+                                "Invalid JSON."
+                            )
+                        );
+                    }
+                }
+            );
+        }
+    );
+}
+
+/*
+===========================================================
+ FRONTEND
+===========================================================
+*/
+
+const HTML = `
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0"
+>
+
+<title>Kisakye Mart FMCG</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f5f4;
+    color: #222;
+    padding-bottom: 75px;
+}
+
+header {
+    background: #008000;
+    color: white;
+    text-align: center;
+    padding: 20px 10px;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.tagline {
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 15px;
+}
+
+.search {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
+}
+
+.banner {
+    background: white;
+    border-radius: 15px;
+    margin: 15px 0;
+    padding: 20px;
+    box-shadow: 0 2px 8px #ddd;
+}
+
+.banner h2 {
+    color: #008000;
+}
+
+.categories {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.category {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 20px;
+    white-space: nowrap;
+    border: 1px solid #ddd;
+}
+
+.products {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fill,minmax(165px,1fr));
+    gap: 14px;
+}
+
+.product {
+    background: white;
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: 0 2px 7px #ddd;
+}
+
+.product img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #eee;
+}
+
+.product h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.price {
+    color: #008000;
+    font-weight: bold;
+    font-size: 17px;
+}
+
+button {
+    border: 0;
+    border-radius: 9px;
+    padding: 11px 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.green {
+    background: #008000;
+    color: white;
+}
+
+.red {
+    background: #c62828;
+    color: white;
+}
+
+.white {
+    background: white;
+    border: 1px solid #ddd;
+}
+
+.panel {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    margin: 15px 0;
+    box-shadow: 0 2px 7px #ddd;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 7px 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.hidden {
+    display: none;
+}
+
+.bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    display: flex;
+    border-top: 2px solid #008000;
+    z-index: 999;
+}
+
+.bottom button {
+    flex: 1;
+    background: white;
+    border-radius: 0;
+    padding: 16px 5px;
+}
+
+.bottom .selected {
+    background: #008000;
+    color: white;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 15px;
+    background: #e5f6e5;
+    color: #006600;
+}
+
+.notice {
+    background: #fff8d9;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.social {
+    display: flex;
+    gap: 10px;
+}
+
+.social button {
+    font-size: 20px;
+}
+
+footer {
+    background: white;
+    padding: 30px 15px;
+    margin-top: 30px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🛒 KISAKYE MART
+</div>
+
+<div class="tagline">
+Green Matooke • Real Stock • Uganda
+</div>
+
+</header>
+
+<div class="container">
+
+<div id="shop">
+
+<input
+class="search"
+id="search"
+placeholder="🔎 What are you looking for?"
+>
+
+<div class="banner">
+
+<h2>
+Shop with Kisakye Mart
+</h2>
+
+<p>
+Quality FMCG products delivered to
+Kampala, Wakiso and Entebbe.
+</p>
+
+</div>
+
+<div class="categories">
+
+<div class="category">
+🛒 All
+</div>
+
+<div class="category">
+🥤 Drinks
+</div>
+
+<div class="category">
+🍚 Food
+</div>
+
+<div class="category">
+🧼 Household
+</div>
+
+<div class="category">
+🍼 Baby
+</div>
+
+<div class="category">
+🧴 Personal Care
+</div>
+
+</div>
+
+<div
+id="products"
+class="products"
+></div>
+
+</div>
+
+
+<div
+id="cart"
+class="hidden"
+>
+
+<div class="panel">
+
+<h2>
+🛒 My Cart
+</h2>
+
+<div id="cartItems"></div>
+
+<h3 id="cartTotal">
+Total: UGX 0
+</h3>
+
+<hr>
+
+<h3>
+Payment
+</h3>
+
+<div class="notice">
+
+<b>MTN Mobile Money</b><br>
+0774360584
+
+<br><br>
+
+<b>Airtel Money</b><br>
+0744590988
+
+<br><br>
+
+Send the required amount and enter
+your payment/reference number below.
+
+<br><br>
+
+<strong>
+Never enter your Mobile Money PIN
+in this application.
+</strong>
+
+</div>
+
+<select id="paymentMethod">
+
+<option value="MTN">
+MTN Mobile Money
+</option>
+
+<option value="AIRTEL">
+Airtel Money
+</option>
+
+<option value="CASH">
+Cash on Delivery
+</option>
+
+</select>
+
+<input
+id="paymentReference"
+placeholder="Payment/reference number"
+>
+
+<button
+class="green"
+onclick="placeOrder()"
+>
+Place Order
+</button>
+
+</div>
+
+</div>
+
+
+<div
+id="account"
+class="hidden"
+>
+
+<div
+id="loginPanel"
+class="panel"
+>
+
+<h2>
+👤 My Account
+</h2>
+
+<input
+id="loginPhone"
+placeholder="Phone number"
+>
+
+<input
+id="loginPassword"
+type="password"
+placeholder="Password"
+>
+
+<button
+class="green"
+onclick="login()"
+>
+Sign In
+</button>
+
+<button
+class="white"
+onclick="showRegister()"
+>
+Create Account
+</button>
+
+</div>
+
+
+<div
+id="registerPanel"
+class="panel hidden"
+>
+
+<h2>
+Create Account
+</h2>
+
+<input
+id="regName"
+placeholder="Full name"
+>
+
+<input
+id="regPhone"
+placeholder="Phone number"
+>
+
+<input
+id="regPassword"
+type="password"
+placeholder="Password"
+>
+
+<select id="regRole">
+
+<option value="buyer">
+Buyer
+</option>
+
+<option value="seller">
+Seller
+</option>
+
+</select>
+
+<button
+class="green"
+onclick="register()"
+>
+Register
+</button>
+
+</div>
+
+
+<div
+id="userPanel"
+class="panel hidden"
+></div>
+
+</div>
+
+
+<div
+id="admin"
+class="hidden"
+>
+
+<div class="panel">
+
+<h2>
+👑 Kisakye Mart Admin
+</h2>
+
+<div id="adminSummary"></div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>
+➕ Add Product
+</h2>
+
+<p>
+Only your admin account can use this section.
+</p>
+
+<input
+id="productName"
+placeholder="Product name"
+>
+
+<input
+id="productCategory"
+placeholder="Category"
+>
+
+<input
+id="productPrice"
+type="number"
+placeholder="Price in UGX"
+>
+
+<input
+id="productStock"
+type="number"
+placeholder="Stock quantity"
+>
+
+<textarea
+id="productDescription"
+placeholder="Product description"
+></textarea>
+
+<label>
+📷 Take a photo or select from gallery
+</label>
+
+<input
+id="productImage"
+type="file"
+accept="image/*"
+capture="environment"
+>
+
+<br>
+
+<button
+class="green"
+onclick="addProduct()"
+>
+Upload Product
+</button>
+
+</div>
+
+
+<div class="panel">
+
+<h2>
+📦 Orders
+</h2>
+
+<div id="adminOrders"></div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<footer>
+
+<div class="social">
+
+<button>f</button>
+<button>𝕏</button>
+<button>◎</button>
+<button>▶</button>
+
+</div>
+
+<h3>
+About
+</h3>
+
+<p>
+About us
+</p>
+
+<p>
+Delivery Information
+</p>
+
+<p>
+Privacy Policy
+</p>
+
+<p>
+Terms & Conditions
+</p>
+
+<p>
+Contact Us
+</p>
+
+<h3>
+Secure Payment
+</h3>
+
+<p>
+MTN Mobile Money • Airtel Money
+</p>
+
+<p>
+© 2026 Kisakye Mart
+</p>
+
+</footer>
+
+
+<div class="bottom">
+
+<button
+id="shopBtn"
+class="selected"
+onclick="openTab('shop')"
+>
+SHOP
+</button>
+
+<button
+onclick="openTab('seller')"
+>
+SELLER
+</button>
+
+<button
+id="addBtn"
+class="hidden"
+onclick="openTab('admin')"
+>
+ADD
+</button>
+
+<button
+onclick="openTab('account')"
+>
+MY
+</button>
+
+<button
+onclick="openTab('cart')"
+>
+CART
+(<span id="cartCount">0</span>)
+</button>
+
+</div>
+
+
 <script>
-let WA="2567544590988";let OWNER_PIN="7445";let selectedPay="AIRTEL";
-let defaultProducts=[{id:1,name:"Kakira Sugar 1kg",price:5500,cat:"Grocery",img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=500"},{id:2,name:"Kinyara Sugar 1kg",price:5200,cat:"Grocery",img:"https://images.unsplash.com/photo-1581441363689-1f3d1d6b6a76?w=500"},{id:3,name:"Mukwano Cooking Oil 1L",price:7500,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500"},{id:4,name:"Fortune Butto Oil 2L",price:13000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500"},{id:5,name:"Riham Soda 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=500"},{id:6,name:"Coca Cola 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=500"},{id:7,name:"Pepsi 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=500"},{id:8,name:"Blue Band 250g",price:6500,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500"},{id:9,name:"Prestige Margarine 500g",price:7000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500"},{id:10,name:"Kimbo 1kg",price:8000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500"},{id:11,name:"Royco Mchuzi Mix 100g",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=500"},{id:12,name:"Royco Cubes",price:500,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=500"},{id:13,name:"Omo 500g",price:4000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500"},{id:14,name:"Nomi 1kg",price:4500,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500"},{id:15,name:"Sunlight Bar Soap",price:3500,cat:"Home",img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=500"},{id:16,name:"Mukwano Bar Soap",price:3000,cat:"Home",img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=500"},{id:17,name:"Jik Bleach 500ml",price:3500,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500"},{id:18,name:"Harpic Toilet Cleaner",price:5000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500"},{id:19,name:"Nido 400g",price:18000,cat:"Grocery",img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500"},{id:20,name:"Lato Milk 500ml",price:2500,cat:"Beverages",img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500"},{id:21,name:"Jesa Milk 500ml",price:2500,cat:"Beverages",img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500"},{id:22,name:"Brookside Milk",price:2500,cat:"Beverages",img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500"},{id:23,name:"Posho Maize Flour 2kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500"},{id:24,name:"Cassava Flour 1kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=500"},{id:25,name:"Millet Flour 1kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500"},{id:26,name:"Azam Wheat Flour 2kg",price:7000,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=500"},{id:27,name:"Super Rice 1kg",price:4500,cat:"Grocery",img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=500"},{id:28,name:"Pishori Rice 2kg",price:9000,cat:"Grocery",img:"https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=500"},{id:29,name:"Beans Kanyebwa 1kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500"},{id:30,name:"G-Nuts 1kg",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=500"},{id:31,name:"Spaghetti Riham 500g",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500"},{id:32,name:"Macaroni 500g",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500"},{id:33,name:"Indomie Noodles 70g",price:1500,cat:"Grocery",img:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500"},{id:34,name:"Ketchup 500ml",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1472476443506-c7a5948772f3?w=500"},{id:35,name:"Tomato Paste",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=500"},{id:36,name:"Salt 1kg",price:1500,cat:"Grocery",img:"https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?w=500"},{id:37,name:"Kericho Gold Tea 250g",price:3500,cat:"Beverages",img:"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=500"},{id:38,name:"Nescafe Classic 100g",price:15000,cat:"Beverages",img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500"},{id:39,name:"Cocoa Powder",price:8000,cat:"Grocery",img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500"},{id:40,name:"Bread Hot Loaf",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500"},{id:41,name:"Mandazi 5pcs",price:2000,cat:"Snacks",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500"},{id:42,name:"Samosa",price:1000,cat:"Snacks",img:"https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500"},{id:43,name:"Chapati",price:1000,cat:"Snacks",img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500"},{id:44,name:"Rolex",price:3000,cat:"Snacks",img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=500"},{id:45,name:"Lays Chips",price:3000,cat:"Snacks",img:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=500"},{id:46,name:"Chevda Mix",price:2500,cat:"Snacks",img:"https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=500"},{id:47,name:"Biscuits Britania",price:2000,cat:"Snacks",img:"https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=500"},{id:48,name:"Donuts 6pcs",price:6000,cat:"Snacks",img:"https://images.unsplash.com/photo-1551024601-bec78aea704b?w=500"},{id:49,name:"Matooke Bunch",price:20000,cat:"Grocery",img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500"},{id:50,name:"Sweet Potatoes 1kg",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1518977676608-bd36c2ca4f0d?w=500"},{id:51,name:"Irish Potatoes 1kg",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1518977676608-bd36c2ca4f0d?w=500"},{id:52,name:"Tomatoes Fresh 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500"},{id:53,name:"Onions 1kg",price:3500,cat:"Grocery",img:"https://images.unsplash.com/photo-1518977956812-cd3dbadaaf31?w=500"},{id:54,name:"Cabbage",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=500"},{id:55,name:"Carrots 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1447175008436-054170c2e979?w=500"},{id:56,name:"Green Pepper 1kg",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=500"},{id:57,name:"Avocado",price:500,cat:"Grocery",img:"https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?w=500"},{id:58,name:"Mangoes 1kg",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1553279768-865429fa0078?w=500"},{id:59,name:"Watermelon",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?w=500"},{id:60,name:"Pineapple",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1550254478-ead40cc54513?w=500"},{id:61,name:"Passion Fruits 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=500"},{id:62,name:"Oranges 1kg",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=500"},{id:63,name:"Pawpaw",price:2500,cat:"Grocery",img:"https://images.unsplash.com/photo-1617112848923-cc2234396a8d?w=500"},{id:64,name:"Cavendish Banana 1kg",price:3000,cat:"Grocery",img:"https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500"},{id:65,name:"Beef Fresh 1kg",price:15000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500"},{id:66,name:"Chicken Whole",price:18000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500"},{id:67,name:"Eggs Tray 30pcs",price:15000,cat:"Grocery",img:"https://images.unsplash.com/photo-1488679831987-9564a7c76c7b?w=500"},{id:68,name:"Tilapia Fish 1kg",price:12000,cat:"Grocery",img:"https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500"},{id:69,name:"Yoghurt Jesa 500ml",price:3000,cat:"Beverages",img:"https://images.unsplash.com/photo-1488477181946-64290103bbd6?w=500"},{id:70,name:"Novida Soda 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=500"},{id:71,name:"Mountain Dew 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=500"},{id:72,name:"Mirinda 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=500"},{id:73,name:"Fanta 500ml",price:1500,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=500"},{id:74,name:"Minute Maid Juice 1L",price:4000,cat:"Beverages",img:"https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=500"},{id:75,name:"Rwenzori Water 1L",price:1000,cat:"Beverages",img:"https://images.unsplash.com/photo-1559839914-17aae19cec71?w=500"},{id:76,name:"Red Bull Energy",price:5000,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=500"},{id:77,name:"Nile Special Beer",price:3000,cat:"Beverages",img:"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=500"},{id:78,name:"Bell Lager",price:3000,cat:"Beverages",img:"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=500"},{id:79,name:"Club Beer",price:3000,cat:"Beverages",img:"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=500"},{id:80,name:"Uganda Waragi 200ml",price:8000,cat:"Beverages",img:"https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=500"},{id:81,name:"Sodas Box 24pcs",price:25000,cat:"Beverages",img:"https://images.unsplash.com/photo-1624552184280-9e9631bbeee9?w=500"},{id:82,name:"Colgate Toothpaste",price:3000,cat:"Personal",img:"https://images.unsplash.com/photo-1559671088-5ef93d3b0e5e?w=500"},{id:83,name:"Toothbrush",price:2000,cat:"Personal",img:"https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=500"},{id:84,name:"Vaseline Blue Seal 250ml",price:2500,cat:"Personal",img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=500"},{id:85,name:"Vaseline Lotion 400ml",price:12000,cat:"Personal",img:"https://images.unsplash.com/photo-1617897903246-719242758050?w=500"},{id:86,name:"Nivea Lotion",price:12000,cat:"Personal",img:"https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500"},{id:87,name:"Dove Shampoo 400ml",price:8000,cat:"Personal",img:"https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500"},{id:88,name:"Conditioner",price:8000,cat:"Personal",img:"https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=500"},{id:89,name:"Deodorant Nivea",price:5000,cat:"Personal",img:"https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=500"},{id:90,name:"Dettol Soap",price:2000,cat:"Personal",img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=500"},{id:91,name:"Always Pads",price:3500,cat:"Personal",img:"https://images.unsplash.com/photo-1584305574586-0a33e7399cb8?w=500"},{id:92,name:"Pampers Medium",price:25000,cat:"Personal",img:"https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=500"},{id:93,name:"Bathing Sponge",price:1500,cat:"Personal",img:"https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=500"},{id:94,name:"Dish Paste Green",price:2500,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500"},{id:95,name:"Doom Insecticide",price:5000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500"},{id:96,name:"Air Freshener",price:4000,cat:"Home",img:"https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500"},{id:97,name:"Match Box",price:500,cat:"Home",img:"https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=500"},{id:98,name:"Candles 6pcs",price:2000,cat:"Home",img:"https://images.unsplash.com/photo-1603006905003-be475563bc59?w=500"},{id:99,name:"Torch Battery",price:3000,cat:"Home",img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500"},{id:100,name:"Extension Cable",price:15000,cat:"Home",img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500"},{id:101,name:"Cooking Gas 6kg",price:45000,cat:"Home",img:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500"},{id:102,name:"Garlic 1kg",price:8000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500"},{id:103,name:"Ginger 1kg",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500"},{id:104,name:"Curry Powder",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=500"},{id:105,name:"Black Pepper",price:2000,cat:"Grocery",img:"https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=500"},{id:106,name:"Honey Pure 500ml",price:12000,cat:"Grocery",img:"https://images.unsplash.com/photo-1558642084-fd43571d5462?w=500"},{id:107,name:"Peanut Butter",price:8000,cat:"Grocery",img:"https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500"},{id:108,name:"Jam 500g",price:6000,cat:"Grocery",img:"https://images.unsplash.com/photo-1474440690486-ef8a1751f4b3?w=500"},{id:109,name:"Corn Flakes",price:12000,cat:"Grocery",img:"https://images.unsplash.com/photo-1586511925558-a80b90cc8d8d?w=500"},{id:110,name:"Weetabix",price:10000,cat:"Grocery",img:"https://images.unsplash.com/photo-1586511925558-a80b90cc8d8d?w=500"},{id:111,name:"Nakati",price:1000,cat:"Grocery",img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500"},{id:112,name:"Sukuma Wiki",price:1000,cat:"Grocery",img:"https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500"},{id:113,name:"Peas 1kg",price:5000,cat:"Grocery",img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500"},{id:114,name:"Brown Bread",price:4500,cat:"Grocery",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500"},{id:115,name:"White Bread Loaf",price:4000,cat:"Grocery",img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500"}];
-let products=JSON.parse(localStorage.getItem('kisakye_green_one')||'null')||defaultProducts;let cart=JSON.parse(localStorage.getItem('cart_green_one')||'[]');let sales=+localStorage.getItem('sales_green_one')||0;let allOrders=JSON.parse(localStorage.getItem('orders_green_one')||'[]');let selImg="";let ownerUnlocked=localStorage.getItem('ownerUnlocked_green_one')==='yes';let currentCat='all';let lastMsg="";let currentEditIndex=-1;let editSelImg="";
-document.getElementById('pfile')?.addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=ev=>{selImg=ev.target.result;let pv=document.getElementById('preview');pv.src=selImg;pv.style.display='block'};r.readAsDataURL(f)});
-document.getElementById('editFile')?.addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=ev=>{editSelImg=ev.target.result;let pv=document.getElementById('editPreview');pv.src=editSelImg;pv.style.display='block'};r.readAsDataURL(f)});
-function saveAll(){localStorage.setItem('kisakye_green_one',JSON.stringify(products));localStorage.setItem('cart_green_one',JSON.stringify(cart));localStorage.setItem('sales_green_one',sales);localStorage.setItem('orders_green_one',JSON.stringify(allOrders))}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='seller'&&ownerUnlocked){document.getElementById('ownerLogin').style.display='none';document.getElementById('ownerControls').style.display='block'}renderProducts()}
-setTimeout(()=>showScreen('home'),600);
-function unlockOwner(){if(document.getElementById('ownerPin').value===OWNER_PIN){ownerUnlocked=true;localStorage.setItem('ownerUnlocked_green_one','yes');document.getElementById('ownerLogin').style.display='none';document.getElementById('ownerControls').style.display='block';renderProducts()}else alert('Wrong PIN 7445')}
-function lockOwner(){ownerUnlocked=false;localStorage.removeItem('ownerUnlocked_green_one');document.getElementById('ownerLogin').style.display='block';document.getElementById('ownerControls').style.display='none'}
-function setPay(m){selectedPay=m;document.getElementById('paySelected').innerText="Selected: "+m+" → 07544590988 - KISAKYE MART GREEN";document.getElementById('btnAirtel').style.opacity=m=='AIRTEL'?'1':'0.5';document.getElementById('btnCASH').style.opacity=m=='CASH'?'1':'0.5';renderCart()}
-function renderProducts(){let grid=document.getElementById('prodGrid');if(!grid)return;grid.innerHTML='';let q=(document.getElementById('searchBox')?.value||'').toLowerCase();let list=products.filter(p=>{let okCat=currentCat==='all'||p.cat===currentCat;let okQ=!q||p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q);return okCat&&okQ});document.getElementById('prodCount').innerText=list.length+' / '+products.length;list.forEach((p)=>{let realIdx=products.indexOf(p);grid.innerHTML+=`<div class="prod-card"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=${encodeURIComponent(p.name)}'"><h4 style="font-size:11px;margin:4px 0;height:32px;overflow:hidden">${p.name}</h4><div style="display:flex;justify-content:space-between;align-items:center"><span style="color:var(--green);font-weight:700;font-size:11px">UGX ${p.price.toLocaleString()}</span><span style="font-size:8px;background:#dcfce7;color:var(--green);padding:2px 5px;border-radius:8px">${p.cat}</span></div><button class="add-btn" onclick="addToCart(${realIdx})">Add to Cart</button></div>`});let ml=document.getElementById('manageList');if(ownerUnlocked&&ml){ml.innerHTML='';products.forEach((p)=>{let real=products.indexOf(p);ml.innerHTML+=`<div style="background:#fff;padding:8px;margin:6px 0;border-radius:10px;display:flex;gap:8px;align-items:center;border-left:4px solid var(--green)"><img src="${p.img}" style="width:50px;height:50px;border-radius:8px;object-fit:cover"><div style="flex:1"><b style="font-size:11px">${p.name}</b><br><small>UGX ${p.price.toLocaleString()}</small></div><button onclick="editProd(${real})" style="background:var(--green);color:#fff;border:none;padding:7px 10px;border-radius:8px;font-size:10px;font-weight:700">✏️ EDIT</button><button onclick="deleteProd(${real})" style="background:red;color:#fff;border:none;padding:7px 8px;border-radius:8px;font-size:10px">X</button></div>`});}let od=document.getElementById('ordersList');if(od){od.innerHTML=allOrders.length?'':'No orders - KISAKYE MART 07544590988 GREEN';allOrders.slice().reverse().slice(0,20).forEach(o=>{od.innerHTML+=`<div style="background:#f0fdf4;border-left:3px solid var(--green);padding:6px;margin:5px 0;border-radius:6px;font-size:11px"><b>${o.name}</b> ${o.phone} - ${o.pay}<br>${o.items.join(', ')}<br><b>UGX ${o.total.toLocaleString()}</b> - ${o.time}</div>`})}let airtelS=+localStorage.getItem('sales_airtel_green_one')||0;let cashS=+localStorage.getItem('sales_cash_green_one')||0;if(sales>0&&(airtelS+cashS)==0){cashS=Math.round(sales*0.3);airtelS=sales-cashS}let fees=Math.round(sales*0.02);let net=sales-fees;document.getElementById('netIncome').innerHTML=net.toLocaleString()+' UGX';document.getElementById('breakdown').innerText=`Cash: ${cashS.toLocaleString()} · Airtel: ${airtelS.toLocaleString()} · Fees: ${fees.toLocaleString()}`;let sales2=document.getElementById('sales2');if(sales2){sales2.innerText='UGX '+sales.toLocaleString();document.getElementById('profit2').innerText='UGX '+Math.round(sales*0.05).toLocaleString();document.getElementById('orderCount2').innerText=allOrders.length}renderCart()}
-function filterCat(c){currentCat=c;renderProducts()}
-function renderCart(){let list=document.getElementById('cartList');if(!list)return;list.innerHTML=cart.length?'':'<p style="text-align:center;color:#888;font-size:13px">Cart empty - Add from KISAKYE MART!</p>';let sub=0;cart.forEach((c,idx)=>{sub+=c.price;list.innerHTML+=`<div style="background:#fff;border-radius:10px;padding:8px;display:flex;gap:8px;align-items:center;margin-bottom:8px"><img src="${c.img}" style="width:50px;height:50px;border-radius:8px;object-fit:cover"><div style="flex:1"><b style="font-size:11px">${c.name}</b><br><span style="color:var(--green);font-weight:600;font-size:11px">UGX ${c.price.toLocaleString()}</span></div><i class="fa-solid fa-xmark" onclick="cart.splice(${idx},1);saveAll();renderProducts()"></i></div>`});let fee=Math.round(sub*0.02);let total=sub+3000+fee;document.getElementById('subtotal').innerText='UGX '+sub.toLocaleString();document.getElementById('fee').innerText='UGX '+fee.toLocaleString();document.getElementById('totalPrice').innerText='UGX '+total.toLocaleString();document.getElementById('cartBadge').innerText=cart.length;let cc2=document.getElementById('cartCount2');if(cc2)cc2.innerText=cart.length;window._total=total;saveAll()}
-function addToCart(i){cart.push(products[i]);saveAll();renderProducts();showScreen('cart')}
-function addProduct(){let n=document.getElementById('pname').value.trim();let pr=+document.getElementById('pprice').value;let cat=document.getElementById('pcat').value;let stock=+document.getElementById('pstock').value||100;let link=document.getElementById('pimg').value.trim();let img=selImg||link||"https://via.placeholder.com/300?text="+encodeURIComponent(n);if(!n||!pr)return alert('Enter name & price');products.unshift({id:Date.now(),name:n,price:pr,cat:cat,img:img,stock:stock});saveAll();document.getElementById('pname').value='';document.getElementById('pprice').value='';document.getElementById('pstock').value='';document.getElementById('pimg').value='';document.getElementById('pfile').value='';document.getElementById('preview').style.display='none';selImg='';renderProducts();showScreen('home');alert('Added to KISAKYE MART: '+n)}
-function deleteProd(i){if(confirm('Delete '+products[i].name+'?')){products.splice(i,1);saveAll();renderProducts()}}
-function editProd(i){currentEditIndex=i;let p=products[i];document.getElementById('editName').value=p.name;document.getElementById('editPrice').value=p.price;document.getElementById('editStock').value=p.stock||100;document.getElementById('editCat').value=p.cat;document.getElementById('editImgLink').value=p.img;let pv=document.getElementById('editPreview');pv.src=p.img;pv.style.display='block';editSelImg="";document.getElementById('editModal').style.display='flex';}
-function closeEdit(){document.getElementById('editModal').style.display='none';currentEditIndex=-1;editSelImg="";}
-function saveEdit(){if(currentEditIndex<0)return;let n=document.getElementById('editName').value.trim();let pr=+document.getElementById('editPrice').value;let stock=+document.getElementById('editStock').value||100;let cat=document.getElementById('editCat').value;let link=document.getElementById('editImgLink').value.trim();let img=editSelImg||link||products[currentEditIndex].img;if(!n||!pr)return alert('Enter name & price');products[currentEditIndex].name=n;products[currentEditIndex].price=pr;products[currentEditIndex].stock=stock;products[currentEditIndex].cat=cat;products[currentEditIndex].img=img;saveAll();renderProducts();closeEdit();alert('Updated KISAKYE MART: '+n+' - GREEN - 07544590988');}
-function resetShop(){if(confirm('Reset KISAKYE MART to 115 Real?')){products=[...defaultProducts];localStorage.removeItem('sales_airtel_green_one');localStorage.removeItem('sales_cash_green_one');saveAll();renderProducts()}}
-function placeOrder(){if(!cart.length)return alert('Cart empty');let name=document.getElementById('custName').value||'Customer';let phone=document.getElementById('custPhone').value||'07...';let total=window._total;let order={name:name,phone:phone,items:cart.map(c=>c.name),total:total,pay:selectedPay,time:new Date().toLocaleString()};allOrders.push(order);sales+=total;let key=selectedPay=='AIRTEL'?'sales_airtel_green_one':'sales_cash_green_one';localStorage.setItem(key,(+localStorage.getItem(key)||0)+total);saveAll();let id='KM'+Date.now().toString().slice(-6);document.getElementById('orderId').innerText=id;let msg=`*KISAKYE MART GREEN - ONLY AIRTEL 07544590988*%0AID:${id}%0AName:${name}%0APhone:${phone}%0APay:${selectedPay}%0ATo: 07544590988%0AItems:%0A`+cart.map(c=>`- ${c.name} UGX ${c.price}`).join('%0A')+`%0ATotal:UGX ${total}`;lastMsg=msg;cart=[];saveAll();renderProducts();showScreen('success')}
-function trackWA(){window.open(`https://wa.me/${WA}?text=${lastMsg}`,'_blank')}
-if(ownerUnlocked){document.getElementById('ownerLogin').style.display='none';document.getElementById('ownerControls').style.display='block'}
-renderProducts();
-</script></body></html>
+
+let token =
+localStorage.getItem("kisakye_token");
+
+let currentUser = null;
+
+let cart =
+JSON.parse(
+localStorage.getItem("kisakye_cart")
+|| "[]"
+);
+
+
+function api(
+    url,
+    options = {}
+) {
+
+    options.headers =
+        options.headers || {};
+
+    if (token) {
+
+        options.headers.Authorization =
+            "Bearer " + token;
+    }
+
+    return fetch(
+        url,
+        options
+    ).then(async r => {
+
+        const data =
+            await r.json();
+
+        if (!r.ok) {
+
+            throw new Error(
+                data.error ||
+                "Request failed"
+            );
+        }
+
+        return data;
+
+    });
+
+}
+
+
+function money(value) {
+
+    return Number(value)
+        .toLocaleString();
+
+}
+
+
+function escapeHTML(text) {
+
+    return String(text)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+
+/*
+===========================================================
+ PRODUCTS
+===========================================================
+*/
+
+async function loadProducts() {
+
+    const q =
+        document
+        .getElementById("search")
+        .value;
+
+    const products =
+        await api(
+            "/api/products?q=" +
+            encodeURIComponent(q)
+        );
+
+    const box =
+        document
+        .getElementById("products");
+
+    if (!products.length) {
+
+        box.innerHTML =
+            "<p>No products available yet.</p>";
+
+        return;
+    }
+
+    box.innerHTML =
+        products.map(p => `
+
+        <div class="product">
+
+            <img
+            src="${p.image || ""}"
+            onerror="this.style.display='none'"
+            >
+
+            <h3>
+            ${escapeHTML(p.name)}
+            </h3>
+
+            <span class="badge">
+            ${escapeHTML(p.category)}
+            </span>
+
+            <p class="price">
+            UGX ${money(p.price)}
+            </p>
+
+            <p>
+            Stock: ${p.stock}
+            </p>
+
+            <button
+            class="green"
+            onclick="addToCart('${p.id}')"
+            >
+            Add to Cart
+            </button>
+
+        </div>
+
+        `).join("");
+
+}
+
+
+/*
+===========================================================
+ CART
+===========================================================
+*/
+
+async function addToCart(id) {
+
+    const products =
+        await api("/api/products");
+
+    const product =
+        products.find(
+            p => p.id === id
+        );
+
+    if (!product) {
+
+        alert("Product unavailable.");
+
+        return;
+    }
+
+    const existing =
+        cart.find(
+            x =>
+                x.productId === id
+        );
+
+    if (existing) {
+
+        if (
+            existing.quantity >=
+            product.stock
+        ) {
+
+            alert("Not enough stock.");
+
+            return;
+        }
+
+        existing.quantity++;
+
+    } else {
+
+        cart.push({
+            productId: id,
+            quantity: 1
+        });
+    }
+
+    saveCart();
+
+    openTab("cart");
+
+    renderCart();
+}
+
+
+function saveCart() {
+
+    localStorage.setItem(
+        "kisakye_cart",
+        JSON.stringify(cart)
+    );
+
+    document
+        .getElementById("cartCount")
+        .textContent =
+        cart.reduce(
+            (a,b) =>
+                a + b.quantity,
+            0
+        );
+}
+
+
+async function renderCart() {
+
+    const products =
+        await api(
+            "/api/products"
+        );
+
+    const box =
+        document
+        .getElementById("cartItems");
+
+    let total = 0;
+
+    if (!cart.length) {
+
+        box.innerHTML =
+            "<p>Your cart is empty.</p>";
+
+        document
+            .getElementById("cartTotal")
+            .textContent =
+            "Total: UGX 0";
+
+        return;
+    }
+
+    box.innerHTML =
+        cart.map(item => {
+
+            const p =
+                products.find(
+                    x =>
+                        x.id ===
+                        item.productId
+                );
+
+            if (!p) return "";
+
+            const subtotal =
+                p.price *
+                item.quantity;
+
+            total += subtotal;
+
+            return `
+
+            <div class="panel">
+
+            <b>
+            ${escapeHTML(p.name)}
+            </b>
+
+            <p>
+            ${item.quantity}
+            × UGX ${money(p.price)}
+            =
+            UGX ${money(subtotal)}
+            </p>
+
+            <button
+            class="red"
+            onclick="removeCart('${p.id}')"
+            >
+            Remove
+            </button>
+
+            </div>
+
+            `;
+
+        }).join("");
+
+    document
+        .getElementById("cartTotal")
+        .textContent =
+        "Total: UGX " +
+        money(total);
+
+}
+
+
+function removeCart(id) {
+
+    cart =
+        cart.filter(
+            x =>
+                x.productId !== id
+        );
+
+    saveCart();
+
+    renderCart();
+
+}
+
+
+/*
+===========================================================
+ ORDERS
+===========================================================
+*/
+
+async function placeOrder() {
+
+    if (!token) {
+
+        alert(
+            "Please sign in or register first."
+        );
+
+        openTab("account");
+
+        return;
+    }
+
+    if (!cart.length) {
+
+        alert("Your cart is empty.");
+
+        return;
+    }
+
+    const paymentMethod =
+        document
+        .getElementById(
+            "paymentMethod"
+        ).value;
+
+    const reference =
+        document
+        .getElementById(
+            "paymentReference"
+        ).value;
+
+    if (
+        paymentMethod !== "CASH" &&
+        !reference
+    ) {
+
+        alert(
+            "Enter your payment/reference number."
+        );
+
+        return;
+    }
+
+    try {
+
+        const result =
+            await api(
+                "/api/orders",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body:
+                        JSON.stringify({
+                            items: cart,
+                            paymentMethod,
+                            paymentReference:
+                                reference
+                        })
+                }
+            );
+
+        alert(
+            "Order received.\\n\\n" +
+            "Order Number: " +
+            result.orderNo
+        );
+
+        cart = [];
+
+        saveCart();
+
+        renderCart();
+
+    } catch(error) {
+
+        alert(error.message);
+
+    }
+
+}
+
+
+/*
+===========================================================
+ AUTHENTICATION
+===========================================================
+*/
+
+function showRegister() {
+
+    document
+        .getElementById(
+            "registerPanel"
+        )
+        .classList
+        .remove("hidden");
+
+}
+
+
+async function register() {
+
+    try {
+
+        const result =
+            await api(
+                "/api/register",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body:
+                        JSON.stringify({
+
+                            name:
+                                document
+                                .getElementById(
+                                    "regName"
+                                ).value,
+
+                            phone:
+                                document
+                                .getElementById(
+                                    "regPhone"
+                                ).value,
+
+                            password:
+                                document
+                                .getElementById(
+                                    "regPassword"
+                                ).value,
+
+                            role:
+                                document
+                                .getElementById(
+                                    "regRole"
+                                ).value
+
+                        })
+                }
+            );
+
+        token =
+            result.token;
+
+        localStorage.setItem(
+            "kisakye_token",
+            token
+        );
+
+        currentUser =
+            result.user;
+
+        updateAccount();
+
+        alert(
+            "Account created successfully."
+        );
+
+    } catch(error) {
+
+        alert(error.message);
+
+    }
+
+}
+
+
+async function login() {
+
+    try {
+
+        const result =
+            await api(
+                "/api/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body:
+                        JSON.stringify({
+
+                            phone:
+                                document
+                                .getElementById(
+                                    "loginPhone"
+                                ).value,
+
+                            password:
+                                document
+                                .getElementById(
+                                    "loginPassword"
+                                ).value
+
+                        })
+                }
+            );
+
+        token =
+            result.token;
+
+        localStorage.setItem(
+            "kisakye_token",
+            token
+        );
+
+        currentUser =
+            result.user;
+
+        updateAccount();
+
+        if (
+            currentUser.role ===
+            "admin"
+        ) {
+
+            document
+                .getElementById(
+                    "addBtn"
+                )
+                .classList
+                .remove("hidden");
+
+            loadAdmin();
+
+        }
+
+        alert(
+            "Welcome to Kisakye Mart."
+        );
+
+    } catch(error) {
+
+        alert(error.message);
+
+    }
+
+}
+
+
+function logout() {
+
+    token = null;
+
+    currentUser = null;
+
+    localStorage.removeItem(
+        "kisakye_token"
+    );
+
+    location.reload();
+
+}
+
+
+function updateAccount() {
+
+    if (!currentUser) return;
+
+    document
+        .getElementById(
+            "loginPanel"
+        )
+        .classList
+        .add("hidden");
+
+    document
+        .getElementById(
+            "registerPanel"
+        )
+        .classList
+        .add("hidden");
+
+    const box =
+        document
+        .getElementById(
+            "userPanel"
+        );
+
+    box.classList.remove(
+        "hidden"
+    );
+
+    box.innerHTML = `
+
+    <h2>
+    Welcome,
+    ${escapeHTML(currentUser.name)}
+    </h2>
+
+    <p>
+    Account type:
+    <b>
+    ${escapeHTML(currentUser.role)}
+    </b>
+    </p>
+
+    <button
+    class="red"
+    onclick="logout()"
+    >
+    Sign Out
+    </button>
+
+    `;
+
+}
+
+
+/*
+===========================================================
+ ADMIN PRODUCT UPLOAD
+===========================================================
+*/
+
+async function addProduct() {
+
+    if (
+        !currentUser ||
+        currentUser.role !== "admin"
+    ) {
+
+        alert(
+            "Only the Kisakye Mart administrator can add products."
+        );
+
+        return;
+    }
+
+    const file =
+        document
+        .getElementById(
+            "productImage"
+        )
+        .files[0];
+
+    let image = "";
+
+    if (file) {
+
+        if (
+            !file.type.startsWith(
+                "image/"
+            )
+        ) {
+
+            alert(
+                "Please select an image."
+            );
+
+            return;
+        }
+
+        image =
+            await resizeImage(file);
+    }
+
+    try {
+
+        await api(
+            "/api/products",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body:
+                    JSON.stringify({
+
+                        name:
+                            document
+                            .getElementById(
+                                "productName"
+                            ).value,
+
+                        category:
+                            document
+                            .getElementById(
+                                "productCategory"
+                            ).value,
+
+                        price:
+                            Number(
+                                document
+                                .getElementById(
+                                    "productPrice"
+                                ).value
+                            ),
+
+                        stock:
+                            Number(
+                                document
+                                .getElementById(
+                                    "productStock"
+                                ).value
+                            ),
+
+                        description:
+                            document
+                            .getElementById(
+                                "productDescription"
+                            ).value,
+
+                        image
+
+                    })
+            }
+        );
+
+        alert(
+            "Product successfully uploaded."
+        );
+
+        document
+            .getElementById(
+                "productName"
+            ).value = "";
+
+        document
+            .getElementById(
+                "productCategory"
+            ).value = "";
+
+        document
+            .getElementById(
+                "productPrice"
+            ).value = "";
+
+        document
+            .getElementById(
+                "productStock"
+            ).value = "";
+
+        document
+            .getElementById(
+                "productDescription"
+            ).value = "";
+
+        document
+            .getElementById(
+                "productImage"
+            ).value = "";
+
+        loadProducts();
+
+        loadAdmin();
+
+    } catch(error) {
+
+        alert(error.message);
+
+    }
+
+}
+
+
+/*
+Resize image so the database stays smaller.
+*/
+
+function resizeImage(file) {
+
+    return new Promise(
+        resolve => {
+
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                event => {
+
+                    const img =
+                        new Image();
+
+                    img.onload =
+                        () => {
+
+                            const canvas =
+                                document
+                                .createElement(
+                                    "canvas"
+                                );
+
+                            const max =
+                                800;
+
+                            let w =
+                                img.width;
+
+                            let h =
+                                img.height;
+
+                            if (w > h) {
+
+                                if (w > max) {
+
+                                    h =
+                                        h *
+                                        max /
+                                        w;
+
+                                    w =
+                                        max;
+                                }
+
+                            } else {
+
+                                if (h > max) {
+
+                                    w =
+                                        w *
+                                        max /
+                                        h;
+
+                                    h =
+                                        max;
+                                }
+                            }
+
+                            canvas.width =
+                                w;
+
+                            canvas.height =
+                                h;
+
+                            const ctx =
+                                canvas
+                                .getContext(
+                                    "2d"
+                                );
+
+                            ctx.drawImage(
+                                img,
+                                0,
+                                0,
+                                w,
+                                h
+                            );
+
+                            resolve(
+                                canvas.toDataURL(
+                                    "image/jpeg",
+                                    0.78
+                                )
+                            );
+
+                        };
+
+                    img.src =
+                        event.target.result;
+
+                };
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+}
+
+
+/*
+===========================================================
+ ADMIN DASHBOARD
+===========================================================
+*/
+
+async function loadAdmin() {
+
+    if (
+        !currentUser ||
+        currentUser.role !== "admin"
+    ) return;
+
+    try {
+
+        const data =
+            await api(
+                "/api/admin/dashboard"
+            );
+
+        document
+            .getElementById(
+                "adminSummary"
+            )
+            .innerHTML = `
+
+            <p>
+            Products:
+            <b>${data.products}</b>
+            </p>
+
+            <p>
+            Registered users:
+            <b>${data.users}</b>
+            </p>
+
+            <p>
+            Orders:
+            <b>${data.orders}</b>
+            </p>
+
+            <p>
+            Verified sales:
+            <b>
+            UGX ${money(data.verifiedSales)}
+            </b>
+            </p>
+
+            <p>
+            Kisakye Mart commission:
+            <b>
+            UGX ${money(data.commission)}
+            </b>
+            </p>
+
+            `;
+
+
+        document
+            .getElementById(
+                "adminOrders"
+            )
+            .innerHTML =
+            data.orderList
+            .map(
+                order => `
+
+                <div class="panel">
+
+                <b>
+                ${escapeHTML(
+                    order.orderNo
+                )}
+                </b>
+
+                <p>
+                Customer:
+                ${escapeHTML(
+                    order.customerName
+                )}
+                </p>
+
+                <p>
+                Total:
+                UGX ${money(
+                    order.total
+                )}
+                </p>
+
+                <p>
+                Payment:
+                ${escapeHTML(
+                    order.paymentMethod
+                )}
+                </p>
+
+                <p>
+                Reference:
+                ${escapeHTML(
+                    order.paymentReference ||
+                    "None"
+                )}
+                </p>
+
+                <p>
+                Status:
+                <span class="badge">
+                ${escapeHTML(
+                    order.paymentStatus
+                )}
+                </span>
+                </p>
+
+                ${
+                    order.paymentStatus !==
+                    "VERIFIED"
+
+                    ?
+
+                    `<button
+                    class="green"
+                    onclick="verifyPayment('${order.id}')"
+                    >
+                    Verify Payment
+                    </button>`
+
+                    :
+
+                    "✅ Payment Verified"
+                }
+
+                </div>
+
+                `
+            )
+            .join("");
+
+
+    } catch(error) {
+
+        alert(error.message);
+
+    }
+
+}
+
+
+async function verifyPayment(id) {
+
+    if (
+        !currentUser ||
+        currentUser.role !== "admin"
+    ) {
+
+        alert("Admin only.");
+
+        return;
+    }
+
+    if (
+        !confirm(
+            "Have you personally confirmed that this payment was received?"
+        )
+    ) return;
+
+    try {
+
+        await api(
+            "/api/admin/orders/" +
+            id +
+            "/verify",
+            {
+                method: "POST"
+            }
+        );
+
+        alert(
+            "Payment verified."
+        );
+
+        loadAdmin();
+
+    } catch(error) {
+
+        alert(error.message);
+
+    }
+
+}
+
+
+/*
+===========================================================
+ NAVIGATION
+===========================================================
+*/
+
+function openTab(name) {
+
+    const sections = [
+        "shop",
+        "cart",
+        "account",
+        "admin"
+    ];
+
+    sections.forEach(
+        id => {
+
+            document
+                .getElementById(id)
+                .classList
+                .add("hidden");
+
+        }
+    );
+
+    if (
+        name === "seller"
+    ) {
+
+        name = "account";
+
+        document
+            .getElementById(
+                "account"
+            )
+            .classList
+            .remove("hidden");
+
+    } else {
+
+        document
+            .getElementById(name)
+            .classList
+            .remove("hidden");
+
+    }
+
+}
+
+
+document
+    .getElementById(
+        "search"
+    )
+    .addEventListener(
+        "input",
+        loadProducts
+    );
+
+
+/*
+===========================================================
+ START
+===========================================================
+*/
+
+async function start() {
+
+    saveCart();
+
+    await loadProducts();
+
+    if (token) {
+
+        try {
+
+            currentUser =
+                await api(
+                    "/api/me"
+                );
+
+            updateAccount();
+
+            if (
+                currentUser.role ===
+                "admin"
+            ) {
+
+                document
+                    .getElementById(
+                        "addBtn"
+                    )
+                    .classList
+                    .remove("hidden");
+
+                loadAdmin();
+            }
+
+        } catch {
+
+            localStorage.removeItem(
+                "kisakye_token"
+            );
+
+            token = null;
+
+        }
+
+    }
+
+}
+
+start();
+
+</script>
+
+</body>
+
+</html>
+
+`;
+
+
+/*
+===========================================================
+ API ROUTES
+===========================================================
+*/
+
+async function handleAPI(
+    req,
+    res,
+    pathname
+) {
+
+    /*
+    REGISTER
+    */
+
+    if (
+        req.method === "POST" &&
+        pathname === "/api/register"
+    ) {
+
+        const body =
+            await parseBody(req);
+
+        if (
+            !body.name ||
+            !body.phone ||
+            !body.password
+        ) {
+
+            return sendJSON(
+                res,
+                400,
+                {
+                    error:
+                        "Name, phone and password are required."
+                }
+            );
+        }
+
+        if (
+            body.password.length < 8
+        ) {
+
+            return sendJSON(
+                res,
+                400,
+                {
+                    error:
+                        "Password must be at least 8 characters."
+                }
+            );
+        }
+
+        if (
+            !["buyer","seller"]
+            .includes(body.role)
+        ) {
+
+            return sendJSON(
+                res,
+                400,
+                {
+                    error:
+                        "Invalid account type."
+                }
+            );
+        }
+
+        if (
+            db.users.some(
+                u =>
+                    u.phone ===
+                    body.phone
+            )
+        ) {
+
+            return sendJSON(
+                res,
+                400,
+                {
+                    error:
+                        "Phone already registered."
+                }
+            );
+        }
+
+        const password =
+            createPassword(
+                body.password
+            );
+
+        const user = {
+
+            id:
+                randomId("USR"),
+
+            name:
+                body.name,
+
+            phone:
+                body.phone,
+
+            role:
+                body.role,
+
+            passwordSalt:
+                password.salt,
+
+            passwordHash:
+                password.hash,
+
+            createdAt:
+                new Date().toISOString()
+
+        };
+
+        db.users.push(user);
+
+        saveDB();
+
+        const token =
+            createSession(
+                user.id
+            );
+
+        return sendJSON(
+            res,
+            200,
+            {
+                token,
+
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    phone: user.phone,
+                    role: user.role
+                }
+            }
+        );
+
+    }
+
+
+    /*
+    LOGIN
+    */
+
+    if (
+        req.method === "POST" &&
+        pathname === "/api/login"
+    ) {
+
+        const body =
+            await parseBody(req);
+
+        const user =
+            db.users.find(
+                u =>
+                    u.phone ===
+                    body.phone
+            );
+
+        if (
+            !user ||
+            !verifyPassword(
+                body.password || "",
+                user
+            )
+        ) {
+
+            return sendJSON(
+                res,
+                401,
+                {
+                    error:
+                        "Invalid phone or password."
+                }
+            );
+        }
+
+        const token =
+            createSession(
+                user.id
+            );
+
+        return sendJSON(
+            res,
+            200,
+            {
+                token,
+
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    phone: user.phone,
+                    role: user.role
+                }
+            }
+        );
+
+    }
+
+
+    /*
+    CURRENT USER
+    */
+
+    if (
+        req.method === "GET" &&
+        pathname === "/api/me"
+    ) {
+
+        const user =
+            getUser(req);
+
+        if (!user) {
+
+            return sendJSON(
+                res,
+                401,
+                {
+                    error:
+                        "Not logged in."
+                }
+            );
+        }
+
+        return sendJSON(
+            res,
+            200,
+            {
+                id: user.id,
+                name: user.name,
+                phone: user.phone,
+                role: user.role
+            }
+        );
+
+    }
+
+
+    /*
+    PRODUCTS
+    */
+
+    if (
+        req.method === "GET" &&
+        pathname === "/api/products"
+    ) {
+
+        const url =
+            new URL(
+                req.url,
+                "http://localhost"
+            );
+
+        const q =
+            (
+                url.searchParams
+                    .get("q") ||
+                ""
+            ).toLowerCase();
+
+        const products =
+            db.products.filter(
+                p =>
+                    p.active &&
+                    (
+                        !q ||
+                        p.name
+                            .toLowerCase()
+                            .includes(q) ||
+                        p.category
+                            .toLowerCase()
+                            .includes(q)
+                    )
+            );
+
+        return sendJSON(
+            res,
+            200,
+            products
+        );
+
+    }
+
+
+    /*
+    ADMIN PRODUCT CREATE
+    */
+
+    if (
+        req.method === "POST" &&
+        pathname === "/api/products"
+    ) {
+
+        const user =
+            getUser(req);
+
+        if (
+            !user ||
+            user.role !== "admin"
+        ) {
+
+            return sendJSON(
+                res,
+                403,
+                {
+                    error:
+                        "Only the administrator can add products."
+                }
+            );
+        }
+
+        const body =
+            await parseBody(req);
+
+        if (
+            !body.name ||
+            !body.category
+        ) {
+
+            return sendJSON(
+                res,
+                400,
+                {
+                    error:
+                        "Product name and category are required."
+                }
+            );
+        }
+
+        const price =
+            Number(body.price);
+
+        const stock =
+            Number(body.stock);
+
+        if (
+            !Number.isFinite(price) ||
+            price < 0 ||
+            !Number.isFinite(stock) ||
+            stock < 0
+        ) {
+
+            return sendJSON(
+                res,
+                400,
+                {
+                    error:
+                        "Invalid price or stock."
+                }
+            );
+        }
+
+        const product = {
+
+            id:
+                randomId("PROD"),
+
+            name:
+                body.name.trim(),
+
+            category:
+                body.category.trim(),
+
+            description:
+                body.description ||
+                "",
+
+            price,
+
+            stock,
+
+            image:
+                body.image ||
+                "",
+
+            active:
+                true,
+
+            createdAt:
+                new Date().toISOString()
+        };
+
+        db.products.push(product);
+
+        saveDB();
+
+        return sendJSON(
+            res,
+            200,
+            product
+        );
+
+    }
+
+
+    /*
+    CREATE ORDER
+    */
+
+    if (
+        req.method === "POST" &&
+        pathname === "/api/orders"
+    ) {
+
+        const user =
+            getUser(req);
+
+        if (!user) {
+
+            return sendJSON(
+                res,
+                401,
+                {
+                    error:
+                        "Please sign in first."
+                }
+            );
+        }
+
+        const body =
+            await parseBody(req);
+
+        if (
+            !Array.isArray(
+                body.items
+            ) ||
+            !body.items.length
+        ) {
+
+            return sendJSON(
+                res,
+                400,
+                {
+                    error:
+                        "Cart is empty."
+                }
+            );
+        }
+
+        const allowedPayments =
+            [
+                "MTN",
+                "AIRTEL",
+                "CASH"
+            ];
+
+        if (
+            !allowedPayments
+                .includes(
+                    body.paymentMethod
+                )
+        ) {
+
+            return sendJSON(
+                res,
+                400,
+                {
+                    error:
+                        "Invalid payment method."
+                }
+            );
+        }
+
+        let total = 0;
+
+        const orderItems = [];
+
+        for (
+            const item
+            of body.items
+        ) {
+
+            const product =
+                db.products.find(
+                    p =>
+                        p.id ===
+                        item.productId &&
+                        p.active
+                );
+
+            const quantity =
+                Number(
+                    item.quantity
+                );
+
+            if (
+                !product ||
+                !Number.isInteger(
+                    quantity
+                ) ||
+                quantity < 1
+            ) {
+
+                return sendJSON(
+                    res,
+                    400,
+                    {
+                        error:
+                            "Invalid product or quantity."
+                    }
+                );
+            }
+
+            if (
+                quantity >
+                product.stock
+            ) {
+
+                return sendJSON(
+                    res,
+                    400,
+                    {
+                        error:
+                            "Insufficient stock for " +
+                            product.name
+                    }
+                );
+            }
+
+            total +=
+                product.price *
+                quantity;
+
+            orderItems.push({
+
+                productId:
+                    product.id,
+
+                quantity,
+
+                unitPrice:
+                    product.price
+
+            });
+
+        }
+
+
+        /*
+        PRIVATE COMMISSION
+
+        Customer does not receive
+        the commission value from
+        the normal shopping interface.
+        */
+
+        const commission =
+            Math.floor(
+                total *
+                COMMISSION_RATE
+            );
+
+
+        const order = {
+
+            id:
+                randomId("ORD"),
+
+            orderNo:
+                "KM-" +
+                Date.now(),
+
+            userId:
+                user.id,
+
+            customerName:
+                user.name,
+
+            total,
+
+            commission,
+
+            paymentMethod:
+                body.paymentMethod,
+
+            paymentReference:
+                body.paymentReference ||
+                "",
+
+            paymentStatus:
+                body.paymentMethod ===
+                "CASH"
+                ? "PENDING"
+                : "PENDING",
+
+            orderStatus:
+                "PENDING_PAYMENT",
+
+            items:
+                orderItems,
+
+            createdAt:
+                new Date().toISOString()
+
+        };
+
+
+        db.orders.push(order);
+
+        saveDB();
+
+
+        return sendJSON(
+            res,
+            200,
+            {
+                orderNo:
+                    order.orderNo,
+
+                message:
+                    "Order received."
+            }
+        );
+
+    }
+
+
+    /*
+    CUSTOMER ORDERS
+    */
+
+    if (
+        req.method === "GET" &&
+        pathname === "/api/my-orders"
+    ) {
+
+        const user =
+            getUser(req);
+
+        if (!user) {
+
+            return sendJSON(
+                res,
+                401,
+                {
+                    error:
+                        "Login required."
+                }
+            );
+        }
+
+        const orders =
+            db.orders.filter(
+                o =>
+                    o.userId ===
+                    user.id
+            );
+
+        return sendJSON(
+            res,
+            200,
+            orders
+        );
+
+    }
+
+
+    /*
+    ADMIN DASHBOARD
+    */
+
+    if (
+        req.method === "GET" &&
+        pathname ===
+        "/api/admin/dashboard"
+    ) {
+
+        const user =
+            getUser(req);
+
+        if (
+            !user ||
+            user.role !== "admin"
+        ) {
+
+            return sendJSON(
+                res,
+                403,
+                {
+                    error:
+                        "Admin only."
+                }
+            );
+        }
+
+        const verified =
+            db.orders.filter(
+                o =>
+                    o.paymentStatus ===
+                    "VERIFIED"
+            );
+
+        const verifiedSales =
+            verified.reduce(
+                (sum,o) =>
+                    sum + o.total,
+                0
+            );
+
+        const commission =
+            verified.reduce(
+                (sum,o) =>
+                    sum + o.commission,
+                0
+            );
+
+        return sendJSON(
+            res,
+            200,
+            {
+
+                products:
+                    db.products.filter(
+                        p => p.active
+                    ).length,
+
+                users:
+                    db.users.filter(
+                        u =>
+                            u.role !==
+                            "admin"
+                    ).length,
+
+                orders:
+                    db.orders.length,
+
+                verifiedSales,
+
+                commission,
+
+                orderList:
+                    db.orders
+                    .map(order => ({
+                        id:
+                            order.id,
+
+                        orderNo:
+                            order.orderNo,
+
+                        customerName:
+                            order.customerName,
+
+                        total:
+                            order.total,
+
+                        paymentMethod:
+                            order.paymentMethod,
+
+                        paymentReference:
+                            order.paymentReference,
+
+                        paymentStatus:
+                            order.paymentStatus,
+
+                        orderStatus:
+                            order.orderStatus
+                    }))
+                    .reverse()
+
+            }
+        );
+
+    }
+
+
+    /*
+    ADMIN VERIFY PAYMENT
+    */
+
+    if (
+        req.method === "POST" &&
+        pathname.startsWith(
+            "/api/admin/orders/"
+        ) &&
+        pathname.endsWith(
+            "/verify"
+        )
+    ) {
+
+        const user =
+            getUser(req);
+
+        if (
+            !user ||
+            user.role !== "admin"
+        ) {
+
+            return sendJSON(
+                res,
+                403,
+                {
+                    error:
+                        "Admin only."
+                }
+            );
+        }
+
+        const id =
+            pathname
+                .split("/")
+                .filter(Boolean)[3];
+
+        const order =
+            db.orders.find(
+                o =>
+                    o.id === id
+            );
+
+        if (!order) {
+
+            return sendJSON(
+                res,
+                404,
+                {
+                    error:
+                        "Order not found."
+                }
+            );
+        }
+
+        if (
+            order.paymentStatus ===
+            "VERIFIED"
+        ) {
+
+            return sendJSON(
+                res,
+                400,
+                {
+                    error:
+                        "Payment already verified."
+                }
+            );
+        }
+
+        /*
+        IMPORTANT:
+        The administrator should verify
+        the payment externally before
+        pressing this button.
+        */
+
+        order.paymentStatus =
+            "VERIFIED";
+
+        order.orderStatus =
+            "PROCESSING";
+
+        /*
+        Reduce stock only once.
+        */
+
+        for (
+            const item
+            of order.items
+        ) {
+
+            const product =
+                db.products.find(
+                    p =>
+                        p.id ===
+                        item.productId
+                );
+
+            if (product) {
+
+                product.stock =
+                    Math.max(
+                        0,
+                        product.stock -
+                        item.quantity
+                    );
+            }
+        }
+
+        saveDB();
+
+        return sendJSON(
+            res,
+            200,
+            {
+                message:
+                    "Payment verified."
+            }
+        );
+
+    }
+
+
+    sendJSON(
+        res,
+        404,
+        {
+            error:
+                "API route not found."
+        }
+    );
+
+}
+
+
+/*
+===========================================================
+ SERVER
+===========================================================
+*/
+
+const server =
+    http.createServer(
+        async (req,res) => {
+
+            try {
+
+                if (
+                    req.method ===
+                    "OPTIONS"
+                ) {
+
+                    res.writeHead(
+                        204,
+                        {
+                            "Access-Control-Allow-Origin":
+                                "*",
+
+                            "Access-Control-Allow-Headers":
+                                "Content-Type, Authorization",
+
+                            "Access-Control-Allow-Methods":
+                                "GET,POST,PUT,DELETE,OPTIONS"
+                        }
+                    );
+
+                    return res.end();
+                }
+
+
+                const url =
+                    new URL(
+                        req.url,
+                        "http://localhost"
+                    );
+
+                const pathname =
+                    url.pathname;
+
+
+                if (
+                    pathname.startsWith(
+                        "/api/"
+                    )
+                ) {
+
+                    return await handleAPI(
+                        req,
+                        res,
+                        pathname
+                    );
+                }
+
+
+                if (
+                    pathname === "/" ||
+                    pathname === "/index.html"
+                ) {
+
+                    return sendHTML(
+                        res,
+                        HTML
+                    );
+                }
+
+
+                res.writeHead(
+                    404
+                );
+
+                res.end(
+                    "Page not found."
+                );
+
+
+            } catch(error) {
+
+                console.error(
+                    error
+                );
+
+                sendJSON(
+                    res,
+                    500,
+                    {
+                        error:
+                            "Server error."
+                    }
+                );
+            }
+
+        }
+    );
+
+
+server.listen(
+    PORT,
+    () => {
+
+        console.log(
+            "================================="
+        );
+
+        console.log(
+            "KISAKYE MART FMCG"
+        );
+
+        console.log(
+            "Stage 3 server running."
+        );
+
+        console.log(
+            "http://localhost:" +
+            PORT
+        );
+
+        console.log(
+            "================================="
+        );
+
+    }
+);
