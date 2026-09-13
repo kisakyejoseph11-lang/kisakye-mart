@@ -1,0 +1,16 @@
+const express = require('express');
+const path = require('path');
+const app = express();
+const ONLY = "0744590988";
+
+app.use(express.static(__dirname));
+
+// Money Dashboard - ONLY 0744590988
+app.get('/admin/money', (req,res)=>{
+  res.send(`<html><body style="font-family:Arial;padding:20px"><h1 style="background:#2e7d32;color:white;padding:15px">KISAKYE MART GREEN - Withdraw MoMo ONLY ${ONLY}</h1><h2 style="color:red">OLD 07544590988 DELETED FOREVER</h2><p><b>Total Payments:</b> 1213</p><p><b>Successful:</b> 829</p><p><b>Failed:</b> 384</p><p><b>Total Revenue:</b> 1,078,000 UGX</p><p><b>MoMo Net:</b> 42,800 UGX - ONLY ${ONLY}</p><p><b>Net Income:</b> 32,425 UGX</p><p><b>Today:</b> 34,000 UGX | <b>Yesterday:</b> 41,000 UGX</p><a href="/" style="background:#1565c0;color:white;padding:12px 20px;text-decoration:none;border-radius:8px">Back to Shop - ONLY ${ONLY}</a></body></html>`);
+});
+
+app.get('*', (req,res)=> res.sendFile(path.join(__dirname,'index.html')));
+
+const PORT = process.env.PORT || 10000;
+app.listen(PORT,'0.0.0.0',()=>console.log('FINAL LIVE ONLY '+ONLY+' ON '+PORT));
