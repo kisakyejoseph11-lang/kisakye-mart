@@ -1,1 +1,87 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name=viewport content="width=device-width,initial-scale=1"><title>KISAKYE MART GREEN - UGANDA</title><style>body{margin:0;font-family:Arial;background:#f0faf0;padding-bottom:170px}.top{background:linear-gradient(135deg,#0a7a2e,#11a742);color:#fff;padding:20px;text-align:center;box-shadow:0 4px 12px #0003}.badge{background:#fff;color:#0a7a2e;padding:8px 16px;border-radius:25px;font-weight:900;display:inline-block;margin:10px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}.card{background:#fff;border-radius:20px;padding:18px;text-align:center;box-shadow:0 6px 16px #0001;border:1px solid #e8f5e9}.price{color:#0a7a2e;font-weight:900;font-size:18px;margin:10px 0}.btn{background:#0a7a2e;color:#fff;border:none;width:100%;padding:13px;border-radius:28px;font-weight:900;font-size:14px}.search{width:90%;margin:14px auto;display:block;padding:15px 20px;border-radius:35px;border:2px solid #66bb6a;outline:none;font-size:16px}.cart{position:fixed;bottom:0;left:0;right:0;background:#0a2f14;color:#fff;padding:18px;text-align:center;border-radius:28px 28px 0 0;box-shadow:0 -6px 20px #0004}.cart button{width:100%;padding:15px;background:#fff;color:#0a7a2e;border:none;border-radius:30px;font-weight:900;margin-top:12px;font-size:16px}</style></head><body><div class=top><h1 style="margin:0">🌿 KISAKYE MART</h1><p style="margin:5px 0">GREEN SUPERMARKET - 115 REAL FMCG PRODUCTS</p><div class=badge>📱 AIRTEL MONEY ONLY 07544590988 *185*9#</div><div style="font-size:11px;opacity:.9;margin-top:5px">✅ 5% COMMISSION PROTECTED ✅ MONEY MONITORING</div></div><input id=q class=search placeholder="🔍 Search Kakira Sugar, Omo, Blue Band, Rice..."><div id=list class=grid>Loading fresh Ugandan products...</div><div class=cart><div style="font-size:16px">🛒 <span id=c>0</span> Items | TOTAL: UGX <span id=t>0</span></div><button onclick="checkout()">💬 Checkout on WhatsApp → Pay 07544590988</button></div><script>let all=[],cart=[];async function load(){try{let r=await fetch('/api/products');let j=await r.json();all=Array.isArray(j)?j:j.products||j;if(!all||all.length<1)throw''}catch(e){all=[{name:"Kakira Sugar 1kg",price:5500},{name:"Omo Washing 1kg",price:12000},{name:"Blue Band 500g",price:9000},{name:"Fresh Bananas",price:2000},{name:"Matooke Bunch",price:15000},{name:"Supa Rice 1kg",price:6000},{name:"Fortune Oil 1L",price:8000},{name:"Fresh Milk 500ml",price:2500},{name:"Sweet Bread",price:4000},{name:"Eggs Tray 30",price:15000},{name:"Tomatoes 1kg",price:3000},{name:"Royco 100g",price:2500},{name:"Mama Soap",price:1500},{name:"Salt 1kg",price:2000},{name:"Tea Leaves",price:5000}]}document.getElementById('list').innerHTML=all.map((p,i)=>`<div class=card><div style="font-size:36px">🛒</div><div style="font-weight:800;font-size:14px;margin:6px 0">${p.name}</div><div class=price>UGX ${Number(p.price).toLocaleString()}</div><button class=btn onclick="add(${i})">+ Add to Cart</button></div>`).join('')}function add(i){cart.push(all[i]);document.getElementById('c').innerText=cart.length;document.getElementById('t').innerText=cart.reduce((s,x)=>s+Number(x.price),0).toLocaleString();if(navigator.vibrate)navigator.vibrate(50)}function checkout(){if(!cart.length)return alert('🛒 Cart is empty! Add products first.');let tot=cart.reduce((s,x)=>s+Number(x.price),0);let msg=`Hello KISAKYE MART GREEN 🌿%0A%0AMY ORDER:%0A`;cart.forEach((x,j)=>msg+=`${j+1}. ${x.name} - UGX ${x.price}%0A`);msg+=`%0A💰 TOTAL: UGX ${tot.toLocaleString()}%0A📱 PAY: Airtel Money 07544590988%0ACode: *185*9#%0A%0APlease confirm delivery 🙏`;try{fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:cart,total:tot,time:new Date().toISOString()})})}catch(e){}window.open('https://wa.me/256754459098?text='+msg,'_blank')}document.getElementById('q').addEventListener('input',e=>{let v=e.target.value.toLowerCase();let f=all.filter(p=>p.name.toLowerCase().includes(v));document.getElementById('list').innerHTML=f.length?f.map(p=>`<div class=card><b>${p.name}</b><div class=price>UGX ${p.price}</div><button class=btn onclick="add(${all.indexOf(p)})">Add</button></div>`).join(''):`<div style="grid-column:span 2;text-align:center;padding:30px">No results for "${e.target.value}"</div>`});load();</script></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#f5f7f5;padding-bottom:140px}
+.header{background:#0a7a2e;color:white;padding:15px 12px 12px;border-radius:0 0 20px 20px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:900;font-size:18px} .logo span{font-weight:400;font-size:12px;display:block}
+.search{background:white;border-radius:12px;display:flex;align-items:center;padding:10px 12px;margin-top:12px}
+.search input{border:none;flex:1;outline:none}
+.banner{background:#c8e6c9;margin:12px;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;border:1px solid #a5d6a7}
+.banner b{color:#1b5e20} .banner button{background:#1b5e20;color:white;border:none;padding:4px 10px;border-radius:6px;margin-top:4px;font-size:12px}
+.sec{display:flex;justify-content:space-between;padding:10px 12px;font-weight:bold}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 10px}
+.card{background:white;border-radius:16px;padding:10px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
+.card img{width:90px;height:90px;object-fit:contain}
+.card .name{font-size:13px;margin:6px 0;font-weight:600;height:32px}
+.card .price{color:#0a7a2e;font-weight:900;margin-bottom:6px}
+.card button{background:#0a7a2e;color:white;border:none;width:100%;padding:8px;border-radius:20px;font-weight:bold}
+.cartbar{position:fixed;bottom:50px;left:0;right:0;background:#0f2f1a;color:white;margin:10px;border-radius:30px;padding:10px 15px;display:flex;justify-content:space-between;align-items:center}
+.cartbar button{background:#2ecc71;border:none;color:white;padding:10px 20px;border-radius:20px;font-weight:900}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0;border-top:1px solid #eee}
+.bottom div{text-align:center;font-size:11px;color:#666} .bottom .active{color:#0a7a2e}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="top">
+    <div class="logo">🌿 KISAKYE MART GREEN <span>📍 Uganda • Kampala, Mukono</span></div>
+    <div>🤍 🔔</div>
+  </div>
+  <div class="search">🔍 <input id="search" placeholder="Search Kakira, Omo, Blue Band" oninput="filterP()"> 🎤</div>
+</div>
+
+<div class="banner">
+  <div><b>Fresh Groceries & Essentials</b><br><small>Up to 20% OFF on household items</small><br><button>Shop Deals</button></div>
+  <div style="font-size:40px">🌿</div>
+</div>
+
+<div class="sec"><span>Popular Products</span><a href="#" style="color:#0a7a2e;text-decoration:none;font-size:13px">See all ></a></div>
+
+<div class="grid" id="grid"></div>
+
+<div class="cartbar" id="cartbar" style="display:none">
+  <div>🛒 <span id="count">0</span> items<br><b>Total: UGX <span id="total">0</span></b></div>
+  <button onclick="checkout()">Checkout →</button>
+</div>
+
+<div class="bottom">
+  <div class="active">🏠<br>Home</div><div>⊞<br>Categories</div><div>🛒<br>Cart</div><div>👤<br>Profile</div>
+</div>
+
+<script>
+let products = [
+{id:1,name:"Kakira Sugar 1kg",price:5500,img:"https://i.ibb.co/4R7yF2n/kakira.png"},
+{id:2,name:"Omo Detergent 2kg",price:18000,img:"https://i.ibb.co/8xQpXvK/omo.png"},
+{id:3,name:"Blue Band Margarine 500g",price:9500,img:"https://i.ibb.co/3kR9J3H/blueband.png"},
+{id:4,name:"Riara Cooking Oil 1L",price:12000,img:"https://i.ibb.co/3y2zQyQ/oil.png"},
+{id:5,name:"Kakira Sugar 2kg",price:10500,img:"https://i.ibb.co/4R7yF2n/kakira.png"},
+{id:6,name:"Mukwano Oil 3L",price:22000,img:"https://i.ibb.co/3y2zQyQ/oil.png"},
+{id:7,name:"Bread",price:4000,img:"https://cdn-icons-png.flaticon.com/512/103/103381.png"},
+{id:8,name:"Eggs Tray",price:15000,img:"https://cdn-icons-png.flaticon.com/512/1046/1046784.png"}
+];
+let cart=[];
+
+async function load(){try{let r=await fetch('/api/products');let d=await r.json();if(d.length>0)products=d;}catch(e){} render(products)}
+function render(list){
+  let g=document.getElementById('grid'); g.innerHTML='';
+  list.forEach(p=>{
+    g.innerHTML+=`<div class="card"><img src="${p.img||'https://cdn-icons-png.flaticon.com/512/3081/3081840.png'}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3081/3081840.png'"><div class="name">${p.name}</div><div class="price">UGX ${p.price.toLocaleString()}</div><button onclick="add(${p.id})">+ Add to Cart</button></div>`;
+  });
+}
+function add(id){let p=products.find(x=>x.id==id);let c=cart.find(x=>x.id==id);if(c)c.qty++;else cart.push({...p,qty:1});update()}
+function update(){let t=0,n=0;cart.forEach(c=>{t+=c.price*c.qty;n+=c.qty});document.getElementById('count').innerText=n;document.getElementById('total').innerText=t.toLocaleString();document.getElementById('cartbar').style.display=n>0?'flex':'none'}
+function filterP(){let s=document.getElementById('search').value.toLowerCase();render(products.filter(p=>p.name.toLowerCase().includes(s)))}
+function checkout(){
+  let total=document.getElementById('total').innerText; let msg=`Hello Kisakye Mart Green%0AOrder:%0A${cart.map(c=>c.name+' x'+c.qty+' = UGX '+(c.price*c.qty)).join('%0A')}%0ATOTAL: UGX ${total}%0APay to Airtel: 07544590988`;
+  fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:cart,total:total.replace(/,/g,''),customerName:'WhatsApp Customer'})});
+  window.open('https://wa.me/2567544590988?text='+msg,'_blank');
+}
+load();
+</script>
+</body>
+</html>
